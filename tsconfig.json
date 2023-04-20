@@ -1,0 +1,113 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "exceptions/exceptions": [
+        "libs/exceptions/src"
+      ],
+      "exceptions/exceptions/*": [
+        "libs/exceptions/src/*"
+      ],
+      "@libs/core": [
+        "libs/core/src"
+      ],
+      "@libs/core/*": [
+        "libs/core/src/*"
+      ],
+      "proto/proto": [
+        "libs/proto/src"
+      ],
+      "proto/proto/*": [
+        "libs/proto/src/*"
+      ],
+      "@libs/grpc-types": [
+        "libs/grpc-types/src"
+      ],
+      "@libs/grpc-types/*": [
+        "libs/grpc-types/src/*"
+      ],
+      "filters/filters": [
+        "libs/filters/src"
+      ],
+      "filters/filters/*": [
+        "libs/filters/src/*"
+      ],
+      "interceptors/interceptors": [
+        "libs/interceptors/src"
+      ],
+      "interceptors/interceptors/*": [
+        "libs/interceptors/src/*"
+      ],
+      "middlewares/middlewares": [
+        "libs/middlewares/src"
+      ],
+      "middlewares/middlewares/*": [
+        "libs/middlewares/src/*"
+      ],
+      "@libs/interfaces": [
+        "libs/interfaces/src"
+      ],
+      "@libs/interfaces/*": [
+        "libs/interfaces/src/*"
+      ],
+      "@libs/modules": [
+        "libs/modules/src"
+      ],
+      "@libs/modules/*": [
+        "libs/modules/src/*"
+      ],
+      "@libs/database": [
+        "libs/database/src"
+      ],
+      "@libs/database/*": [
+        "libs/database/src/*"
+      ],
+      "@/api-gateway": [
+        "apps/api-gateway/src"
+      ],
+      "@/api-gateway/*": [
+        "apps/api-gateway/src/*"
+      ],
+      "@/user-service": [
+        "apps/user-service/src"
+      ],
+      "@/user-service/*": [
+        "apps/user-service/src/*"
+      ],
+      "@/merchant-service": [
+        "apps/merchant-service/src"
+      ],
+      "@/merchant-service/*": [
+        "apps/merchant-service/src/*"
+      ],
+      "@/booking-service": [
+        "apps/booking-service/src"
+      ],
+      "@/booking-service/*": [
+        "apps/booking-service/src/*"
+      ],
+      "@/notification-service": [
+        "apps/notification-service/src"
+      ],
+      "@/notification-service/*": [
+        "apps/notification-service/src/*"
+      ],
+    }
+  }
+}

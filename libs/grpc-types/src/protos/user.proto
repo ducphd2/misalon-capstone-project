@@ -1,0 +1,205 @@
+syntax = "proto3";
+
+package user;
+
+import "commons.proto";
+
+import "google/protobuf/struct.proto";
+
+service UserService {
+  rpc find(commons.GqlQuery) returns (FindUsersPayload) {}
+  rpc create(CreateUserInput) returns (User) {}
+  rpc findById(commons.Id) returns (NullableUser) {}
+  rpc findOne(commons.GqlQuery) returns (NullableUser) {}
+  rpc count(commons.QueryRequest) returns (commons.Count) {}
+  rpc update(UpdateUserInput) returns (User) {}
+
+  rpc findOneCustomer(commons.GqlQuery) returns (FindOneCustomerPayload) {}
+  rpc deleteCustomer(commons.Id) returns (commons.Count) {}
+}
+
+enum EUserGender {
+  MALE = 0;
+  FEMALE = 1;
+  OTHER = 2;
+}
+
+enum EActionRole {
+  MANAGER = 0;
+  RECEPTIONIST = 1;
+  MASTER_WORKER = 2;
+  ASSISTANT_WORKER = 3;
+}
+
+enum EUserRole {
+  USER = 0;
+  ADMIN = 1;
+  SUPER_ADMIN = 2;
+}
+
+enum ECustomerLevel {
+  NORMAL = 0;
+  SILVER = 1;
+  GOLD = 2;
+  PLATINUM = 3;
+}
+
+enum EUserStatus {
+  PENDING = 0;
+  ACTIVE = 1;
+  BANNED = 2;
+}
+
+message User {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional string email = 8;
+  optional string password = 9;
+  optional EActionRole actionRole = 10;
+  optional int32 status = 11;
+  optional string fullName = 12;
+  optional string contact = 13;
+  optional string phoneNumber = 14;
+  optional int32 dobDay = 15;
+  optional int32 dobMonth = 16;
+  optional int32 dobYear = 17;
+  optional EUserRole role = 18;
+  optional EUserGender gender = 19;
+  optional string occupation = 20;
+  optional string avatar = 21;
+  optional string address = 22;
+  optional int32 cityCode = 23;
+  optional int32 districtCode = 24;
+  optional int32 wardCode = 25;
+  optional string referrer = 26;
+  optional string referrerCode = 27;
+  optional ECustomerLevel level = 28;
+  optional string customerCode = 29;
+  optional string facebook = 30;
+  optional string zaloPhone = 31;
+  optional int32 height = 32;
+  optional int32 weight = 33;
+  optional string memberCardNo = 34;
+  optional string company = 35;
+  optional string taxNo = 36;
+  optional string note = 37;
+  optional string relatedUser = 38;
+  optional string relatedUserRole = 39;
+  optional string relatedUserPhone = 40;
+  optional int32 branchId = 41;
+}
+
+message CreateUserInput {
+  optional string email = 1;
+  optional string password = 2;
+  optional EActionRole actionRole = 3;
+  optional int32 status = 4;
+  optional string fullName = 5;
+  optional string contact = 6;
+  optional string phoneNumber = 7;
+  optional int32 dobDay = 8;
+  optional int32 dobMonth = 9;
+  optional int32 dobYear = 10;
+  optional EUserRole role = 11;
+  optional EUserGender gender = 12;
+  optional string occupation = 13;
+  optional string avatar = 14;
+  optional string address = 15;
+  optional int32 cityCode = 16;
+  optional int32 districtCode = 17;
+  optional int32 wardCode = 18;
+  optional string referrer = 19;
+  optional string referrerCode = 20;
+  optional ECustomerLevel level = 21;
+  optional string customerCode = 22;
+  optional string facebook = 23;
+  optional string zaloPhone = 24;
+  optional int32 height = 25;
+  optional int32 weight = 26;
+  optional string memberCardNo = 27;
+  optional string company = 28;
+  optional string taxNo = 29;
+  optional string note = 30;
+  optional string relatedUser = 31;
+  optional string relatedUserRole = 32;
+  optional string relatedUserPhone = 33;
+  optional int32 branchId = 34;
+}
+
+message FindOne {
+  User user = 1;
+}
+
+message UserEdge {
+  User node = 1;
+  string cursor = 2;
+}
+
+message FindUsersPayload {
+  repeated UserEdge edges = 1;
+  commons.PageInfo pageInfo = 2;
+}
+
+message UpdateUserInput {
+  int32 id = 1;
+  UpdateUserData data = 2;
+}
+
+message NullableUser {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    User user = 2;
+  }
+}
+
+message UpdateUserData {
+  oneof kind {
+    string email = 1;
+    string password = 2;
+    EActionRole actionRole = 3;
+    int32 status = 4;
+    string fullName = 5;
+    string contact = 6;
+    string phoneNumber = 7;
+    int32 dobDay = 8;
+    int32 dobMonth = 9;
+    int32 dobYear = 10;
+    EUserRole role = 11;
+    EUserGender gender = 12;
+    string occupation = 13;
+    string avatar = 14;
+    string address = 15;
+    int32 cityCode = 16;
+    int32 districtCode = 17;
+    int32 wardCode = 18;
+    string referrer = 19;
+    string referrerCode = 20;
+    ECustomerLevel level = 21;
+    string customerCode = 22;
+    string facebook = 23;
+    string zaloPhone = 24;
+    int32 height = 25;
+    int32 weight = 26;
+    string memberCardNo = 27;
+    string company = 28;
+    string taxNo = 29;
+    string note = 30;
+    string relatedUser = 31;
+    string relatedUserRole = 32;
+    string relatedUserPhone = 33;
+    int32 branchId = 34;
+  }
+}
+
+message FindOneCustomerPayload {
+  User user = 1;
+  User customer = 2;
+}

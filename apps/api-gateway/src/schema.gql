@@ -1,0 +1,516 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PageInfo {
+  startCursor: String!
+  endCursor: String!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+type ErrorPayload {
+  field: String
+  message: [String!]
+}
+
+type DeletePayload {
+  errors: [ErrorPayload!]
+  count: Int
+}
+
+type User {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  email: String!
+  fullName: String
+  status: EUserStatus
+  role: EUserRole!
+  gender: EUserGender
+  contact: String
+  dobDay: Float
+  dobMonth: Float
+  dobYear: Float
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Float
+  districtCode: Float
+}
+
+enum EUserStatus {
+  PENDING
+  ACTIVE
+  BANNED
+}
+
+enum EUserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum EUserGender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+type UsersConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Device {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  userId: ID!
+  os: String!
+  deviceId: String!
+  token: String!
+}
+
+type DeviceEdge {
+  node: Device!
+  cursor: String!
+}
+
+type UserEntity {
+  id: ID!
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+}
+
+type Branch {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  name: String
+  phone: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  merchantId: Int
+  city: String
+  district: String
+  ward: String
+}
+
+type BranchEdge {
+  node: Branch!
+  cursor: String!
+}
+
+type BranchConnection {
+  edges: [BranchEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Merchant {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  name: String
+  phone: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  userId: ID
+  branches(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
+}
+
+type MerchantEdge {
+  node: Merchant!
+  cursor: String!
+}
+
+type MerchantConnection {
+  edges: [MerchantEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Group {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  merchantId: Int
+  sku: String
+  code: String
+  name: String
+  description: String
+  image: String
+}
+
+type GroupEdge {
+  node: Group!
+  cursor: String!
+}
+
+type GroupConnection {
+  edges: [GroupEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Service {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  merchantId: Int
+  groupId: Int
+  price: Float
+  initialPrice: Float
+  capitalPrice: Float
+  durationHour: Int
+  durationMinute: Int
+  sku: String
+  code: String
+  name: String
+  description: String
+  image: String
+  type: EServiceType
+  showType: EServiceShowType
+  canPrintableInvoice: Int
+}
+
+enum EServiceType {
+  SERVICE
+  PRODUCT
+}
+
+enum EServiceShowType {
+  BOTH
+  CASHIER
+  BOOKING
+  NONE
+}
+
+type ServiceEdge {
+  node: Service!
+  cursor: String!
+}
+
+type ServiceConnection {
+  edges: [ServiceEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ServiceOffsetPagination {
+  items: [Service!]
+  page: Int
+  totalPage: Int
+  total: Int
+  limit: Int
+}
+
+type SingleUpload {
+  url: String!
+  format: String!
+  folder: String!
+  width: Float!
+  height: Float!
+  bytes: Float!
+}
+
+type ResponseAuthGrpc {
+  user: UserEntity!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Query {
+  getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
+  getUser(id: Float!): User!
+  userCount(q: String): Float!
+  me: User!
+  findMerchantById(id: Float!): Merchant!
+  findAllMerchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
+  findAllMerchantsByAdmin(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
+  findBranchById(id: Float!): Group!
+  findAllBranches(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
+  findAllBranchesByMerchant(merchantId: Float!, q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
+  findAllBranchesByAdmin(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
+  findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): GroupConnection!
+  findServiceById(id: Float!): Service!
+  findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): ServiceConnection!
+  findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): ServiceOffsetPagination!
+  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: EOrderDirection): ServiceOffsetPagination!
+}
+
+enum EOrderDirection {
+  ASC
+  DESC
+}
+
+type Mutation {
+  uploadSingleFiles(file: Upload!, folder: String): SingleUpload!
+  uploadMultipleFiles(folder: String, files: [Upload!]!): [SingleUpload!]!
+  login(data: InputLoginRequest!): ResponseAuthGrpc!
+  customerLogin(data: InputLoginRequest!): ResponseAuthGrpc!
+  register(data: InputRegisterRequest!): ResponseAuthGrpc!
+  logout: Boolean!
+  updatePassword(data: ChangePasswordInput!): User!
+  createCustomer(data: CreateUserInputDto!): User!
+  updateUser(id: Float!, data: UpdatePartialUser!): User!
+  deleteCustomer(id: Float!): DeletePayload!
+  createMerchant(data: CreateMerchantInput!): Merchant!
+  createBranch(data: CreateBranchInput!): Branch!
+  updateBranch(id: Float!, data: PartialUpdateBranch!): Branch!
+  deleteBranch(id: Float!): DeletePayload!
+  createGroup(data: CreateGroupInput!): Group!
+  updateGroup(id: Float!, data: PartialUpdateGroup!): Group!
+  deleteGroup(id: Float!): DeletePayload!
+  createService(data: CreateGroupInput!): Service!
+  updateService(id: Float!, data: PartialUpdateService!): Service!
+  deleteService(id: Float!): DeletePayload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input InputLoginRequest {
+  email: String!
+  password: String!
+  device: DeviceInputDto
+}
+
+input DeviceInputDto {
+  os: EDeviceOs!
+  deviceId: String!
+  token: String!
+}
+
+enum EDeviceOs {
+  ANDROID
+  IOS
+}
+
+input InputRegisterRequest {
+  email: String!
+  password: String!
+  fullName: String!
+  role: EUserRole!
+  actionRole: EUserRole!
+  status: EUserStatus!
+  gender: EUserGender!
+  contact: String
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Float!
+  districtCode: Float!
+  wardCode: Float!
+  level: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: String
+  weight: String
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: String
+  confirmPassword: String!
+  phone: String!
+  merchantPhone: String!
+  merchantName: String!
+  merchantAddress: String!
+  merchantSubdomain: String!
+  deviceId: String
+  os: EDeviceOs
+  token: String
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
+}
+
+input CreateUserInputDto {
+  email: String!
+  password: String!
+  fullName: String!
+  role: EUserRole!
+  actionRole: EUserRole!
+  status: EUserStatus!
+  gender: EUserGender!
+  contact: String
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: String
+  level: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: String
+  weight: String
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: String
+}
+
+input UpdatePartialUser {
+  email: String
+  password: String
+  fullName: String
+  role: EUserRole
+  actionRole: EUserRole
+  status: EUserStatus
+  gender: EUserGender
+  contact: String
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: String
+  level: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: String
+  weight: String
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: String
+}
+
+input CreateMerchantInput {
+  name: String
+  phone: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  city: String
+  district: String
+  ward: String
+}
+
+input CreateBranchInput {
+  name: String
+  phone: String
+  address: String
+  merchantId: Int
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  city: String
+  district: String
+  ward: String
+}
+
+input PartialUpdateBranch {
+  name: String
+  phone: String
+  address: String
+  merchantId: Int
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  city: String
+  district: String
+  ward: String
+}
+
+input CreateGroupInput {
+  merchantId: Int
+  sku: String
+  code: String
+  name: String
+  description: String
+  image: String
+}
+
+input PartialUpdateGroup {
+  merchantId: Int
+  sku: String
+  code: String
+  name: String
+  description: String
+  image: String
+}
+
+input PartialUpdateService {
+  merchantId: Int
+  groupId: Int
+  price: Float
+  initialPrice: Float
+  capitalPrice: Float
+  durationHour: Int
+  durationMinute: Int
+  sku: String
+  code: String
+  name: String
+  description: String
+  image: String
+  type: EServiceType
+  showType: EServiceShowType
+  canPrintableInvoice: Int
+}

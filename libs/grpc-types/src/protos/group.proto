@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package ducph.group;
+
+import "commons.proto";
+
+import "google/protobuf/struct.proto";
+
+message UpdateGroupData {
+  oneof kind {
+    int32 merchantId = 1;
+    string sku = 2;
+    string code = 3;
+    string name = 4;
+    string description = 5;
+    string image = 6;
+  }
+}
+
+message UpdateGroupInput {
+  int32 id = 1;
+  UpdateGroupData data = 2;
+}
+
+message CreateGroupInput {
+  optional int32 merchantId = 1;
+  optional string sku = 2;
+  optional string code = 3;
+  optional string name = 4;
+  optional string description = 5;
+  optional string image = 6;
+}
+
+message Group {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional int32 merchantId = 8;
+  optional string sku = 9;
+  optional string code = 10;
+  optional string name = 11;
+  optional string description = 12;
+  optional string image = 13;
+}
+
+message GroupEdge {
+  Group node = 1;
+  string cursor = 2;
+}
+
+message FindGroupsPayload {
+  repeated GroupEdge edges = 1;
+  commons.PageInfo pageInfo = 2;
+}
+
+message NullableGroup {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    Group group = 2;
+  }
+}

@@ -1,0 +1,109 @@
+import { QueryUtils } from '@libs/core';
+import { UseGuards } from '@nestjs/common';
+import { Args, Query, Resolver } from '@nestjs/graphql';
+import { isEmpty, merge } from 'lodash';
+import { EOrderDirection } from '@libs/database/enums';
+
+import { Service, ServiceConnection, ServiceOffsetPagination } from '@/api-gateway/types';
+import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
+import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
+
+@Resolver(() => Service)
+export class ServiceQueryResolver {
+  constructor(private readonly merchantService: MerchantCommonService, private readonly queryUtils: QueryUtils) {}
+
+  @Query(() => Service)
+  @UseGuards(GqlAuthGuard)
+  async findServiceById(@Args('id') id: number): Promise<Service> {
+    const { branch } = await this.merchantService.findBranchById({ id });
+    return branch;
+  }
+
+  @Query(() => ServiceConnection)
+  @UseGuards(GqlAuthGuard)
+  async findAllBranchServices(
+    @Args('q', { nullable: true }) q?: string,
+    @Args('first', { nullable: true }) first?: number,
+    @Args('last', { nullable: true }) last?: number,
+    @Args('before', { nullable: true }) before?: string,
+    @Args('after', { nullable: true }) after?: string,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+  ): Promise<ServiceConnection> {
+    const query = { where: {} };
+
+    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
+
+    merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
+
+    const result = await this.merchantService.findService({
+      ...query,
+      where: JSON.stringify(query.where),
+      select: null,
+      orderBy: null,
+    });
+
+    return result;
+  }
+
+  @Query(() => ServiceOffsetPagination)
+  @UseGuards(GqlAuthGuard)
+  async findAllBranchServicesByMerchant(
+    @Args('merchantId') merchantId: number,
+    @Args('q', { nullable: true }) q?: string,
+    @Args('limit', { nullable: true }) limit?: number,
+    @Args('page', { nullable: true }) page?: number,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+  ): Promise<ServiceOffsetPagination> {
+    try {
+      const query = {
+        where: {
+          merchantId,
+        },
+        searchKey: !isEmpty(q) ? `%${q}%` : undefined,
+        page: page ? page : 1,
+        limit: limit ? limit : 10,
+        orderBy: orderBy ? orderBy : 'updatedAt',
+        orderDirection: orderDirection ? orderDirection : 'DESC',
+      };
+
+      const result = await this.merchantService.findServiceOffsetPagination({
+        ...query,
+        where: JSON.stringify(query.where),
+      });
+      return result;
+    } catch (error) {
+      console.log('Fetch all service offset pagination error, ', error);
+      throw new Error(error);
+    }
+  }
+
+  @Query(() => ServiceOffsetPagination)
+  @UseGuards(GqlAuthGuard)
+  async customerFindAllServices(
+    @Args('q', { nullable: true }) q?: string,
+    @Args('limit', { nullable: true }) limit?: number,
+    @Args('page', { nullable: true }) page?: number,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+    @Args('orderDirection', { nullable: true, type: () => EOrderDirection }) orderDirection?: string,
+  ): Promise<ServiceOffsetPagination> {
+    try {
+      const query = {
+        searchKey: !isEmpty(q) ? q.toString() : undefined,
+        page: page ? page : 1,
+        limit: limit ? limit : 10,
+        orderBy: orderBy ? orderBy : 'updatedAt',
+        orderDirection: orderDirection ? orderDirection : 'DESC',
+        where: {},
+      };
+
+      const result = await this.merchantService.findServiceOffsetPagination({
+        ...query,
+        where: JSON.stringify(query.where),
+      });
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+}

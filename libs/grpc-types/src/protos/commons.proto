@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package commons;
+
+message Id {
+  int32 id = 1;
+}
+
+message GrQuery {
+  string filter = 1;
+  Paging paging = 2;
+  repeated Sort sorting = 3;
+}
+
+message GqlQuery {
+  repeated string select = 1;
+  optional string where = 2;
+  repeated string orderBy = 3;
+  optional int32 limit = 4;
+  optional string before = 5;
+  optional string after = 6;
+}
+
+message PageInfo {
+  optional string startCursor = 1;
+  optional string endCursor = 2;
+  optional bool hasNextPage = 3;
+  optional bool hasPreviousPage = 4;
+}
+
+message Count {
+  int32 count = 1;
+}
+
+message TotalCount {
+  int32 totalCount = 1;
+}
+
+message QueryRequest {
+  optional string where = 1;
+  optional int32 page = 2;
+  optional int32 limit = 3;
+  optional string searchKey = 4;
+  optional string orderBy = 5;
+  optional string orderDirection = 6;
+}
+
+message Sort {
+  string field = 1;
+  enum SortDirection {
+    ASC = 0;
+    DESC = 1;
+  }
+  SortDirection direction = 2;
+  enum SortNulls {
+    NULLS_FIRST = 0;
+    NULLS_LAST = 1;
+  }
+  SortNulls nulls = 3;
+}
+
+message Paging {
+  int32 limit = 1;
+  int32 offset = 2;
+}

@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package branch;
+
+import "commons.proto";
+
+import "google/protobuf/struct.proto";
+
+message UpdateBranchData {
+  oneof kind {
+    string name = 1;
+    string phone = 2;
+    string address = 3;
+    int32 merchantId = 4;
+    int32 cityCode = 5;
+    int32 districtCode = 6;
+    int32 wardCode = 7;
+    string city = 8;
+    string district = 9;
+    string ward = 10;
+  }
+}
+
+message UpdateBranchInput {
+  int32 id = 1;
+  UpdateBranchData data = 2;
+}
+
+message CreateBranchInput {
+  optional string name = 1;
+  optional string phone = 2;
+  optional string address = 3;
+  optional int32 merchantId = 4;
+  optional int32 cityCode = 5;
+  optional int32 districtCode = 6;
+  optional int32 wardCode = 7;
+  optional string city = 8;
+  optional string district = 9;
+  optional string ward = 10;
+}
+
+message Branch {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional string name = 8;
+  optional string phone = 9;
+  optional string address = 10;
+  optional int32 merchantId = 11;
+  optional int32 cityCode = 12;
+  optional int32 districtCode = 13;
+  optional int32 wardCode = 14;
+  optional string city = 15;
+  optional string district = 16;
+  optional string ward = 17;
+}
+
+message BranchEdge {
+  Branch node = 1;
+  string cursor = 2;
+}
+
+message FindBranchesPayload {
+  repeated BranchEdge edges = 1;
+  commons.PageInfo pageInfo = 2;
+}
+
+message NullableBranch {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    Branch branch = 2;
+  }
+}
