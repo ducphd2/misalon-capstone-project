@@ -1,5 +1,5 @@
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
-import { Devices } from '@libs/grpc-types/protos/device';
+import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import {
   CreateUserRequest,
   DUCPH_USER_PACKAGE_NAME,
@@ -11,6 +11,8 @@ import {
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+
+import { Device } from '@/api-gateway/types';
 
 @Injectable()
 export class UserCommonService implements OnModuleInit {
@@ -31,12 +33,7 @@ export class UserCommonService implements OnModuleInit {
   }
 
   async findOne(query: QueryRequest) {
-    return await firstValueFrom(
-      this.userService.findOne({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+    return await firstValueFrom(this.userService.findOne(query));
   }
 
   async findById(id: Id) {
@@ -62,5 +59,9 @@ export class UserCommonService implements OnModuleInit {
 
   async findDevices(query: QueryRequest): Promise<Devices> {
     return await firstValueFrom(this.userService.findDevices(query));
+  }
+
+  async upsertDevice(data: CreateDeviceInput): Promise<Device> {
+    return await firstValueFrom(this.userService.upsertDevice(data));
   }
 }

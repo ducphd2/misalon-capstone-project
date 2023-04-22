@@ -393,8 +393,7 @@ type Query {
 type Mutation {
   uploadSingleFiles(file: Upload!, folder: String): SingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [SingleUpload!]!
-  login(data: BaseAuthInput!): ResponseAuthGrpc!
-  customerLogin(data: InputLoginRequest!): ResponseAuthGrpc!
+  login(data: InputLoginRequest!): ResponseAuthGrpc!
   register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto, device: DeviceInputDto): ResponseAuthGrpc!
   logout: Boolean!
   updatePassword(data: ChangePasswordInput!): UserPayload!
@@ -419,11 +418,6 @@ type Mutation {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-input BaseAuthInput {
-  email: String!
-  password: String!
-}
 
 input InputLoginRequest {
   email: String!

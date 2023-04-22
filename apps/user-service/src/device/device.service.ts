@@ -3,6 +3,7 @@ import { DeviceEntity } from '@libs/database/entities';
 import { DeviceRepository } from '@libs/database/repositories';
 import { CommonProto, DeviceProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
+import { isEmpty } from 'lodash';
 import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
@@ -14,8 +15,8 @@ export class DeviceService {
     return device;
   }
 
-  async findById(dto: CommonProto.Id): Promise<DeviceEntity> {
-    const device = await this.deviceRepository.findById(dto.id);
+  async findById(id: number): Promise<DeviceEntity> {
+    const device = await this.deviceRepository.findById(id);
     return device;
   }
 
@@ -31,5 +32,22 @@ export class DeviceService {
     );
 
     return devices;
+  }
+
+  async upsertDevice(dto: DeviceProto.CreateDeviceInput): Promise<DeviceEntity> {
+    let device = await this.deviceRepository.findOne({
+      userId: dto.userId,
+      deviceId: dto.deviceId,
+      os: dto.os,
+    });
+
+    if (isEmpty(device)) {
+      device = await this.create(dto);
+    } else {
+      await this.deviceRepository.update(device.id, { token: dto.token });
+      device = await this.findById(device.id);
+    }
+
+    return device;
   }
 }
