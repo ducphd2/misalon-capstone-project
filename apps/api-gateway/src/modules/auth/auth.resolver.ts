@@ -16,6 +16,7 @@ import {
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { ResponseAuthGrpc } from '@/api-gateway/types/auth';
+import { User } from '@/api-gateway/types';
 
 @Resolver(() => ResponseAuthGrpc)
 export class AuthResolver {
@@ -100,7 +101,7 @@ export class AuthResolver {
   @Mutation(() => ResponseAuthGrpc)
   async register(
     @Args('user') userInput: CreateUserInputDto,
-    @Args('merchant') merchantInput: CreateMerchantInputDto,
+    @Args('merchant', { nullable: true }) merchantInput: CreateMerchantInputDto,
     @Args('device', { nullable: true }) deviceInput?: DeviceInputDto,
   ) {
     try {
@@ -110,22 +111,31 @@ export class AuthResolver {
 
       if (count >= 1) throw new Error('The email is taken');
 
+      if (userInput.role === EUserRole.USER) {
+        const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
+
+        return this.handleResponseAuthData(user);
+      }
       const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
 
-      const merchant = await this.merchantService.create({
+      await this.merchantService.create({
         ...merchantInput,
         userId: user.id,
       });
 
-      return {
-        user,
-        accessToken: await this.authService.generateAccessToken(user),
-        refreshToken: await this.authService.generateRefreshToken(user),
-      };
+      return this.handleResponseAuthData(user);
     } catch (error) {
       console.log('Register error, ', error);
       throw new Error(error);
     }
+  }
+
+  private async handleResponseAuthData(user: User) {
+    return {
+      user,
+      accessToken: await this.authService.generateAccessToken(user),
+      refreshToken: await this.authService.generateRefreshToken(user),
+    };
   }
 
   @Mutation(() => Boolean)

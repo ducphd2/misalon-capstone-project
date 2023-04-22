@@ -1,4 +1,5 @@
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { Devices } from '@libs/grpc-types/protos/device';
 import {
   CreateUserRequest,
   DUCPH_USER_PACKAGE_NAME,
@@ -57,5 +58,9 @@ export class UserCommonService implements OnModuleInit {
 
   async deleteCustomer(id: number): Promise<Count> {
     return await firstValueFrom(this.userService.deleteCustomer({ id }));
+  }
+
+  async findDevices(query: QueryRequest): Promise<Devices> {
+    return await firstValueFrom(this.userService.findDevices(query));
   }
 }

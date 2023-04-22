@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { PageMeta } from "./commons";
 
 export const protobufPackage = "device";
 
@@ -30,6 +31,11 @@ export interface CreateDeviceInput {
   deviceId: string;
   token: string;
   userId?: number | undefined;
+}
+
+export interface Devices {
+  items: Device[];
+  meta?: PageMeta | undefined;
 }
 
 export const DEVICE_PACKAGE_NAME = "device";

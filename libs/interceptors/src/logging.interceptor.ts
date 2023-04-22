@@ -5,11 +5,9 @@ import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class GqlLoggingInterceptor implements NestInterceptor {
-  private readonly logger: Logger;
+  private readonly logger = new Logger(this.constructor.name);
 
-  constructor() {
-    this.logger = new Logger(this.constructor.name);
-  }
+  constructor() {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
@@ -20,7 +18,7 @@ export class GqlLoggingInterceptor implements NestInterceptor {
     const args = JSON.stringify(gqlContext.getArgs());
 
     return call$.pipe(
-      tap(() => this.logger.debug(`Handling request: ${resolverName} - args: ${args} took ${Date.now() - now}ms`)),
+      tap(() => this.logger.log(`Handling request: ${resolverName} - args: ${args} took ${Date.now() - now}ms`)),
     );
   }
 }

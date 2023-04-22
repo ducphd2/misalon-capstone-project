@@ -1,4 +1,4 @@
-import { CreateInput, FindMerchantsPayload } from '@libs/grpc-types/protos/merchant';
+import { CreateInput } from '@libs/grpc-types/protos/merchant';
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
 import { Branch } from './branch.type';
@@ -42,7 +42,7 @@ export class MerchantEdge {
 }
 
 @ObjectType()
-export class MerchantConnection implements FindMerchantsPayload {
+export class MerchantConnection {
   @Field(() => [MerchantEdge])
   edges: MerchantEdge[];
 

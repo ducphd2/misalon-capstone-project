@@ -64,3 +64,11 @@ message Paging {
   int32 limit = 1;
   int32 offset = 2;
 }
+
+message PageMeta {
+  optional int32 itemCount = 1;
+  optional int32 totalItems = 2;
+  optional int32 itemsPerPage = 3;
+  optional int32 totalPages = 4;
+  optional int32 currentPage = 5;
+}

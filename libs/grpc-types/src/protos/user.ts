@@ -2,7 +2,7 @@
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Count, Id, PageInfo, QueryRequest } from "./commons";
-import { CreateDeviceInput, Device } from "./device";
+import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "ducph_user";
@@ -18,6 +18,7 @@ export enum EActionRole {
   RECEPTIONIST = 1,
   MASTER_WORKER = 2,
   ASSISTANT_WORKER = 3,
+  USER_ROLE = 4,
 }
 
 export enum EUserRole {
@@ -221,6 +222,8 @@ export interface UserServiceClient {
   /** device */
 
   createDevice(request: CreateDeviceInput): Observable<Device>;
+
+  findDevices(request: QueryRequest): Observable<Devices>;
 }
 
 export interface UserServiceController {
@@ -245,6 +248,8 @@ export interface UserServiceController {
   /** device */
 
   createDevice(request: CreateDeviceInput): Promise<Device> | Observable<Device> | Device;
+
+  findDevices(request: QueryRequest): Promise<Devices> | Observable<Devices> | Devices;
 }
 
 export function UserServiceControllerMethods() {
@@ -259,6 +264,7 @@ export function UserServiceControllerMethods() {
       "findOneCustomer",
       "deleteCustomer",
       "createDevice",
+      "findDevices",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -66,4 +66,12 @@ export interface Paging {
   offset: number;
 }
 
+export interface PageMeta {
+  itemCount?: number | undefined;
+  totalItems?: number | undefined;
+  itemsPerPage?: number | undefined;
+  totalPages?: number | undefined;
+  currentPage?: number | undefined;
+}
+
 export const COMMONS_PACKAGE_NAME = "commons";

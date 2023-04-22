@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package device;
 
+import "commons.proto";
+
 enum EDeviceOs {
   ANDROID = 0;
   IOS = 1;
@@ -29,4 +31,9 @@ message CreateDeviceInput {
   string deviceId = 2;
   string token = 3;
   optional int32 userId = 4;
+}
+
+message Devices {
+  repeated Device items = 1;
+  optional commons.PageMeta meta = 2;
 }

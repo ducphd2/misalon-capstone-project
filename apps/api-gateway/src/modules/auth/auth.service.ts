@@ -1,4 +1,3 @@
-import { UserEntity } from '@libs/database/entities';
 import { User } from '@libs/grpc-types';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
