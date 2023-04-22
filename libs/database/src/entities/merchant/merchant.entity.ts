@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm';
-import { BaseEntity } from '../base.entity';
 import { ObjectType } from '@nestjs/graphql';
+
+import { BaseEntity } from '../base.entity';
 
 @Entity('merchant')
 @ObjectType()
@@ -34,4 +35,16 @@ export class MerchantEntity extends BaseEntity {
 
   @Column('varchar', { name: 'ward', nullable: true })
   ward?: string;
+
+  @Column({
+    type: 'double precision',
+    default: 0,
+  })
+  latitude?: number;
+
+  @Column({
+    type: 'double precision',
+    default: 0,
+  })
+  longitude?: number;
 }

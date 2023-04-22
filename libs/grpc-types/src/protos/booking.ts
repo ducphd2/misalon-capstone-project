@@ -1,87 +1,110 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, GqlQuery, Id, PageInfo, QueryRequest } from "./commons";
+import { Count, GqlQuery, Id, QueryRequest } from "./commons";
+import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "booking";
 
+export enum EBookingStatus {
+  PENDING = 0,
+  APPROVE = 1,
+  CANCELLED = 2,
+  REJECT = 3,
+}
+
 export interface Booking {
+  /** default field */
   id: number;
-  status: string;
-  customerId: number;
-  branchServiceId: number;
-  startTime: string;
-  endTime: string;
-  duration: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  deletedAt?: string | undefined;
+  createdBy?: string | undefined;
+  updatedBy?: string | undefined;
+  deletedBy?:
+    | string
+    | undefined;
+  /** reserved field */
+  status?: EBookingStatus | undefined;
+  userId?: number | undefined;
+  serviceId?: number | undefined;
+  startTime?: string | undefined;
+  endTime?: string | undefined;
+  duration?: number | undefined;
   note?: string | undefined;
-  merchantId: number;
-  branchId: number;
+  merchantId?: number | undefined;
+  branchId?: number | undefined;
   isCustomerCancel?: boolean | undefined;
   cancelReason?: string | undefined;
-  bookingDate: string;
+  bookingDate?: string | undefined;
   isAdminUpdate?: boolean | undefined;
   adminUpdateId?: number | undefined;
   serviceName?: string | undefined;
   customerName?: string | undefined;
   customerEmail?: string | undefined;
   customerAddress?: string | undefined;
-}
-
-export interface BookingEdge {
-  node: Booking | undefined;
-  cursor: string;
+  durationHour?: number | undefined;
+  durationMinute?: number | undefined;
 }
 
 export interface CreateBookingInput {
-  status: string;
-  customerId: number;
-  branchServiceId: number;
-  startTime: string;
-  endTime: string;
-  adminBranchEmail: string;
-  customerEmail: string;
-  customerName: string;
-  bookingDate: string;
+  status?: EBookingStatus | undefined;
+  userId?: number | undefined;
+  serviceId?: number | undefined;
+  startTime?: string | undefined;
+  endTime?: string | undefined;
+  adminBranchEmail?: string | undefined;
+  customerEmail?: string | undefined;
+  customerName?: string | undefined;
+  bookingDate?: string | undefined;
   note?: string | undefined;
-  merchantId: number;
-  branchId: number;
-  serviceName: string;
+  merchantId?: number | undefined;
+  branchId?: number | undefined;
+  serviceName?: string | undefined;
+}
+
+export interface UpdateBookingData {
+  status?: EBookingStatus | undefined;
+  userId?: number | undefined;
+  serviceId?: number | undefined;
+  startTime?: string | undefined;
+  endTime?: string | undefined;
+  adminBranchEmail?: string | undefined;
+  customerEmail?: string | undefined;
+  customerName?: string | undefined;
+  bookingDate?: string | undefined;
+  note?: string | undefined;
+  merchantId?: number | undefined;
+  branchId?: number | undefined;
+  serviceName?: string | undefined;
 }
 
 export interface UpdateBookingInput {
-  id: string;
-  data: Booking | undefined;
+  id: number;
+  data: UpdateBookingData | undefined;
 }
 
-export interface FindBookingsPayload {
-  edges: BookingEdge[];
-  pageInfo: PageInfo | undefined;
-}
-
-export interface FindOneCustomerPayload {
-  booking: Booking | undefined;
-}
-
-export interface FindAllBookingsPagination {
+export interface FindBookingOffsetPagination {
   items: Booking[];
-  page: number;
-  totalPage: number;
-  total: number;
-  limit: number;
+  page?: number | undefined;
+  totalPage?: number | undefined;
+  total?: number | undefined;
+  limit?: number | undefined;
+}
+
+export interface NullableBooking {
+  null?: NullValue | undefined;
+  booking?: Booking | undefined;
 }
 
 export const BOOKING_PACKAGE_NAME = "booking";
 
-export interface BookingServiceGrpcClient {
-  find(request: GqlQuery): Observable<FindBookingsPayload>;
+export interface BookingServiceClient {
+  find(request: QueryRequest): Observable<FindBookingOffsetPagination>;
 
-  findAll(request: QueryRequest): Observable<FindAllBookingsPagination>;
+  findById(request: Id): Observable<NullableBooking>;
 
-  findById(request: Id): Observable<Booking>;
-
-  findOne(request: GqlQuery): Observable<Booking>;
+  findOne(request: GqlQuery): Observable<NullableBooking>;
 
   count(request: GqlQuery): Observable<Count>;
 
@@ -91,19 +114,17 @@ export interface BookingServiceGrpcClient {
 
   update(request: UpdateBookingInput): Observable<Booking>;
 
-  destroy(request: GqlQuery): Observable<Count>;
+  delete(request: Id): Observable<Count>;
 }
 
-export interface BookingServiceGrpcController {
-  find(request: GqlQuery): Promise<FindBookingsPayload> | Observable<FindBookingsPayload> | FindBookingsPayload;
-
-  findAll(
+export interface BookingServiceController {
+  find(
     request: QueryRequest,
-  ): Promise<FindAllBookingsPagination> | Observable<FindAllBookingsPagination> | FindAllBookingsPagination;
+  ): Promise<FindBookingOffsetPagination> | Observable<FindBookingOffsetPagination> | FindBookingOffsetPagination;
 
-  findById(request: Id): Promise<Booking> | Observable<Booking> | Booking;
+  findById(request: Id): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
 
-  findOne(request: GqlQuery): Promise<Booking> | Observable<Booking> | Booking;
+  findOne(request: GqlQuery): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
 
   count(request: GqlQuery): Promise<Count> | Observable<Count> | Count;
 
@@ -113,32 +134,31 @@ export interface BookingServiceGrpcController {
 
   update(request: UpdateBookingInput): Promise<Booking> | Observable<Booking> | Booking;
 
-  destroy(request: GqlQuery): Promise<Count> | Observable<Count> | Count;
+  delete(request: Id): Promise<Count> | Observable<Count> | Count;
 }
 
-export function BookingServiceGrpcControllerMethods() {
+export function BookingServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
       "find",
-      "findAll",
       "findById",
       "findOne",
       "count",
       "create",
       "customerCreate",
       "update",
-      "destroy",
+      "delete",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("BookingServiceGrpc", method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("BookingService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("BookingServiceGrpc", method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("BookingService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const BOOKING_SERVICE_GRPC_SERVICE_NAME = "BookingServiceGrpc";
+export const BOOKING_SERVICE_NAME = "BookingService";

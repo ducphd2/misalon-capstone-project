@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
 import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 
 @Injectable()
 export class GrpcLogInterceptor implements NestInterceptor {
-  private logger = new Logger('GRPC');
+  private readonly logger = new Logger(GrpcLogInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<void> {
     const reqBody = context.switchToRpc().getData();

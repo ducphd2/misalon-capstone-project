@@ -19,84 +19,6 @@ type DeletePayload {
   count: Int
 }
 
-type User {
-  id: Int!
-  createdAt: String
-  updatedAt: String
-  deletedAt: String
-  createdBy: String
-  updatedBy: String
-  deletedBy: String
-  email: String!
-  fullName: String
-  status: EUserStatus
-  role: EUserRole!
-  gender: EUserGender
-  contact: String
-  dobDay: Float
-  dobMonth: Float
-  dobYear: Float
-  occupation: String
-  avatar: String
-  address: String
-  cityCode: Float
-  districtCode: Float
-}
-
-enum EUserStatus {
-  PENDING
-  ACTIVE
-  BANNED
-}
-
-enum EUserRole {
-  USER
-  ADMIN
-  SUPER_ADMIN
-}
-
-enum EUserGender {
-  MALE
-  FEMALE
-  OTHER
-}
-
-type UserEdge {
-  node: User!
-  cursor: String!
-}
-
-type UsersConnection {
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-}
-
-type Device {
-  id: Int!
-  createdAt: String
-  updatedAt: String
-  deletedAt: String
-  createdBy: String
-  updatedBy: String
-  deletedBy: String
-  userId: ID!
-  os: String!
-  deviceId: String!
-  token: String!
-}
-
-type DeviceEdge {
-  node: Device!
-  cursor: String!
-}
-
-type UserEntity {
-  id: ID!
-  createdBy: String
-  updatedBy: String
-  deletedBy: String
-}
-
 type Branch {
   id: Int!
   createdAt: String
@@ -127,6 +49,10 @@ type BranchConnection {
   pageInfo: PageInfo!
 }
 
+type BranchesConnection {
+  branches: [Branch!]!
+}
+
 type Merchant {
   id: Int!
   createdAt: String
@@ -142,7 +68,7 @@ type Merchant {
   districtCode: Int
   wardCode: Int
   userId: ID
-  branches(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
+  branches(q: String): [Branch!]!
 }
 
 type MerchantEdge {
@@ -150,9 +76,8 @@ type MerchantEdge {
   cursor: String!
 }
 
-type MerchantConnection {
-  edges: [MerchantEdge!]!
-  pageInfo: PageInfo!
+type MerchantsConnection {
+  merchants: [Merchant!]
 }
 
 type Group {
@@ -236,6 +161,64 @@ type ServiceOffsetPagination {
   limit: Int
 }
 
+type User {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  email: String!
+  fullName: String
+  status: EUserStatus
+  role: EUserRole!
+  gender: EUserGender
+  contact: String
+  dobDay: Float
+  dobMonth: Float
+  dobYear: Float
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Float
+  districtCode: Float
+  merchants(q: String): [Merchant!]!
+}
+
+enum EUserStatus {
+  PENDING
+  ACTIVE
+  BANNED
+}
+
+enum EUserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum EUserGender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+type UsersConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserPayload {
+  errors: [ErrorPayload!]
+  user: User
+}
+
 type SingleUpload {
   url: String!
   format: String!
@@ -245,46 +228,103 @@ type SingleUpload {
   bytes: Float!
 }
 
+type Booking {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  name: String
+  phone: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  merchantId: Int
+  city: String
+  district: String
+  ward: String
+}
+
+type BookingPayload {
+  errors: [ErrorPayload!]
+  booking: Booking
+}
+
+type DeleteBookingPayload {
+  errors: [ErrorPayload!]
+  count: Int
+}
+
+type ExtendResponseBooking {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  name: String
+  phone: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  merchantId: Int
+  city: String
+  district: String
+  ward: String
+  customerEmail: String
+  customerName: String
+  customerAddress: String
+}
+
+type BookingPaginationResponse {
+  items: [ExtendResponseBooking!]
+  page: Int
+  totalPage: Int
+  total: Int
+  limit: Int
+}
+
 type ResponseAuthGrpc {
-  user: UserEntity!
+  user: User!
   accessToken: String!
   refreshToken: String!
 }
 
 type Query {
   getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
-  getUser(id: Float!): User!
+  getUser(id: Float!): UserPayload!
   userCount(q: String): Float!
-  me: User!
+  me: UserPayload!
   findMerchantById(id: Float!): Merchant!
-  findAllMerchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
-  findAllMerchantsByAdmin(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
+  findAllMerchants(q: String): MerchantsConnection!
+  findAllMerchantsByAdmin(q: String): MerchantsConnection!
   findBranchById(id: Float!): Group!
-  findAllBranches(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
-  findAllBranchesByMerchant(merchantId: Float!, q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
-  findAllBranchesByAdmin(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchConnection!
-  findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): GroupConnection!
+  findAllBranches(q: String): BranchesConnection!
+  findAllBranchesByMerchant(merchantId: Float!, q: String): BranchConnection!
+  findAllBranchesByAdmin(q: String): BranchConnection!
+  findAllServiceGroups(q: String): GroupConnection!
   findServiceById(id: Float!): Service!
-  findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): ServiceConnection!
+  findAllBranchServices(q: String): ServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): ServiceOffsetPagination!
-  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: EOrderDirection): ServiceOffsetPagination!
-}
-
-enum EOrderDirection {
-  ASC
-  DESC
+  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): ServiceOffsetPagination!
+  findAllBooking(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BookingPaginationResponse!
 }
 
 type Mutation {
   uploadSingleFiles(file: Upload!, folder: String): SingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [SingleUpload!]!
-  login(data: InputLoginRequest!): ResponseAuthGrpc!
+  login(data: BaseAuthInput!): ResponseAuthGrpc!
   customerLogin(data: InputLoginRequest!): ResponseAuthGrpc!
-  register(data: InputRegisterRequest!): ResponseAuthGrpc!
+  register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto!, device: DeviceInputDto): ResponseAuthGrpc!
   logout: Boolean!
-  updatePassword(data: ChangePasswordInput!): User!
-  createCustomer(data: CreateUserInputDto!): User!
-  updateUser(id: Float!, data: UpdatePartialUser!): User!
+  updatePassword(data: ChangePasswordInput!): UserPayload!
+  createCustomer(user: CreateUserInputDto!, device: DeviceInputDto): UserPayload!
+  updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
   deleteCustomer(id: Float!): DeletePayload!
   createMerchant(data: CreateMerchantInput!): Merchant!
   createBranch(data: CreateBranchInput!): Branch!
@@ -296,10 +336,19 @@ type Mutation {
   createService(data: CreateGroupInput!): Service!
   updateService(id: Float!, data: PartialUpdateService!): Service!
   deleteService(id: Float!): DeletePayload!
+  createBooking(data: CreateBookingInput!): BookingPayload!
+  customerCreateBooking(data: CreateBookingInput!): BookingPayload!
+  updateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
+  deleteBooking(id: Float!): DeleteBookingPayload!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input BaseAuthInput {
+  email: String!
+  password: String!
+}
 
 input InputLoginRequest {
   email: String!
@@ -318,14 +367,15 @@ enum EDeviceOs {
   IOS
 }
 
-input InputRegisterRequest {
+input CreateUserInputDto {
+  """Email of user"""
   email: String!
   password: String!
   fullName: String!
-  role: EUserRole!
-  actionRole: EUserRole!
-  status: EUserStatus!
-  gender: EUserGender!
+  role: EUserRole = USER
+  actionRole: EActionRole = MANAGER
+  status: EUserStatus = ACTIVE
+  gender: EUserGender = FEMALE
   contact: String
   dobDay: Int
   dobMonth: Int
@@ -333,10 +383,10 @@ input InputRegisterRequest {
   occupation: String
   avatar: String
   address: String
-  cityCode: Float!
-  districtCode: Float!
-  wardCode: Float!
-  level: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: String
+  level: ECustomerLevel
   referrer: String
   referrerCode: String
   customerCode: String
@@ -351,16 +401,34 @@ input InputRegisterRequest {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
-  branchId: String
-  confirmPassword: String!
+  branchId: Int
+}
+
+enum EActionRole {
+  MANAGER
+  RECEPTIONIST
+  MASTER_WORKER
+  ASSISTANT_WORKER
+}
+
+enum ECustomerLevel {
+  NORMAL
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+input CreateMerchantInputDto {
+  name: String!
+  address: String!
   phone: String!
-  merchantPhone: String!
-  merchantName: String!
-  merchantAddress: String!
-  merchantSubdomain: String!
-  deviceId: String
-  os: EDeviceOs
-  token: String
+  subdomain: String!
+  cityCode: Int
+  districtCode: Int
+  wardCode: Int
+  city: String
+  district: String
+  ward: String
 }
 
 input ChangePasswordInput {
@@ -369,50 +437,15 @@ input ChangePasswordInput {
   confirmPassword: String!
 }
 
-input CreateUserInputDto {
-  email: String!
-  password: String!
-  fullName: String!
-  role: EUserRole!
-  actionRole: EUserRole!
-  status: EUserStatus!
-  gender: EUserGender!
-  contact: String
-  dobDay: Int
-  dobMonth: Int
-  dobYear: Int
-  occupation: String
-  avatar: String
-  address: String
-  cityCode: Int
-  districtCode: Int
-  wardCode: String
-  level: String
-  referrer: String
-  referrerCode: String
-  customerCode: String
-  facebook: String
-  zaloPhone: String
-  height: String
-  weight: String
-  memberCardNo: String
-  company: String
-  taxNo: String
-  note: String
-  relatedUser: String
-  relatedUserRole: String
-  relatedUserPhone: String
-  branchId: String
-}
-
 input UpdatePartialUser {
+  """Email of user"""
   email: String
   password: String
   fullName: String
-  role: EUserRole
-  actionRole: EUserRole
-  status: EUserStatus
-  gender: EUserGender
+  role: EUserRole = USER
+  actionRole: EActionRole = MANAGER
+  status: EUserStatus = ACTIVE
+  gender: EUserGender = FEMALE
   contact: String
   dobDay: Int
   dobMonth: Int
@@ -423,7 +456,7 @@ input UpdatePartialUser {
   cityCode: Int
   districtCode: Int
   wardCode: String
-  level: String
+  level: ECustomerLevel
   referrer: String
   referrerCode: String
   customerCode: String
@@ -438,7 +471,7 @@ input UpdatePartialUser {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
-  branchId: String
+  branchId: Int
 }
 
 input CreateMerchantInput {
@@ -513,4 +546,41 @@ input PartialUpdateService {
   type: EServiceType
   showType: EServiceShowType
   canPrintableInvoice: Int
+}
+
+input CreateBookingInput {
+  name: String
+  phone: String
+  address: String
+  branchId: Int
+  serviceId: Int
+  cityCode: Int
+  status: EBookingStatus = PENDING
+  districtCode: Int
+  wardCode: Int
+  city: String
+  district: String
+  ward: String
+}
+
+enum EBookingStatus {
+  PENDING
+  APPROVE
+  CANCELLED
+  REJECT
+}
+
+input PartialUpdateBooking {
+  name: String
+  phone: String
+  address: String
+  branchId: Int
+  serviceId: Int
+  cityCode: Int
+  status: EBookingStatus = PENDING
+  districtCode: Int
+  wardCode: Int
+  city: String
+  district: String
+  ward: String
 }

@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm';
+import { EServiceShowType, EServiceType } from '@libs/grpc-types/protos/service';
 
 import { BaseEntity } from '../base.entity';
-import { EServiceShowType, EServiceType } from '../../enums';
 
 @Entity('service')
 export class ServiceEntity extends BaseEntity {

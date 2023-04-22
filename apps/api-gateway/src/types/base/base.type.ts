@@ -48,11 +48,6 @@ export class ErrorPayload {
   message?: string[];
 }
 
-export interface IErrorPayload {
-  field?: string;
-  message?: string[];
-}
-
 @ObjectType()
 export class DeletePayload {
   @Field(() => [ErrorPayload], { nullable: true })

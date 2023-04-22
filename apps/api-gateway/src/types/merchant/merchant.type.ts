@@ -1,7 +1,7 @@
 import { CreateInput, FindMerchantsPayload } from '@libs/grpc-types/protos/merchant';
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
-import { BranchConnection } from './branch.type';
+import { Branch } from './branch.type';
 
 import { BaseType, PageInfo } from '@/api-gateway/types/base';
 
@@ -28,8 +28,8 @@ export class Merchant extends BaseType {
   @Field(() => ID, { nullable: true })
   userId?: number;
 
-  @Field(() => [BranchConnection], { nullable: true })
-  branches?: BranchConnection;
+  @Field(() => [Branch], { nullable: true })
+  branches?: Branch[];
 }
 
 @ObjectType()
@@ -78,4 +78,10 @@ export class CreateMerchantInput implements CreateInput {
 
   @Field(() => String, { nullable: true })
   ward?: string;
+}
+
+@ObjectType()
+export class MerchantsConnection {
+  @Field(() => [Merchant], { nullable: true })
+  merchants?: Merchant[];
 }

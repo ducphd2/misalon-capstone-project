@@ -1,10 +1,11 @@
-import { UserEntity } from '@libs/database/entities';
 import { Field, ObjectType } from '@nestjs/graphql';
+
+import { User } from '@/api-gateway/types/user';
 
 @ObjectType()
 export class ResponseAuthGrpc {
-  @Field(() => UserEntity)
-  user: UserEntity;
+  @Field(() => User)
+  user: User;
 
   @Field(() => String)
   accessToken: string;

@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '@libs/database/entities';
+import { UserRepository } from '@libs/database/repositories';
 
-import { UserController } from './controller/user.controller';
-import { UserService } from './service/user.service';
+import { DeviceModule } from '../device/device.module';
+
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
-  imports: [SecretsModule],
+  imports: [SecretsModule, TypeOrmModule.forFeature([UserEntity]), DeviceModule],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, UserRepository],
+  exports: [UserService],
 })
 export class UserModule {}

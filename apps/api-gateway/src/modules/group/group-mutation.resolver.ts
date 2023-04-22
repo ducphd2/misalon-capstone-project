@@ -4,7 +4,7 @@ import { Count } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
-import { CurrentUser } from '@/api-gateway/core/decorators/current-user.decorator';
+import { CurrentUser } from '@/api-gateway/core/decorators/user/current-user.decorator';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { CreateGroupInput, DeletePayload, Group, PartialUpdateGroup } from '@/api-gateway/types';

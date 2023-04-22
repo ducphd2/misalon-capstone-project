@@ -1,8 +1,8 @@
-import { UserEntity } from '@libs/database/entities';
-import { Count, GqlQuery, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import {
-  CreateUserInput,
-  USER_PACKAGE_NAME,
+  CreateUserRequest,
+  DUCPH_USER_PACKAGE_NAME,
+  FindOneUser,
   USER_SERVICE_NAME,
   UpdateUserData,
   UserServiceClient,
@@ -15,25 +15,21 @@ import { firstValueFrom } from 'rxjs';
 export class UserCommonService implements OnModuleInit {
   private userService: UserServiceClient;
 
-  constructor(@Inject(USER_PACKAGE_NAME) private client: ClientGrpc) {}
+  constructor(@Inject(DUCPH_USER_PACKAGE_NAME) private client: ClientGrpc) {}
 
   onModuleInit() {
     this.userService = this.client.getService<UserServiceClient>(USER_SERVICE_NAME);
   }
-  async create(data: CreateUserInput): Promise<UserEntity> {
+
+  async create(data: CreateUserRequest): Promise<FindOneUser> {
     return await firstValueFrom(this.userService.create(data));
   }
 
-  async find(query: GqlQuery) {
-    return await firstValueFrom(
-      this.userService.find({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async find(query: QueryRequest) {
+    return await firstValueFrom(this.userService.find(query));
   }
 
-  async findOne(query: GqlQuery) {
+  async findOne(query: QueryRequest) {
     return await firstValueFrom(
       this.userService.findOne({
         ...query,

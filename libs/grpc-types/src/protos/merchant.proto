@@ -10,31 +10,31 @@ import "service.proto";
 import "google/protobuf/struct.proto";
 
 service MerchantService {
-  rpc find(commons.GqlQuery) returns (FindMerchantsPayload) {}
-  rpc findOne(commons.GqlQuery) returns (NullableMerchant) {}
-  rpc create(CreateInput) returns (Merchant) {}
-  rpc count(commons.GqlQuery) returns (commons.Count) {}
+  rpc find(commons.QueryRequest) returns (Merchants) {}
+  rpc findOne(commons.QueryRequest) returns (NullableMerchant) {}
+  rpc create(CreateInput) returns (CreateMerchantResponse) {}
+  rpc count(commons.QueryRequest) returns (commons.Count) {}
   rpc findById(commons.Id) returns (NullableMerchant) {}
 
   // branch
-  rpc branch(commons.GqlQuery) returns (branch.NullableBranch) {}
-  rpc branches(commons.GqlQuery) returns (branch.FindBranchesPayload) {}
+  rpc branch(commons.QueryRequest) returns (branch.NullableBranch) {}
+  rpc branches(commons.QueryRequest) returns (branch.Branches) {}
   rpc findBranchById(commons.Id) returns (branch.NullableBranch) {}
   rpc createBranch(branch.CreateBranchInput) returns (branch.Branch) {}
   rpc updateBranch(branch.UpdateBranchInput) returns (branch.Branch) {}
   rpc deleteBranch(commons.Id) returns (commons.Count) {}
 
   // group
-  rpc group(commons.GqlQuery) returns (ducph.group.NullableGroup) {}
-  rpc groups(commons.GqlQuery) returns (ducph.group.FindGroupsPayload) {}
+  rpc group(commons.QueryRequest) returns (ducph.group.NullableGroup) {}
+  rpc groups(commons.QueryRequest) returns (ducph.group.FindGroupsPayload) {}
   rpc findGroupById(commons.Id) returns (ducph.group.NullableGroup) {}
   rpc createGroup(ducph.group.CreateGroupInput) returns (ducph.group.Group) {}
   rpc updateGroup(ducph.group.UpdateGroupInput) returns (ducph.group.Group) {}
   rpc deleteGroup(commons.Id) returns (commons.Count) {}
 
   // service
-  rpc service(commons.GqlQuery) returns (service.NullableService) {}
-  rpc services(commons.GqlQuery) returns (service.FindServicesPayload) {}
+  rpc service(commons.QueryRequest) returns (service.NullableService) {}
+  rpc services(commons.QueryRequest) returns (service.FindServicesPayload) {}
   rpc findServiceById(commons.Id) returns (service.NullableService) {}
   rpc createService(service.CreateServiceInput) returns (service.Service) {}
   rpc updateService(service.UpdateServiceInput) returns (service.Service) {}
@@ -114,4 +114,13 @@ message NullableMerchant {
     google.protobuf.NullValue null = 1;
     Merchant merchant = 2;
   }
+}
+
+message CreateMerchantResponse {
+  Merchant merchant = 1;
+  branch.Branch branch = 2;
+}
+
+message Merchants {
+  repeated Merchant merchants = 1;
 }

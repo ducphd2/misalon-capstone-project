@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package serve_image;
+
+enum EServeImageType {
+  MERCHANT = 0;
+  BRANCH = 1;
+  GROUP = 2;
+  SERVICE = 3;
+}
+
+enum EImageType {
+  PHOTO = 0;
+  VIDEO = 1;
+}
+
+message ServiceImage {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  EServeImageType serveType = 8;
+  int32 imageId = 9;
+  EImageType type = 10;
+}

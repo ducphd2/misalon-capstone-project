@@ -1,6 +1,8 @@
 import { Column, Entity } from 'typeorm';
-import { EImageType, EServeImageType } from '../../enums';
+
 import { BaseEntity } from '../base.entity';
+
+import { EImageType, EServeImageType } from '@/api-gateway/dtos/user/user.dto';
 
 @Entity('serve_image')
 export class ServeImageEntity extends BaseEntity {

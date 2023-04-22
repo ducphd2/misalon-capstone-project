@@ -78,3 +78,7 @@ message NullableBranch {
     Branch branch = 2;
   }
 }
+
+message Branches {
+  repeated Branch branches = 1;
+}

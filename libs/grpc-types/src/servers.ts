@@ -11,10 +11,10 @@ import {
 import { Transport } from '@nestjs/microservices';
 
 export const UserServer: any = {
-  name: UserProto.USER_PACKAGE_NAME,
+  name: UserProto.DUCPH_USER_PACKAGE_NAME,
   transport: Transport.GRPC,
   options: {
-    package: UserProto.USER_PACKAGE_NAME,
+    package: UserProto.DUCPH_USER_PACKAGE_NAME,
     protoPath: UserConfig.path,
     url: `${UserConfig.localHostname}:${UserConfig.port}`,
     loader: UserConfig.loader,
