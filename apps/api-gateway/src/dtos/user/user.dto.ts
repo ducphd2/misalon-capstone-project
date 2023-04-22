@@ -48,6 +48,7 @@ export enum EActionRole {
   RECEPTIONIST = 1,
   MASTER_WORKER = 2,
   ASSISTANT_WORKER = 3,
+  USER_ROLE = 4,
 }
 
 export enum EUserRole {

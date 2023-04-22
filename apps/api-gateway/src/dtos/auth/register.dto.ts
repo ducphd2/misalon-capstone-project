@@ -18,29 +18,34 @@ export class CreateUserInputDto {
   @IsNotEmpty()
   password: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
   fullName: string;
 
   @Field(() => EUserRole, { nullable: true, defaultValue: EUserRole.USER })
   @IsEnum(EUserRole)
-  @IsNotEmpty()
+  @IsOptional()
   role: EUserRole;
 
-  @Field(() => EActionRole, { nullable: true, defaultValue: EActionRole.MANAGER })
+  @Field(() => EActionRole, { nullable: true })
   @IsEnum(EActionRole)
-  @IsNotEmpty()
+  @IsOptional()
   actionRole: EActionRole;
 
-  @Field(() => EUserStatus, { nullable: true, defaultValue: EUserStatus.ACTIVE })
+  @Field(() => EUserStatus, { nullable: true })
+  @IsOptional()
   @IsEnum(EUserStatus)
   status: EUserStatus;
 
-  @Field(() => EUserGender, { nullable: true, defaultValue: EUserGender.FEMALE })
+  @Field(() => EUserGender, { nullable: true })
   @IsEnum(EUserGender)
   @IsOptional()
   gender: EUserGender;
+
+  @Field(() => ECustomerLevel, { nullable: true })
+  @IsOptional()
+  level?: ECustomerLevel;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -81,10 +86,6 @@ export class CreateUserInputDto {
   @Field(() => String, { nullable: true })
   @IsOptional()
   wardCode?: number;
-
-  @Field(() => ECustomerLevel, { nullable: true })
-  @IsOptional()
-  level?: ECustomerLevel;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

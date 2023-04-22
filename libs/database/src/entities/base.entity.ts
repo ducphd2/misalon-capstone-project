@@ -11,13 +11,13 @@ export class BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id!: number;
 
-  @CreateDateColumn({ type: 'varchar' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt?: string;
 
-  @UpdateDateColumn({ type: 'varchar' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt?: string;
 
-  @DeleteDateColumn({ nullable: true, type: 'varchar' })
+  @DeleteDateColumn({ nullable: true, type: 'timestamp' })
   deletedAt?: string;
 
   @Column({ nullable: true, type: 'varchar' })

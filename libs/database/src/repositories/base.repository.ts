@@ -120,10 +120,10 @@ export class BaseRepository<Model extends BaseEntity> {
     options: IPaginationOptions,
     searchOptions?: FindConditions<Model> | FindManyOptions<Model>,
   ): Promise<Pagination<Model, IPaginationMeta>> {
-    const pgResult = await paginate(repository, options, searchOptions);
+    const { items, meta } = await paginate(repository, options, searchOptions);
     return {
-      ...pgResult,
-      items: instanceToPlain(pgResult.items) as any,
+      items: instanceToPlain(items) as any,
+      meta,
     };
   }
 

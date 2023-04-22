@@ -20,6 +20,7 @@ service UserService {
 
   // device
   rpc createDevice(device.CreateDeviceInput) returns (device.Device) {}
+  rpc findDevices(commons.QueryRequest) returns (device.Devices) {}
 }
 
 enum EUserGender {
@@ -33,6 +34,7 @@ enum EActionRole {
   RECEPTIONIST = 1;
   MASTER_WORKER = 2;
   ASSISTANT_WORKER = 3;
+  USER_ROLE = 4;
 }
 
 enum EUserRole {

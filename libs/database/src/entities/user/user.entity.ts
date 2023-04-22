@@ -1,6 +1,6 @@
 import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/user';
-import { BeforeInsert, Column, Entity } from 'typeorm';
 import { hash } from 'argon2';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
 
@@ -15,7 +15,7 @@ export class UserEntity extends BaseEntity {
   @Column('smallint', { nullable: false })
   role?: EUserRole;
 
-  @Column('smallint', { nullable: false })
+  @Column('smallint', { nullable: true })
   actionRole?: EActionRole;
 
   @Column('smallint', { nullable: true })

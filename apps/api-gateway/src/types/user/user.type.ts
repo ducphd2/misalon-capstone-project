@@ -1,10 +1,11 @@
-import { Field, HideField, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
+import { Field, Float, HideField, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
 import { BaseType, ErrorPayload, PageInfo } from './../base';
 
 import { CreateUserInputDto } from '@/api-gateway/dtos';
-import { EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/user/user.dto';
+import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/user/user.dto';
 import { Merchant } from '@/api-gateway/types/merchant';
+import { DevicePaging } from '@/api-gateway/types/user/device.type';
 
 @ObjectType()
 export class User extends BaseType {
@@ -23,8 +24,14 @@ export class User extends BaseType {
   @Field(() => EUserRole)
   role?: EUserRole;
 
-  @Field(() => EUserGender, { nullable: true, defaultValue: EUserGender.FEMALE })
+  @Field(() => EUserGender, { nullable: true })
   gender?: EUserGender;
+
+  @Field(() => ECustomerLevel, { nullable: true })
+  level?: ECustomerLevel;
+
+  @Field(() => EActionRole, { nullable: true })
+  actionRole?: EActionRole;
 
   @Field({ nullable: true })
   contact?: string;
@@ -53,11 +60,68 @@ export class User extends BaseType {
   @Field({ nullable: true })
   districtCode?: number;
 
+  @Field({ nullable: true })
+  wardCode?: number;
+
+  @Field(() => String, { nullable: true })
+  phoneNumber?: string;
+
+  @Field(() => String, { nullable: true })
+  referrer?: string;
+
+  @Field(() => String, { nullable: true })
+  referrerCode?: string;
+
+  @Field(() => String, { nullable: true })
+  customerCode?: string;
+
+  @Field(() => String, { nullable: true })
+  facebook?: string;
+
+  @Field(() => String, { nullable: true })
+  zaloPhone?: string;
+
+  @Field(() => Float, { nullable: true })
+  height?: number;
+
+  @Field(() => Float, { nullable: true })
+  weight?: number;
+
+  @Field(() => String, { nullable: true })
+  memberCardNo?: string;
+
+  @Field(() => String, { nullable: true })
+  company?: string;
+
+  @Field(() => String, { nullable: true })
+  taxNo?: string;
+
+  @Field(() => String, { nullable: true })
+  note?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUser?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserRole?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserPhone?: string;
+
+  @Field(() => Int, { nullable: true })
+  branchId?: number;
+
+  @Field(() => Float, { nullable: true })
+  latitude?: number;
+
+  @Field(() => Float, { nullable: true })
+  longitude?: number;
+
   @Field(() => [Merchant], { nullable: true })
   merchants?: Merchant[];
 
-  // @Field(() => , { nullable: true })
-  // devices?: Device[];
+  @Field(() => DevicePaging, { nullable: true })
+  devices?: DevicePaging;
 }
 
 @ObjectType()

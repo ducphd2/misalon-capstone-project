@@ -1,8 +1,8 @@
-import { FindBookingOffsetPagination, UpdateBookingData } from '@libs/grpc-types/protos/booking';
+import { UpdateBookingData } from '@libs/grpc-types/protos/booking';
 import { Field, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
-import { BaseType, ErrorPayload } from '@/api-gateway/types/base';
 import { EBookingStatus } from '@/api-gateway/dtos/user/user.dto';
+import { BaseType, ErrorPayload } from '@/api-gateway/types/base';
 
 @ObjectType()
 export class Booking extends BaseType {
@@ -112,7 +112,7 @@ export class ExtendResponseBooking extends Booking {
 }
 
 @ObjectType()
-export class BookingPaginationResponse implements FindBookingOffsetPagination {
+export class BookingPaginationResponse {
   @Field(() => [ExtendResponseBooking], { nullable: true })
   items: ExtendResponseBooking[];
 

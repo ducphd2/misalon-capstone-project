@@ -56,3 +56,21 @@ export class DeletePayload {
   @Field(() => Int, { nullable: true })
   count?: number;
 }
+
+@ObjectType()
+export class PageMeta {
+  @Field(() => Int, { nullable: true })
+  itemCount?: number;
+
+  @Field(() => Int, { nullable: true })
+  totalItems?: number;
+
+  @Field(() => Int, { nullable: true })
+  itemsPerPage?: number;
+
+  @Field(() => Int, { nullable: true })
+  totalPages?: number;
+
+  @Field(() => Int, { nullable: true })
+  currentPage?: number;
+}

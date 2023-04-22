@@ -19,6 +19,14 @@ type DeletePayload {
   count: Int
 }
 
+type PageMeta {
+  itemCount: Int
+  totalItems: Int
+  itemsPerPage: Int
+  totalPages: Int
+  currentPage: Int
+}
+
 type Branch {
   id: Int!
   createdAt: String
@@ -161,6 +169,30 @@ type ServiceOffsetPagination {
   limit: Int
 }
 
+type Device {
+  id: Int!
+  createdAt: String
+  updatedAt: String
+  deletedAt: String
+  createdBy: String
+  updatedBy: String
+  deletedBy: String
+  userId: ID!
+  os: EDeviceOs!
+  deviceId: String!
+  token: String!
+}
+
+enum EDeviceOs {
+  ANDROID
+  IOS
+}
+
+type DevicePaging {
+  items: [Device!]
+  meta: PageMeta
+}
+
 type User {
   id: Int!
   createdAt: String
@@ -174,6 +206,8 @@ type User {
   status: EUserStatus
   role: EUserRole!
   gender: EUserGender
+  level: ECustomerLevel
+  actionRole: EActionRole
   contact: String
   dobDay: Float
   dobMonth: Float
@@ -183,7 +217,27 @@ type User {
   address: String
   cityCode: Float
   districtCode: Float
+  wardCode: Float
+  phoneNumber: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: Float
+  weight: Float
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: Int
+  latitude: Float
+  longitude: Float
   merchants(q: String): [Merchant!]!
+  devices: DevicePaging!
 }
 
 enum EUserStatus {
@@ -202,6 +256,21 @@ enum EUserGender {
   MALE
   FEMALE
   OTHER
+}
+
+enum ECustomerLevel {
+  NORMAL
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum EActionRole {
+  MANAGER
+  RECEPTIONIST
+  MASTER_WORKER
+  ASSISTANT_WORKER
+  USER_ROLE
 }
 
 type UserEdge {
@@ -320,7 +389,7 @@ type Mutation {
   uploadMultipleFiles(folder: String, files: [Upload!]!): [SingleUpload!]!
   login(data: BaseAuthInput!): ResponseAuthGrpc!
   customerLogin(data: InputLoginRequest!): ResponseAuthGrpc!
-  register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto!, device: DeviceInputDto): ResponseAuthGrpc!
+  register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto, device: DeviceInputDto): ResponseAuthGrpc!
   logout: Boolean!
   updatePassword(data: ChangePasswordInput!): UserPayload!
   createCustomer(user: CreateUserInputDto!, device: DeviceInputDto): UserPayload!
@@ -362,20 +431,16 @@ input DeviceInputDto {
   token: String!
 }
 
-enum EDeviceOs {
-  ANDROID
-  IOS
-}
-
 input CreateUserInputDto {
   """Email of user"""
   email: String!
   password: String!
-  fullName: String!
+  fullName: String
   role: EUserRole = USER
-  actionRole: EActionRole = MANAGER
-  status: EUserStatus = ACTIVE
-  gender: EUserGender = FEMALE
+  actionRole: EActionRole
+  status: EUserStatus
+  gender: EUserGender
+  level: ECustomerLevel
   contact: String
   dobDay: Int
   dobMonth: Int
@@ -386,7 +451,6 @@ input CreateUserInputDto {
   cityCode: Int
   districtCode: Int
   wardCode: String
-  level: ECustomerLevel
   referrer: String
   referrerCode: String
   customerCode: String
@@ -402,20 +466,6 @@ input CreateUserInputDto {
   relatedUserRole: String
   relatedUserPhone: String
   branchId: Int
-}
-
-enum EActionRole {
-  MANAGER
-  RECEPTIONIST
-  MASTER_WORKER
-  ASSISTANT_WORKER
-}
-
-enum ECustomerLevel {
-  NORMAL
-  SILVER
-  GOLD
-  PLATINUM
 }
 
 input CreateMerchantInputDto {
@@ -443,9 +493,10 @@ input UpdatePartialUser {
   password: String
   fullName: String
   role: EUserRole = USER
-  actionRole: EActionRole = MANAGER
-  status: EUserStatus = ACTIVE
-  gender: EUserGender = FEMALE
+  actionRole: EActionRole
+  status: EUserStatus
+  gender: EUserGender
+  level: ECustomerLevel
   contact: String
   dobDay: Int
   dobMonth: Int
@@ -456,7 +507,6 @@ input UpdatePartialUser {
   cityCode: Int
   districtCode: Int
   wardCode: String
-  level: ECustomerLevel
   referrer: String
   referrerCode: String
   customerCode: String
