@@ -6,17 +6,11 @@ import { isEmpty } from 'lodash';
 
 import { AuthService } from './auth.service';
 
-import {
-  BaseAuthInput,
-  CreateMerchantInputDto,
-  CreateUserInputDto,
-  DeviceInputDto,
-  InputLoginRequest,
-} from '@/api-gateway/dtos';
+import { CreateMerchantInputDto, CreateUserInputDto, DeviceInputDto, InputLoginRequest } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { ResponseAuthGrpc } from '@/api-gateway/types/auth';
 import { User } from '@/api-gateway/types';
+import { ResponseAuthGrpc } from '@/api-gateway/types/auth';
 
 @Resolver(() => ResponseAuthGrpc)
 export class AuthResolver {
@@ -29,10 +23,8 @@ export class AuthResolver {
   ) {}
 
   @Mutation(() => ResponseAuthGrpc)
-  async login(@Context() context: any, @Args('data') data: BaseAuthInput): Promise<ResponseAuthGrpc> {
+  async login(@Args('data') data: InputLoginRequest): Promise<ResponseAuthGrpc> {
     try {
-      const { res } = context;
-
       const { user } = await this.usersService.findOne({
         where: JSON.stringify({ email: data.email }),
       });
@@ -41,60 +33,16 @@ export class AuthResolver {
 
       const isSame: boolean = await this.passwordUtils.compare(data.password, user.password);
 
-      if (!isSame) throw new Error('Unable to login');
+      if (!isSame) throw new Error('Invalid credentials');
 
-      res.cookie('access-token', await this.authService.generateAccessToken(user), {
-        httpOnly: true,
-        maxAge: 1.8e6,
-      });
-      res.cookie('refresh-token', await this.authService.generateRefreshToken(user), {
-        httpOnly: true,
-        maxAge: 1.728e8,
-      });
+      if (data?.device) {
+        await this.usersService.upsertDevice({ ...data?.device, userId: user.id });
+      }
 
-      return {
-        user,
-        accessToken: await this.authService.generateAccessToken(user),
-        refreshToken: await this.authService.generateRefreshToken(user),
-      };
+      return this.handleResponseAuthData(user);
     } catch (error) {
       console.log('Could not login', error);
-      throw new HttpException('Could not login', HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @Mutation(() => ResponseAuthGrpc)
-  async customerLogin(@Context() context: any, @Args('data') data: InputLoginRequest): Promise<ResponseAuthGrpc> {
-    try {
-      const { res } = context;
-
-      const { user } = await this.usersService.findOne({
-        where: JSON.stringify({ email: data.email, role: EUserRole.USER }),
-      });
-
-      if (isEmpty(user)) throw new Error('Unable to login');
-
-      const isSame: boolean = await this.passwordUtils.compare(data.password, user.password);
-
-      if (!isSame) throw new Error('Unable to login');
-
-      res.cookie('access-token', await this.authService.generateAccessToken(user), {
-        httpOnly: true,
-        maxAge: 1.8e6,
-      });
-      res.cookie('refresh-token', await this.authService.generateRefreshToken(user), {
-        httpOnly: true,
-        maxAge: 1.728e8,
-      });
-
-      return {
-        user,
-        accessToken: await this.authService.generateAccessToken(user),
-        refreshToken: await this.authService.generateRefreshToken(user),
-      };
-    } catch (error) {
-      console.log('error: ', error);
-      throw new Error(error);
+      throw error;
     }
   }
 

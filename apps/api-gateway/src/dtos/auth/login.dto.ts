@@ -18,5 +18,5 @@ export class BaseAuthInput {
 @InputType()
 export class InputLoginRequest extends BaseAuthInput {
   @Field(() => DeviceInputDto, { nullable: true })
-  device: DeviceInputDto;
+  device?: DeviceInputDto;
 }

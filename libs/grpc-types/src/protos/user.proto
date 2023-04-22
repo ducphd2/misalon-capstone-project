@@ -21,6 +21,7 @@ service UserService {
   // device
   rpc createDevice(device.CreateDeviceInput) returns (device.Device) {}
   rpc findDevices(commons.QueryRequest) returns (device.Devices) {}
+  rpc upsertDevice(device.CreateDeviceInput) returns (device.Device) {}
 }
 
 enum EUserGender {

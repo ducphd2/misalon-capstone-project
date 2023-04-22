@@ -36,16 +36,16 @@ export class BaseRepository<Model extends BaseEntity> {
     return instanceToPlain(await this.model.findOneOrFail(id, { ...opts })) as Model;
   }
 
-  async findRaw(options: FindOneOptions<Model>): Promise<Model> {
-    return await this.model.findOne(options);
+  async findRaw(where: FindConditions<Model>, options: FindOneOptions<Model>): Promise<Model> {
+    return await this.model.findOne({ ...options, where });
   }
 
-  async findOneRaw(conditions: FindConditions<Model>, options?: FindOneOptions<Model>): Promise<Model> {
-    return this.findRaw({ where: conditions, ...options });
+  async findOneRaw(where: FindConditions<Model>, options?: FindOneOptions<Model>): Promise<Model> {
+    return this.findRaw(where, options);
   }
 
-  async findOne(conditions: FindConditions<Model>, options?: FindOneOptions<Model>): Promise<Model> {
-    return instanceToPlain(this.findOneRaw(conditions, options)) as Model;
+  async findOne(where: FindConditions<Model>, options?: FindOneOptions<Model>): Promise<Model> {
+    return instanceToPlain(this.findOneRaw(where, options)) as Model;
   }
 
   async findByIds(ids: any[], options?: FindManyOptions<Model>): Promise<Model[]> {

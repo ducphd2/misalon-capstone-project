@@ -224,6 +224,8 @@ export interface UserServiceClient {
   createDevice(request: CreateDeviceInput): Observable<Device>;
 
   findDevices(request: QueryRequest): Observable<Devices>;
+
+  upsertDevice(request: CreateDeviceInput): Observable<Device>;
 }
 
 export interface UserServiceController {
@@ -250,6 +252,8 @@ export interface UserServiceController {
   createDevice(request: CreateDeviceInput): Promise<Device> | Observable<Device> | Device;
 
   findDevices(request: QueryRequest): Promise<Devices> | Observable<Devices> | Devices;
+
+  upsertDevice(request: CreateDeviceInput): Promise<Device> | Observable<Device> | Device;
 }
 
 export function UserServiceControllerMethods() {
@@ -265,6 +269,7 @@ export function UserServiceControllerMethods() {
       "deleteCustomer",
       "createDevice",
       "findDevices",
+      "upsertDevice",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

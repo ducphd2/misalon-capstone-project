@@ -6,10 +6,11 @@ import {
   UserServiceController,
   UserServiceControllerMethods,
 } from '@libs/grpc-types';
-import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
+import { CreateDeviceInput, Device, Devices } from '@libs/grpc-types/protos/device';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { GrpcLogInterceptor } from 'interceptors/interceptors';
+import { Observable } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
 
@@ -21,6 +22,10 @@ import { UserService } from './user.service';
 @UserServiceControllerMethods()
 export class UserController implements UserServiceController {
   constructor(private readonly userService: UserService, private readonly deviceService: DeviceService) {}
+
+  async upsertDevice(request: CreateDeviceInput): Promise<Device> {
+    return await this.deviceService.upsertDevice(request);
+  }
 
   createDevice(request: CreateDeviceInput): Promise<DeviceEntity> {
     throw new Error('Method not implemented.');
