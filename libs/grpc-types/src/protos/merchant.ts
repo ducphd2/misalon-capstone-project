@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Branch, Branches, CreateBranchInput, NullableBranch, UpdateBranchInput } from "./branch";
-import { Count, Id, PageInfo, QueryRequest } from "./commons";
+import { Branch, Branches, BranchPagination, CreateBranchInput, NullableBranch, UpdateBranchInput } from "./branch";
+import { Count, Id, PageInfo, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 import { CreateGroupInput, FindGroupsPayload, Group, NullableGroup, UpdateGroupInput } from "./group";
 import {
@@ -95,10 +95,17 @@ export interface Merchants {
   merchants: Merchant[];
 }
 
+export interface MerchantPagination {
+  items: Merchant[];
+  meta?: PageMeta | undefined;
+}
+
 export const MERCHANT_PACKAGE_NAME = "merchant";
 
 export interface MerchantServiceClient {
-  find(request: QueryRequest): Observable<Merchants>;
+  find(request: QueryRequest): Observable<MerchantPagination>;
+
+  findAll(request: QueryRequest): Observable<Merchants>;
 
   findOne(request: QueryRequest): Observable<NullableMerchant>;
 
@@ -111,6 +118,8 @@ export interface MerchantServiceClient {
   /** branch */
 
   branch(request: QueryRequest): Observable<NullableBranch>;
+
+  findBranches(request: QueryRequest): Observable<BranchPagination>;
 
   branches(request: QueryRequest): Observable<Branches>;
 
@@ -154,7 +163,9 @@ export interface MerchantServiceClient {
 }
 
 export interface MerchantServiceController {
-  find(request: QueryRequest): Promise<Merchants> | Observable<Merchants> | Merchants;
+  find(request: QueryRequest): Promise<MerchantPagination> | Observable<MerchantPagination> | MerchantPagination;
+
+  findAll(request: QueryRequest): Promise<Merchants> | Observable<Merchants> | Merchants;
 
   findOne(request: QueryRequest): Promise<NullableMerchant> | Observable<NullableMerchant> | NullableMerchant;
 
@@ -169,6 +180,8 @@ export interface MerchantServiceController {
   /** branch */
 
   branch(request: QueryRequest): Promise<NullableBranch> | Observable<NullableBranch> | NullableBranch;
+
+  findBranches(request: QueryRequest): Promise<BranchPagination> | Observable<BranchPagination> | BranchPagination;
 
   branches(request: QueryRequest): Promise<Branches> | Observable<Branches> | Branches;
 
@@ -217,11 +230,13 @@ export function MerchantServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
       "find",
+      "findAll",
       "findOne",
       "create",
       "count",
       "findById",
       "branch",
+      "findBranches",
       "branches",
       "findBranchById",
       "createBranch",

@@ -10,7 +10,8 @@ import "service.proto";
 import "google/protobuf/struct.proto";
 
 service MerchantService {
-  rpc find(commons.QueryRequest) returns (Merchants) {}
+  rpc find(commons.QueryRequest) returns (MerchantPagination) {}
+  rpc findAll(commons.QueryRequest) returns (Merchants) {}
   rpc findOne(commons.QueryRequest) returns (NullableMerchant) {}
   rpc create(CreateInput) returns (CreateMerchantResponse) {}
   rpc count(commons.QueryRequest) returns (commons.Count) {}
@@ -18,6 +19,7 @@ service MerchantService {
 
   // branch
   rpc branch(commons.QueryRequest) returns (branch.NullableBranch) {}
+  rpc findBranches(commons.QueryRequest) returns (branch.BranchPagination) {}
   rpc branches(commons.QueryRequest) returns (branch.Branches) {}
   rpc findBranchById(commons.Id) returns (branch.NullableBranch) {}
   rpc createBranch(branch.CreateBranchInput) returns (branch.Branch) {}
@@ -123,4 +125,9 @@ message CreateMerchantResponse {
 
 message Merchants {
   repeated Merchant merchants = 1;
+}
+
+message MerchantPagination {
+  repeated Merchant items = 1;
+  optional commons.PageMeta meta = 2;
 }

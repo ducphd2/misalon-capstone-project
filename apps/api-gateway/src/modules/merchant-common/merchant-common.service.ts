@@ -1,14 +1,13 @@
 import { BranchEntity, GroupEntity, ServiceEntity } from '@libs/database/entities';
-import { Branches, NullableBranch, UpdateBranchData } from '@libs/grpc-types/protos/branch';
+import { BranchPagination, Branches, NullableBranch, UpdateBranchData } from '@libs/grpc-types/protos/branch';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { FindGroupsPayload, NullableGroup, UpdateGroupData } from '@libs/grpc-types/protos/group';
 import {
   CreateInput,
-  FindMerchantsPayload,
   MERCHANT_PACKAGE_NAME,
   MERCHANT_SERVICE_NAME,
+  MerchantPagination,
   MerchantServiceClient,
-  Merchants,
   NullableMerchant,
 } from '@libs/grpc-types/protos/merchant';
 import {
@@ -41,7 +40,7 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.findById(id));
   }
 
-  async find(query: QueryRequest): Promise<Merchants> {
+  async find(query: QueryRequest): Promise<MerchantPagination> {
     return await firstValueFrom(this.merchantService.find(query));
   }
 
@@ -53,7 +52,11 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.branch(query));
   }
 
-  async findBranches(query: QueryRequest): Promise<Branches> {
+  async findBranches(query: QueryRequest): Promise<BranchPagination> {
+    return await firstValueFrom(this.merchantService.findBranches(query));
+  }
+
+  async branches(query: QueryRequest): Promise<Branches> {
     return await firstValueFrom(this.merchantService.branches(query));
   }
 

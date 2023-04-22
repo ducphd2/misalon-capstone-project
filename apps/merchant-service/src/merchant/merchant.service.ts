@@ -3,6 +3,8 @@ import { MerchantRepository } from '@libs/database/repositories';
 import { CommonProto, MerchantProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
 import { CreateMerchantResponse } from '@libs/grpc-types/protos/merchant';
+import { LIMIT, PAGE } from '@libs/core/constants';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 import { BranchService } from '../branch/branch.service';
 
@@ -18,6 +20,19 @@ export class MerchantService {
 
   async find(request: CommonProto.QueryRequest): Promise<MerchantEntity[]> {
     const merchants = await this.merchantRepository.find(JSON.parse(request.where));
+    return merchants;
+  }
+
+  async findWithPaging(request: CommonProto.QueryRequest): Promise<Pagination<MerchantEntity, IPaginationMeta>> {
+    const merchants = await this.merchantRepository.findWithPaging(
+      {
+        page: request?.page ?? PAGE,
+        limit: request.limit ?? LIMIT,
+      },
+      {
+        where: JSON.parse(request.where) ?? undefined,
+      },
+    );
     return merchants;
   }
 }

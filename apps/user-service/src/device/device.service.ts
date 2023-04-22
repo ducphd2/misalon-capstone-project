@@ -1,3 +1,4 @@
+import { LIMIT, PAGE } from '@libs/core/constants';
 import { DeviceEntity } from '@libs/database/entities';
 import { DeviceRepository } from '@libs/database/repositories';
 import { CommonProto, DeviceProto } from '@libs/grpc-types';
@@ -21,8 +22,8 @@ export class DeviceService {
   async find(dto: CommonProto.QueryRequest): Promise<Pagination<DeviceEntity, IPaginationMeta>> {
     const devices = await this.deviceRepository.findWithPaging(
       {
-        page: dto?.page,
-        limit: dto.limit || 10,
+        page: dto?.page ?? PAGE,
+        limit: dto.limit ?? LIMIT,
       },
       {
         where: JSON.parse(dto.where) ?? undefined,

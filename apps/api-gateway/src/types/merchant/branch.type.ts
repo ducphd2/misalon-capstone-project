@@ -1,7 +1,7 @@
 import { Field, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 import { UpdateBranchData } from '@libs/grpc-types/protos/branch';
 
-import { BaseType, ErrorPayload, PageInfo } from '@/api-gateway/types/base';
+import { BaseType, ErrorPayload, PageInfo, PageMeta } from '@/api-gateway/types/base';
 
 @ObjectType()
 export class Branch extends BaseType {
@@ -105,4 +105,13 @@ export class PartialUpdateBranch
 export class BranchesConnection {
   @Field(() => [Branch])
   branches: Branch[];
+}
+
+@ObjectType()
+export class BranchPaging {
+  @Field(() => [Branch], { nullable: true })
+  items?: Branch[];
+
+  @Field(() => PageMeta, { nullable: true })
+  meta?: PageMeta;
 }

@@ -82,3 +82,8 @@ message NullableBranch {
 message Branches {
   repeated Branch branches = 1;
 }
+
+message BranchPagination {
+  repeated Branch items = 1;
+  optional commons.PageMeta meta = 2;
+}
