@@ -1,17 +1,16 @@
-import { PasswordUtils } from '@libs/core';
+import { ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { UserEntity } from '@libs/database/entities';
-import { FindOneUser } from '@libs/grpc-types';
 import { Count } from '@libs/grpc-types/protos/commons';
-import { HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
 import { CurrentUser } from '@/api-gateway/core/decorators/user/current-user.decorator';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
+import { CreateUserInputDto, DeviceInputDto } from '@/api-gateway/dtos';
+import { ChangePasswordInput } from '@/api-gateway/dtos/user/user.dto';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { DeletePayload } from '@/api-gateway/types';
 import { UpdatePartialUser, UserPayload } from '@/api-gateway/types/user';
-import { CreateUserInputDto, DeviceInputDto } from '@/api-gateway/dtos';
-import { ChangePasswordInput } from '@/api-gateway/dtos/user/user.dto';
 
 @Resolver(() => UserPayload)
 export class UserMutationResolver {
@@ -29,16 +28,16 @@ export class UserMutationResolver {
     const isConfirmed: boolean = data.newPassword === data.confirmPassword;
 
     if (!isSame || !isConfirmed) {
-      throw new HttpException('Error updating password. Kindly check your passwords', HttpStatus.BAD_REQUEST);
+      ErrorHelper.HttpBadRequestException(USER_MESSAGE.UPDATE.INVALID_PASSWORD);
     }
 
     const password: string = await this.passwordUtils.hash(data.newPassword);
 
-    const updatedUser: UserPayload = await this.userService.update(user.id, {
+    const result = await this.userService.update(user.id, {
       password,
     });
 
-    return updatedUser;
+    return result;
   }
 
   @Mutation(() => UserPayload)
@@ -52,7 +51,9 @@ export class UserMutationResolver {
         where: JSON.stringify({ email: userInput.email }),
       });
 
-      if (count >= 1) throw new Error('The email is taken');
+      if (count >= 1) {
+        ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
+      }
 
       const user = await this.userService.create({ user: userInput, device: deviceInput });
 

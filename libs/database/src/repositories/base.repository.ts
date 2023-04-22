@@ -84,8 +84,9 @@ export class BaseRepository<Model extends BaseEntity> {
   async updateItem(entity: DeepPartial<Model>): Promise<Model> {
     return instanceToPlain(await this.model.save(entity)) as Model;
   }
-  async update(id: string | number, entity: QueryDeepPartialEntity<Model>) {
-    return instanceToPlain(await this.model.update(id, entity));
+
+  async update(id: string | number, entity: QueryDeepPartialEntity<Model>): Promise<UpdateResult> {
+    return await this.model.update(id, entity);
   }
 
   async updateByConditions(

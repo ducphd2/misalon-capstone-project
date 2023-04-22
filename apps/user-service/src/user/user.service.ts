@@ -3,6 +3,8 @@ import { CommonProto, UserProto } from '@libs/grpc-types';
 import { UserRepository } from '@libs/database/repositories';
 import { UserEntity } from '@libs/database/entities';
 import { isEmpty } from 'lodash';
+import { ErrorHelper } from '@libs/core';
+import { USER_MESSAGE } from '@libs/core/message';
 
 import { DeviceService } from '../device/device.service';
 
@@ -18,8 +20,8 @@ export class UserService {
     return user;
   }
 
-  async findById(dto: CommonProto.Id): Promise<UserEntity> {
-    const user = await this.userRepository.findById(dto.id);
+  async findById(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.findById(id);
     return user;
   }
 
@@ -31,5 +33,22 @@ export class UserService {
   async count(query: CommonProto.QueryRequest): Promise<number> {
     const count = await this.userRepository.count(JSON.parse(query.where));
     return count;
+  }
+
+  async update(request: UserProto.UpdateUserInput): Promise<UserEntity> {
+    const currentUser = await this.findById(request.id);
+
+    if (isEmpty(currentUser)) {
+      ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
+    }
+
+    const { affected } = await this.userRepository.update(request.id, request.data);
+    if (affected < 1) {
+      ErrorHelper.NotFoundException(USER_MESSAGE.UPDATE.FAIL);
+    }
+
+    const updatedUser = await this.findById(request.id);
+
+    return updatedUser;
   }
 }

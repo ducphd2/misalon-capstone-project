@@ -45,8 +45,10 @@ export class UserController implements UserServiceController {
     return { count };
   }
 
-  update(request: UserProto.UpdateUserInput): Promise<UserProto.FindOneUser> {
-    throw new Error('Method not implemented.');
+  async update(request: UserProto.UpdateUserInput): Promise<UserProto.FindOneUser> {
+    const updatedUser = await this.userService.update(request);
+
+    return { user: updatedUser };
   }
 
   findOneCustomer(request: CommonProto.QueryRequest): Promise<UserProto.FindOneCustomerPayload> {
@@ -62,8 +64,8 @@ export class UserController implements UserServiceController {
     return { user };
   }
 
-  async findById(request: CommonProto.Id): Promise<UserProto.FindOneUser> {
-    const user: UserEntity = await this.userService.findById(request);
+  async findById({ id }: CommonProto.Id): Promise<UserProto.FindOneUser> {
+    const user: UserEntity = await this.userService.findById(id);
     return { user };
   }
 
