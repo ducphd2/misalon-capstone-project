@@ -1,6 +1,6 @@
 import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/user';
 import { hash } from 'argon2';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
 
