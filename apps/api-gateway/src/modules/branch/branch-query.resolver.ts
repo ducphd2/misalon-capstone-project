@@ -28,7 +28,7 @@ export class BranchQueryResolver {
 
     if (!isEmpty(q)) merge(query, { where: { name: { _iLike: `%${q}%` } } });
 
-    const result = await this.merchantService.findBranches({
+    const result = await this.merchantService.branches({
       ...query,
       where: JSON.stringify(query.where),
     });
@@ -46,7 +46,7 @@ export class BranchQueryResolver {
 
       if (!isEmpty(q)) merge(query, { where: { name: { _iLike: `%${q}%` } } });
 
-      const result = await this.merchantService.findBranches({
+      const result = await this.merchantService.branches({
         ...query,
         where: JSON.stringify(query.where),
       });
@@ -69,7 +69,7 @@ export class BranchQueryResolver {
 
       if (!isEmpty(q)) merge(query, { where: { name: { _iLike: `%${q}%` } } });
 
-      const result = await this.merchantService.findBranches({
+      const result = await this.merchantService.branches({
         ...query,
         where: JSON.stringify(query.where),
       });

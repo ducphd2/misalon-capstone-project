@@ -3,7 +3,7 @@ import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 
 import { Branch } from './branch.type';
 
-import { BaseType, PageInfo } from '@/api-gateway/types/base';
+import { BaseType, PageInfo, PageMeta } from '@/api-gateway/types/base';
 
 @ObjectType()
 export class Merchant extends BaseType {
@@ -84,4 +84,13 @@ export class CreateMerchantInput implements CreateInput {
 export class MerchantsConnection {
   @Field(() => [Merchant], { nullable: true })
   merchants?: Merchant[];
+}
+
+@ObjectType()
+export class MerchantPaging {
+  @Field(() => [Merchant], { nullable: true })
+  items?: Merchant[];
+
+  @Field(() => PageMeta, { nullable: true })
+  meta?: PageMeta;
 }

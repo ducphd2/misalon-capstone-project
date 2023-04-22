@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { PageInfo } from "./commons";
+import { PageInfo, PageMeta } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "branch";
@@ -76,6 +76,11 @@ export interface NullableBranch {
 
 export interface Branches {
   branches: Branch[];
+}
+
+export interface BranchPagination {
+  items: Branch[];
+  meta?: PageMeta | undefined;
 }
 
 export const BRANCH_PACKAGE_NAME = "branch";

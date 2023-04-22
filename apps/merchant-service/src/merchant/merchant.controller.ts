@@ -1,24 +1,31 @@
 import { MerchantProto } from '@libs/grpc-types';
-import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
-import { GrpcAllExceptionsFilter } from 'filters/filters';
-import { GrpcLogInterceptor } from 'interceptors/interceptors';
-import { NullableBranch, Branches, CreateBranchInput, Branch, UpdateBranchInput } from '@libs/grpc-types/protos/branch';
-import { QueryRequest, Count, Id } from '@libs/grpc-types/protos/commons';
 import {
-  NullableGroup,
-  FindGroupsPayload,
+  Branch,
+  BranchPagination,
+  Branches,
+  CreateBranchInput,
+  NullableBranch,
+  UpdateBranchInput,
+} from '@libs/grpc-types/protos/branch';
+import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import {
   CreateGroupInput,
+  FindGroupsPayload,
   Group,
+  NullableGroup,
   UpdateGroupInput,
 } from '@libs/grpc-types/protos/group';
 import {
-  NullableService,
-  FindServicesPayload,
   CreateServiceInput,
+  FindServiceOffsetPagination,
+  FindServicesPayload,
+  NullableService,
   Service,
   UpdateServiceInput,
-  FindServiceOffsetPagination,
 } from '@libs/grpc-types/protos/service';
+import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
+import { GrpcAllExceptionsFilter } from 'filters/filters';
+import { GrpcLogInterceptor } from 'interceptors/interceptors';
 import { Observable } from 'rxjs';
 
 import { MerchantService } from './merchant.service';
@@ -32,9 +39,19 @@ import { BranchService } from '@/merchant-service/branch/branch.service';
 export class MerchantController implements MerchantProto.MerchantServiceController {
   constructor(private readonly merchantService: MerchantService, private readonly branchService: BranchService) {}
 
-  async find(request: QueryRequest): Promise<MerchantProto.Merchants> {
-    const merchants = await this.merchantService.find(request);
-    return { merchants };
+  findAll(
+    request: QueryRequest,
+  ): MerchantProto.Merchants | Promise<MerchantProto.Merchants> | Observable<MerchantProto.Merchants> {
+    throw new Error('Method not implemented.');
+  }
+
+  async findBranches(request: QueryRequest): Promise<BranchPagination> {
+    return await this.branchService.findWithPaging(request);
+  }
+
+  async find(request: QueryRequest): Promise<MerchantProto.MerchantPagination> {
+    const merchants = await this.merchantService.findWithPaging(request);
+    return merchants;
   }
 
   findOne(request: QueryRequest): Promise<MerchantProto.NullableMerchant> {

@@ -61,6 +61,11 @@ type BranchesConnection {
   branches: [Branch!]!
 }
 
+type BranchPaging {
+  items: [Branch!]
+  meta: PageMeta
+}
+
 type Merchant {
   id: Int!
   createdAt: String
@@ -76,7 +81,7 @@ type Merchant {
   districtCode: Int
   wardCode: Int
   userId: ID
-  branches(q: String): [Branch!]!
+  branches(q: String): BranchPaging!
 }
 
 type MerchantEdge {
@@ -84,8 +89,9 @@ type MerchantEdge {
   cursor: String!
 }
 
-type MerchantsConnection {
-  merchants: [Merchant!]
+type MerchantPaging {
+  items: [Merchant!]
+  meta: PageMeta
 }
 
 type Group {
@@ -236,7 +242,7 @@ type User {
   branchId: Int
   latitude: Float
   longitude: Float
-  merchants(q: String): [Merchant!]!
+  merchants(q: String): MerchantPaging!
   devices: DevicePaging!
 }
 
@@ -370,8 +376,8 @@ type Query {
   userCount(q: String): Float!
   me: UserPayload!
   findMerchantById(id: Float!): Merchant!
-  findAllMerchants(q: String): MerchantsConnection!
-  findAllMerchantsByAdmin(q: String): MerchantsConnection!
+  findAllMerchants(q: String): MerchantPaging!
+  findAllMerchantsByAdmin(q: String): MerchantPaging!
   findBranchById(id: Float!): Group!
   findAllBranches(q: String): BranchesConnection!
   findAllBranchesByMerchant(merchantId: Float!, q: String): BranchConnection!
