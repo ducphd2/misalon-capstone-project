@@ -8,7 +8,7 @@ export const UserConfig = {
   loader: {
     keepCase: true,
     longs: Number,
-    enums: String,
+    enums: Number,
     arrays: true,
   },
 };

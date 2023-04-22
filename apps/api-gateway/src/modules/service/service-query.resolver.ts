@@ -2,7 +2,7 @@ import { QueryUtils } from '@libs/core';
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
-import { EOrderDirection } from '@libs/database/enums';
+import { ESortDirection } from '@libs/grpc-types/protos/commons';
 
 import { Service, ServiceConnection, ServiceOffsetPagination } from '@/api-gateway/types';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
@@ -21,25 +21,14 @@ export class ServiceQueryResolver {
 
   @Query(() => ServiceConnection)
   @UseGuards(GqlAuthGuard)
-  async findAllBranchServices(
-    @Args('q', { nullable: true }) q?: string,
-    @Args('first', { nullable: true }) first?: number,
-    @Args('last', { nullable: true }) last?: number,
-    @Args('before', { nullable: true }) before?: string,
-    @Args('after', { nullable: true }) after?: string,
-    @Args('orderBy', { nullable: true }) orderBy?: string,
-  ): Promise<ServiceConnection> {
+  async findAllBranchServices(@Args('q', { nullable: true }) q?: string): Promise<ServiceConnection> {
     const query = { where: {} };
 
     if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
 
-    merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
-
     const result = await this.merchantService.findService({
       ...query,
       where: JSON.stringify(query.where),
-      select: null,
-      orderBy: null,
     });
 
     return result;
@@ -85,7 +74,7 @@ export class ServiceQueryResolver {
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-    @Args('orderDirection', { nullable: true, type: () => EOrderDirection }) orderDirection?: string,
+    @Args('orderDirection', { nullable: true }) orderDirection?: string,
   ): Promise<ServiceOffsetPagination> {
     try {
       const query = {

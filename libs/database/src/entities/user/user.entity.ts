@@ -1,12 +1,10 @@
-import { Column, Entity } from 'typeorm';
-import { ObjectType } from '@nestjs/graphql';
-import { ECustomerLevel } from '@libs/grpc-types/protos/user';
+import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/user';
+import { BeforeInsert, Column, Entity } from 'typeorm';
+import { hash } from 'argon2';
 
-import { EActionRole, EUserGender, EUserRole, EUserStatus } from '../../enums';
 import { BaseEntity } from '../base.entity';
 
 @Entity('user')
-@ObjectType()
 export class UserEntity extends BaseEntity {
   @Column('varchar', { nullable: false })
   email?: string;
@@ -109,4 +107,27 @@ export class UserEntity extends BaseEntity {
 
   @Column('integer', { nullable: true })
   branchId?: number;
+
+  @Column({
+    type: 'double precision',
+    default: 0,
+  })
+  latitude?: number;
+
+  @Column({
+    type: 'double precision',
+    default: 0,
+  })
+  longitude?: number;
+
+  @BeforeInsert()
+  async hashPassword(): Promise<void> {
+    try {
+      if (this.password) {
+        this.password = await hash(this.password);
+      }
+    } catch (error) {
+      console.log('Hash password error: ', error);
+    }
+  }
 }

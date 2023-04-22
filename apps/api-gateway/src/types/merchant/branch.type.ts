@@ -100,3 +100,9 @@ export class CreateBranchInput {
 export class PartialUpdateBranch
   extends PartialType<CreateBranchInput>(CreateBranchInput)
   implements UpdateBranchData {}
+
+@ObjectType()
+export class BranchesConnection {
+  @Field(() => [Branch])
+  branches: Branch[];
+}

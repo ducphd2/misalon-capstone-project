@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
+import { EDeviceOs } from '@libs/grpc-types/protos/device';
 
-import { EDeviceOs } from '../../enums';
 import { BaseEntity } from '../base.entity';
 
 @Entity('device')

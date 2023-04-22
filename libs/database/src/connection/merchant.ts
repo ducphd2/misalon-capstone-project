@@ -28,6 +28,13 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
           // logging: true,
           namingStrategy: new SnakeNamingStrategy(),
           entities: [MerchantEntity, BranchEntity, GroupEntity, ServiceEntity, ImageEntity, ServeImageEntity],
+          extra: {
+            extensions: ['postgis'],
+          },
+          cli: {
+            migrationsDir: 'libs/database/src/migrations/merchant',
+          },
+          migrationsRun: true,
         } as PostgresConnectionOptions;
       },
       inject: [AbstractSecretsService],

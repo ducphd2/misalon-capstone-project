@@ -2,6 +2,7 @@ import { INestMicroservice } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { MerchantServer } from '@libs/grpc-types/servers';
+
 import { AppModule } from './app.module';
 
 async function main() {

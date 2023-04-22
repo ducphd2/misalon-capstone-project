@@ -1,8 +1,7 @@
-import { EServiceShowType, EServiceType } from '@libs/database/enums';
 import { Field, Float, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
-import { UpdateServiceData } from '@libs/grpc-types/protos/service';
 
 import { BaseType, ErrorPayload, PageInfo } from '@/api-gateway/types/base';
+import { EServiceShowType, EServiceType } from '@/api-gateway/dtos/user/user.dto';
 
 @ObjectType()
 export class Service extends BaseType {
@@ -128,9 +127,7 @@ export class CreateServiceInput {
 }
 
 @InputType()
-export class PartialUpdateService
-  extends PartialType<CreateServiceInput>(CreateServiceInput)
-  implements UpdateServiceData {}
+export class PartialUpdateService extends PartialType<CreateServiceInput>(CreateServiceInput) {}
 
 @ObjectType()
 export class ServiceOffsetPagination {

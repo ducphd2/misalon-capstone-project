@@ -1,4 +1,5 @@
 import { UserEntity } from '@libs/database/entities';
+import { User } from '@libs/grpc-types';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -12,7 +13,7 @@ export class AuthService {
     private readonly refreshTokenService: JwtService,
   ) {}
 
-  async generateAccessToken(user: UserEntity): Promise<string> {
+  async generateAccessToken(user: User): Promise<string> {
     return this.accessTokenService.sign(
       {
         user: user.id,
@@ -23,7 +24,7 @@ export class AuthService {
     );
   }
 
-  async generateRefreshToken(user: UserEntity): Promise<string> {
+  async generateRefreshToken(user: User): Promise<string> {
     return this.refreshTokenService.sign(
       {
         user: user.id,

@@ -1,10 +1,11 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, GqlQuery, Id, PageInfo, QueryRequest } from "./commons";
+import { Count, Id, PageInfo, QueryRequest } from "./commons";
+import { CreateDeviceInput, Device } from "./device";
 import { NullValue } from "./google/protobuf/struct";
 
-export const protobufPackage = "user";
+export const protobufPackage = "ducph_user";
 
 export enum EUserGender {
   MALE = 0,
@@ -53,7 +54,7 @@ export interface User {
   email?: string | undefined;
   password?: string | undefined;
   actionRole?: EActionRole | undefined;
-  status?: number | undefined;
+  status?: EUserStatus | undefined;
   fullName?: string | undefined;
   contact?: string | undefined;
   phoneNumber?: string | undefined;
@@ -84,13 +85,15 @@ export interface User {
   relatedUserRole?: string | undefined;
   relatedUserPhone?: string | undefined;
   branchId?: number | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface CreateUserInput {
   email?: string | undefined;
   password?: string | undefined;
   actionRole?: EActionRole | undefined;
-  status?: number | undefined;
+  status?: EUserStatus | undefined;
   fullName?: string | undefined;
   contact?: string | undefined;
   phoneNumber?: string | undefined;
@@ -121,9 +124,16 @@ export interface CreateUserInput {
   relatedUserRole?: string | undefined;
   relatedUserPhone?: string | undefined;
   branchId?: number | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
-export interface FindOne {
+export interface CreateUserRequest {
+  user: CreateUserInput | undefined;
+  device?: CreateDeviceInput | undefined;
+}
+
+export interface FindOneUser {
   user: User | undefined;
 }
 
@@ -151,7 +161,7 @@ export interface UpdateUserData {
   email?: string | undefined;
   password?: string | undefined;
   actionRole?: EActionRole | undefined;
-  status?: number | undefined;
+  status?: EUserStatus | undefined;
   fullName?: string | undefined;
   contact?: string | undefined;
   phoneNumber?: string | undefined;
@@ -189,44 +199,52 @@ export interface FindOneCustomerPayload {
   customer: User | undefined;
 }
 
-export const USER_PACKAGE_NAME = "user";
+export const DUCPH_USER_PACKAGE_NAME = "ducph_user";
 
 export interface UserServiceClient {
-  find(request: GqlQuery): Observable<FindUsersPayload>;
+  find(request: QueryRequest): Observable<FindUsersPayload>;
 
-  create(request: CreateUserInput): Observable<User>;
+  create(request: CreateUserRequest): Observable<FindOneUser>;
 
   findById(request: Id): Observable<NullableUser>;
 
-  findOne(request: GqlQuery): Observable<NullableUser>;
+  findOne(request: QueryRequest): Observable<NullableUser>;
 
   count(request: QueryRequest): Observable<Count>;
 
-  update(request: UpdateUserInput): Observable<User>;
+  update(request: UpdateUserInput): Observable<FindOneUser>;
 
-  findOneCustomer(request: GqlQuery): Observable<FindOneCustomerPayload>;
+  findOneCustomer(request: QueryRequest): Observable<FindOneCustomerPayload>;
 
   deleteCustomer(request: Id): Observable<Count>;
+
+  /** device */
+
+  createDevice(request: CreateDeviceInput): Observable<Device>;
 }
 
 export interface UserServiceController {
-  find(request: GqlQuery): Promise<FindUsersPayload> | Observable<FindUsersPayload> | FindUsersPayload;
+  find(request: QueryRequest): Promise<FindUsersPayload> | Observable<FindUsersPayload> | FindUsersPayload;
 
-  create(request: CreateUserInput): Promise<User> | Observable<User> | User;
+  create(request: CreateUserRequest): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
   findById(request: Id): Promise<NullableUser> | Observable<NullableUser> | NullableUser;
 
-  findOne(request: GqlQuery): Promise<NullableUser> | Observable<NullableUser> | NullableUser;
+  findOne(request: QueryRequest): Promise<NullableUser> | Observable<NullableUser> | NullableUser;
 
   count(request: QueryRequest): Promise<Count> | Observable<Count> | Count;
 
-  update(request: UpdateUserInput): Promise<User> | Observable<User> | User;
+  update(request: UpdateUserInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
   findOneCustomer(
-    request: GqlQuery,
+    request: QueryRequest,
   ): Promise<FindOneCustomerPayload> | Observable<FindOneCustomerPayload> | FindOneCustomerPayload;
 
   deleteCustomer(request: Id): Promise<Count> | Observable<Count> | Count;
+
+  /** device */
+
+  createDevice(request: CreateDeviceInput): Promise<Device> | Observable<Device> | Device;
 }
 
 export function UserServiceControllerMethods() {
@@ -240,6 +258,7 @@ export function UserServiceControllerMethods() {
       "update",
       "findOneCustomer",
       "deleteCustomer",
+      "createDevice",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

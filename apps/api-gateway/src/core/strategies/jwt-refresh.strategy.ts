@@ -3,7 +3,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientGrpc } from '@nestjs/microservices';
 import { PassportStrategy } from '@nestjs/passport';
-import { UserProto } from '@libs/grpc-types';
+import { DUCPH_USER_PACKAGE_NAME, User, UserProto } from '@libs/grpc-types';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { lastValueFrom } from 'rxjs';
 
@@ -12,7 +12,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
   private userService: UserProto.UserServiceClient;
 
   constructor(
-    @Inject(UserProto.USER_PACKAGE_NAME) private client: ClientGrpc,
+    @Inject(DUCPH_USER_PACKAGE_NAME) private client: ClientGrpc,
 
     private readonly configService: ConfigService,
   ) {
@@ -26,7 +26,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
     this.userService = this.client.getService<UserProto.UserServiceClient>(UserProto.USER_SERVICE_NAME);
   }
 
-  async validate(payload: any): Promise<UserEntity> {
+  async validate(payload: any): Promise<User> {
     const { user } = await lastValueFrom(this.userService.findById({ id: Number(payload.sub) }));
     return user;
   }

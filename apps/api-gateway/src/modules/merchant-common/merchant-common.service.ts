@@ -1,6 +1,6 @@
-import { BranchEntity, GroupEntity, MerchantEntity, ServiceEntity } from '@libs/database/entities';
-import { FindBranchesPayload, NullableBranch, UpdateBranchData } from '@libs/grpc-types/protos/branch';
-import { Count, GqlQuery, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { BranchEntity, GroupEntity, ServiceEntity } from '@libs/database/entities';
+import { Branches, NullableBranch, UpdateBranchData } from '@libs/grpc-types/protos/branch';
+import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { FindGroupsPayload, NullableGroup, UpdateGroupData } from '@libs/grpc-types/protos/group';
 import {
   CreateInput,
@@ -8,19 +8,20 @@ import {
   MERCHANT_PACKAGE_NAME,
   MERCHANT_SERVICE_NAME,
   MerchantServiceClient,
+  Merchants,
   NullableMerchant,
 } from '@libs/grpc-types/protos/merchant';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import {
   FindServiceOffsetPagination,
   FindServicesPayload,
   NullableService,
   UpdateServiceData,
 } from '@libs/grpc-types/protos/service';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
-import { CreateBranchInput, CreateGroupInput, CreateServiceInput } from '@/api-gateway/types';
+import { Branch, CreateBranchInput, CreateGroupInput, CreateServiceInput, Merchant } from '@/api-gateway/types';
 
 @Injectable()
 export class MerchantCommonService implements OnModuleInit {
@@ -32,7 +33,7 @@ export class MerchantCommonService implements OnModuleInit {
     this.merchantService = this.client.getService<MerchantServiceClient>(MERCHANT_SERVICE_NAME);
   }
 
-  async create(data: CreateInput): Promise<MerchantEntity> {
+  async create(data: CreateInput): Promise<{ merchant: Merchant; branch?: Branch }> {
     return await firstValueFrom(this.merchantService.create(data));
   }
 
@@ -40,35 +41,20 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.findById(id));
   }
 
-  async find(query: GqlQuery): Promise<FindMerchantsPayload> {
-    return await firstValueFrom(
-      this.merchantService.find({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async find(query: QueryRequest): Promise<Merchants> {
+    return await firstValueFrom(this.merchantService.find(query));
   }
 
   async findBranchById(id: Id): Promise<NullableBranch> {
     return await firstValueFrom(this.merchantService.findBranchById(id));
   }
 
-  async branch(query: GqlQuery): Promise<NullableBranch> {
-    return await firstValueFrom(
-      this.merchantService.branch({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async branch(query: QueryRequest): Promise<NullableBranch> {
+    return await firstValueFrom(this.merchantService.branch(query));
   }
 
-  async findBranches(query: GqlQuery): Promise<FindBranchesPayload> {
-    return await firstValueFrom(
-      this.merchantService.branches({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async findBranches(query: QueryRequest): Promise<Branches> {
+    return await firstValueFrom(this.merchantService.branches(query));
   }
 
   async createBranch(data: CreateBranchInput): Promise<BranchEntity> {
@@ -87,22 +73,12 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.findGroupById(id));
   }
 
-  async group(query: GqlQuery): Promise<NullableGroup> {
-    return await firstValueFrom(
-      this.merchantService.group({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async group(query: QueryRequest): Promise<NullableGroup> {
+    return await firstValueFrom(this.merchantService.group(query));
   }
 
-  async findGroups(query: GqlQuery): Promise<FindGroupsPayload> {
-    return await firstValueFrom(
-      this.merchantService.groups({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async findGroups(query: QueryRequest): Promise<FindGroupsPayload> {
+    return await firstValueFrom(this.merchantService.groups(query));
   }
 
   async createGroup(data: CreateGroupInput): Promise<GroupEntity> {
@@ -121,22 +97,12 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.findServiceById(id));
   }
 
-  async service(query: GqlQuery): Promise<NullableService> {
-    return await firstValueFrom(
-      this.merchantService.service({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async service(query: QueryRequest): Promise<NullableService> {
+    return await firstValueFrom(this.merchantService.service(query));
   }
 
-  async findService(query: GqlQuery): Promise<FindServicesPayload> {
-    return await firstValueFrom(
-      this.merchantService.services({
-        ...query,
-        where: JSON.stringify(query.where),
-      }),
-    );
+  async findService(query: QueryRequest): Promise<FindServicesPayload> {
+    return await firstValueFrom(this.merchantService.services(query));
   }
 
   async createService(data: CreateServiceInput): Promise<ServiceEntity> {

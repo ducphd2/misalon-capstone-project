@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package device;
+
+enum EDeviceOs {
+  ANDROID = 0;
+  IOS = 1;
+}
+
+message Device {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional EDeviceOs os = 8;
+  optional string deviceId = 9;
+  optional string token = 10;
+  optional int32 userId = 11;
+}
+
+message CreateDeviceInput {
+  EDeviceOs os = 1;
+  string deviceId = 2;
+  string token = 3;
+  optional int32 userId = 4;
+}

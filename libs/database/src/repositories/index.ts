@@ -2,4 +2,4 @@
 export * from './user';
 
 // merchant repository
-export * from './user';
+export * from './merchant';

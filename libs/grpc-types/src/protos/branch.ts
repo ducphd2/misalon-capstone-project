@@ -74,4 +74,8 @@ export interface NullableBranch {
   branch?: Branch | undefined;
 }
 
+export interface Branches {
+  branches: Branch[];
+}
+
 export const BRANCH_PACKAGE_NAME = "branch";

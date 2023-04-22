@@ -1,4 +1,5 @@
 import { Column, Entity } from 'typeorm';
+
 import { BaseEntity } from '../base.entity';
 
 @Entity('branch')
@@ -32,4 +33,16 @@ export class BranchEntity extends BaseEntity {
 
   @Column('varchar', { name: 'ward', nullable: true })
   ward?: string;
+
+  @Column({
+    type: 'double precision',
+    default: 0,
+  })
+  latitude?: number;
+
+  @Column({
+    type: 'double precision',
+    default: 0,
+  })
+  longitude?: number;
 }

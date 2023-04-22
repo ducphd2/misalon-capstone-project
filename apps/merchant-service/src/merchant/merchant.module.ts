@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
-import { MerchantController } from './controller/merchant.controller';
-import { MerchantService } from './service/merchant.service';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MerchantEntity } from '@libs/database/entities';
+import { MerchantRepository } from '@libs/database/repositories';
+
+import { BranchModule } from '../branch/branch.module';
+
+import { MerchantController } from './merchant.controller';
+import { MerchantService } from './merchant.service';
 
 @Module({
-  imports: [SecretsModule],
+  imports: [SecretsModule, TypeOrmModule.forFeature([MerchantEntity]), BranchModule],
   controllers: [MerchantController],
-  providers: [MerchantService],
+  providers: [MerchantService, MerchantRepository],
 })
 export class MerchantModule {}

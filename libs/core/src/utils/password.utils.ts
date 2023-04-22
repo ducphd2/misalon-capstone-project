@@ -1,5 +1,4 @@
 import { hash, verify } from 'argon2';
-
 import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 

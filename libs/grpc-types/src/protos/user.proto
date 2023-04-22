@@ -1,21 +1,25 @@
 syntax = "proto3";
 
-package user;
+package ducph_user;
 
 import "commons.proto";
+import "device.proto";
 
 import "google/protobuf/struct.proto";
 
 service UserService {
-  rpc find(commons.GqlQuery) returns (FindUsersPayload) {}
-  rpc create(CreateUserInput) returns (User) {}
+  rpc find(commons.QueryRequest) returns (FindUsersPayload) {}
+  rpc create(CreateUserRequest) returns (FindOneUser) {}
   rpc findById(commons.Id) returns (NullableUser) {}
-  rpc findOne(commons.GqlQuery) returns (NullableUser) {}
+  rpc findOne(commons.QueryRequest) returns (NullableUser) {}
   rpc count(commons.QueryRequest) returns (commons.Count) {}
-  rpc update(UpdateUserInput) returns (User) {}
+  rpc update(UpdateUserInput) returns (FindOneUser) {}
 
-  rpc findOneCustomer(commons.GqlQuery) returns (FindOneCustomerPayload) {}
+  rpc findOneCustomer(commons.QueryRequest) returns (FindOneCustomerPayload) {}
   rpc deleteCustomer(commons.Id) returns (commons.Count) {}
+
+  // device
+  rpc createDevice(device.CreateDeviceInput) returns (device.Device) {}
 }
 
 enum EUserGender {
@@ -64,7 +68,7 @@ message User {
   optional string email = 8;
   optional string password = 9;
   optional EActionRole actionRole = 10;
-  optional int32 status = 11;
+  optional EUserStatus status = 11;
   optional string fullName = 12;
   optional string contact = 13;
   optional string phoneNumber = 14;
@@ -95,13 +99,15 @@ message User {
   optional string relatedUserRole = 39;
   optional string relatedUserPhone = 40;
   optional int32 branchId = 41;
+  optional double latitude = 42;
+  optional double longitude = 43;
 }
 
 message CreateUserInput {
   optional string email = 1;
   optional string password = 2;
   optional EActionRole actionRole = 3;
-  optional int32 status = 4;
+  optional EUserStatus status = 4;
   optional string fullName = 5;
   optional string contact = 6;
   optional string phoneNumber = 7;
@@ -132,9 +138,16 @@ message CreateUserInput {
   optional string relatedUserRole = 32;
   optional string relatedUserPhone = 33;
   optional int32 branchId = 34;
+  optional double latitude = 35;
+  optional double longitude = 36;
 }
 
-message FindOne {
+message CreateUserRequest {
+  CreateUserInput user = 1;
+  optional device.CreateDeviceInput device = 2;
+}
+
+message FindOneUser {
   User user = 1;
 }
 
@@ -165,7 +178,7 @@ message UpdateUserData {
     string email = 1;
     string password = 2;
     EActionRole actionRole = 3;
-    int32 status = 4;
+    EUserStatus status = 4;
     string fullName = 5;
     string contact = 6;
     string phoneNumber = 7;

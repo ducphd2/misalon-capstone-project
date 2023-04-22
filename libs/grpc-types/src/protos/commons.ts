@@ -2,6 +2,11 @@
 
 export const protobufPackage = "commons";
 
+export enum ESortDirection {
+  ASC = 0,
+  DESC = 1,
+}
+
 export interface Id {
   id: number;
 }
@@ -47,13 +52,8 @@ export interface QueryRequest {
 
 export interface Sort {
   field: string;
-  direction: Sort_SortDirection;
+  direction: ESortDirection;
   nulls: Sort_SortNulls;
-}
-
-export enum Sort_SortDirection {
-  ASC = 0,
-  DESC = 1,
 }
 
 export enum Sort_SortNulls {

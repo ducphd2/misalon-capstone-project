@@ -21,6 +21,10 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
           // logging: true,
           namingStrategy: new SnakeNamingStrategy(),
           entities: [NotificationEntity],
+          cli: {
+            migrationsDir: 'libs/database/src/migrations/notification',
+          },
+          migrationsRun: true,
         } as PostgresConnectionOptions;
       },
       inject: [AbstractSecretsService],

@@ -5,3 +5,5 @@ export * from './user';
 export * from './merchant';
 
 export * from './file';
+
+export * from './booking';

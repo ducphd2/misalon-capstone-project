@@ -1,9 +1,13 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  VersionColumn,
+} from 'typeorm';
 
-@ObjectType({ isAbstract: true })
 export class BaseEntity {
-  @Field(() => ID)
   @PrimaryGeneratedColumn('increment')
   id!: number;
 
@@ -16,13 +20,13 @@ export class BaseEntity {
   @DeleteDateColumn({ nullable: true, type: 'varchar' })
   deletedAt?: string;
 
-  @Field(() => String, { nullable: true })
+  @Column({ nullable: true, type: 'varchar' })
   createdBy?: string;
 
-  @Field(() => String, { nullable: true })
+  @Column({ nullable: true, type: 'varchar' })
   updatedBy?: string;
 
-  @Field(() => String, { nullable: true })
+  @Column({ nullable: true, type: 'varchar' })
   deletedBy?: string;
 
   @VersionColumn()

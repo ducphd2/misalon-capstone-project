@@ -2,6 +2,11 @@ syntax = "proto3";
 
 package commons;
 
+enum ESortDirection {
+  ASC = 0;
+  DESC = 1;
+}
+
 message Id {
   int32 id = 1;
 }
@@ -47,11 +52,7 @@ message QueryRequest {
 
 message Sort {
   string field = 1;
-  enum SortDirection {
-    ASC = 0;
-    DESC = 1;
-  }
-  SortDirection direction = 2;
+  ESortDirection direction = 2;
   enum SortNulls {
     NULLS_FIRST = 0;
     NULLS_LAST = 1;

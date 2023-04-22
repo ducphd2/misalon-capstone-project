@@ -1,16 +1,14 @@
 import { QueryUtils } from '@libs/core';
-import { UserEntity } from '@libs/database/entities';
-import { GqlQuery } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
 
-import { CurrentUser } from '@/api-gateway/core/decorators/current-user.decorator';
+import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { User, UsersConnection } from '@/api-gateway/types/user';
+import { User, UserPayload, UsersConnection } from '@/api-gateway/types/user';
 
-@Resolver()
+@Resolver(() => UsersConnection)
 export class UserQueryResolver {
   constructor(private readonly userService: UserCommonService, private readonly queryUtils: QueryUtils) {}
 
@@ -24,18 +22,21 @@ export class UserQueryResolver {
     @Args('after', { nullable: true }) after?: string,
     @Args('orderBy', { nullable: true }) orderBy?: string,
   ): Promise<UsersConnection> {
-    const query = { where: {}, select: [], orderBy: [] };
+    const query = { where: {} };
 
     if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
 
     merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 
-    const result = await this.userService.find(query as GqlQuery);
+    const result = await this.userService.find({
+      ...query,
+      where: JSON.stringify(query.where),
+    });
 
     return result;
   }
 
-  @Query(() => User)
+  @Query(() => UserPayload)
   @UseGuards(GqlAuthGuard)
   async getUser(@Args('id') id: number): Promise<User> {
     const { user } = await this.userService.findById({ id });
@@ -57,10 +58,10 @@ export class UserQueryResolver {
     return count;
   }
 
-  @Query(() => User, { name: 'me' })
+  @Query(() => UserPayload, { name: 'me' })
   @UseGuards(GqlAuthGuard)
-  async me(@CurrentUser() currentUser: User): Promise<UserEntity> {
-    const { user } = await this.userService.findById({ id: currentUser.id });
+  async me(@CurrentUser() currentUser: User): Promise<UserPayload> {
+    const user = await this.userService.findById({ id: currentUser.id });
     return user;
   }
 }

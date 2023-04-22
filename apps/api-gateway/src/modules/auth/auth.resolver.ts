@@ -1,17 +1,23 @@
 import { PasswordUtils } from '@libs/core';
-import { EUserRole } from '@libs/database/enums';
+import { EUserRole } from '@libs/grpc-types/protos/user';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { isEmpty } from 'lodash';
 
 import { AuthService } from './auth.service';
 
-import { ResponseAuthGrpc } from '@/api-gateway/types/auth';
+import {
+  BaseAuthInput,
+  CreateMerchantInputDto,
+  CreateUserInputDto,
+  DeviceInputDto,
+  InputLoginRequest,
+} from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
-import { InputLoginRequest, InputRegisterRequest } from '@/api-gateway/modules/auth/dtos';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
+import { ResponseAuthGrpc } from '@/api-gateway/types/auth';
 
-@Resolver()
+@Resolver(() => ResponseAuthGrpc)
 export class AuthResolver {
   constructor(
     private readonly usersService: UserCommonService,
@@ -22,14 +28,12 @@ export class AuthResolver {
   ) {}
 
   @Mutation(() => ResponseAuthGrpc)
-  async login(@Context() context: any, @Args('data') data: InputLoginRequest): Promise<ResponseAuthGrpc> {
+  async login(@Context() context: any, @Args('data') data: BaseAuthInput): Promise<ResponseAuthGrpc> {
     try {
       const { res } = context;
 
       const { user } = await this.usersService.findOne({
         where: JSON.stringify({ email: data.email }),
-        select: [],
-        orderBy: [],
       });
 
       if (isEmpty(user)) throw new Error('Could not login currently');
@@ -65,8 +69,6 @@ export class AuthResolver {
 
       const { user } = await this.usersService.findOne({
         where: JSON.stringify({ email: data.email, role: EUserRole.USER }),
-        select: [],
-        orderBy: [],
       });
 
       if (isEmpty(user)) throw new Error('Unable to login');
@@ -96,29 +98,27 @@ export class AuthResolver {
   }
 
   @Mutation(() => ResponseAuthGrpc)
-  async register(@Args('data') data: InputRegisterRequest) {
+  async register(
+    @Args('user') userInput: CreateUserInputDto,
+    @Args('merchant') merchantInput: CreateMerchantInputDto,
+    @Args('device', { nullable: true }) deviceInput?: DeviceInputDto,
+  ) {
     try {
       const { count } = await this.usersService.countUser({
-        where: JSON.stringify({ email: data.email }),
+        where: JSON.stringify({ email: userInput.email }),
       });
 
       if (count >= 1) throw new Error('The email is taken');
 
-      const user = await this.usersService.create(data);
+      const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
 
       const merchant = await this.merchantService.create({
-        ...data,
-        address: data.merchantAddress,
-        name: data.merchantName,
-        phone: data.merchantPhone,
+        ...merchantInput,
         userId: user.id,
       });
 
       return {
-        user: {
-          ...user,
-          merchants: [merchant],
-        },
+        user,
         accessToken: await this.authService.generateAccessToken(user),
         refreshToken: await this.authService.generateRefreshToken(user),
       };

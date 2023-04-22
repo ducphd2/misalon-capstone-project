@@ -1,5 +1,3 @@
-import { join } from 'path';
-
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -11,6 +9,7 @@ import { UserModule } from './modules/user/user.module';
 
 import { GqlConfigService } from '@/api-gateway/gql-config.service';
 import { AuthModule } from '@/api-gateway/modules/auth/auth.module';
+import { BookingModule } from '@/api-gateway/modules/booking/booking.module';
 import { BranchModule } from '@/api-gateway/modules/branch/branch.module';
 import { GroupModule } from '@/api-gateway/modules/group/group.module';
 import { MerchantModule } from '@/api-gateway/modules/merchant/merchant.module';
@@ -26,20 +25,6 @@ import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
       driver: ApolloDriver,
       useClass: GqlConfigService,
     }),
-    // GraphQLModule.forRoot<ApolloDriverConfig>({
-    //   driver: ApolloDriver,
-    //   autoSchemaFile: join(process.cwd(), 'apps/api-gateway/src/schema.gql'),
-    //   playground: {
-    //     settings: {
-    //       'request.credentials': 'include',
-    //     },
-    //   },
-    //   context: ({ req, res }) => {
-    //     return { req, res };
-    //   },
-    //   installSubscriptionHandlers: true,
-    //   csrfPrevention: false,
-    // }),
     UploadModule,
     AuthModule,
     UserModule,
@@ -47,6 +32,7 @@ import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
     BranchModule,
     GroupModule,
     ServiceModule,
+    BookingModule,
   ],
   controllers: [],
   providers: [
