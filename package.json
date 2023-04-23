@@ -5,12 +5,6 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "workspaces": {
-    "packages": [
-      "./apps/*",
-      "./libs/*"
-    ]
-  },
   "scripts": {
     "start:api-gateway:dev": "nest start @app/api-gateway --watch --debug",
     "start:user-service:dev": "nest start @app/user-service --watch --debug",
@@ -22,6 +16,10 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "pm2-remove": "sh scripts/pm2-remove.sh",
+    "pm2-build": "sh scripts/build.sh",
+    "local:start": "sh scripts/pm2-start.sh",
+    "pm2-start": "yarn prebuild && yarn pm2-remove && yarn && yarn pm2-build && yarn local:start",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -68,6 +66,7 @@
     "class-validator": "^0.13.2",
     "cloudinary": "^1.36.1",
     "dotenv": "^16.0.3",
+    "global": "^4.4.0",
     "graphql": "^16.6.0",
     "graphql-depth-limit": "^1.1.0",
     "graphql-upload-minimal": "^1.5.4",
