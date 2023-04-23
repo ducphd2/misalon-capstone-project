@@ -4,6 +4,7 @@ package ducph_user;
 
 import "commons.proto";
 import "device.proto";
+import "merchant_user.proto";
 
 import "google/protobuf/struct.proto";
 
@@ -22,39 +23,10 @@ service UserService {
   rpc createDevice(device.CreateDeviceInput) returns (device.Device) {}
   rpc findDevices(commons.QueryRequest) returns (device.Devices) {}
   rpc upsertDevice(device.CreateDeviceInput) returns (device.Device) {}
-}
 
-enum EUserGender {
-  MALE = 0;
-  FEMALE = 1;
-  OTHER = 2;
-}
-
-enum EActionRole {
-  MANAGER = 0;
-  RECEPTIONIST = 1;
-  MASTER_WORKER = 2;
-  ASSISTANT_WORKER = 3;
-  USER_ROLE = 4;
-}
-
-enum EUserRole {
-  USER = 0;
-  ADMIN = 1;
-  SUPER_ADMIN = 2;
-}
-
-enum ECustomerLevel {
-  NORMAL = 0;
-  SILVER = 1;
-  GOLD = 2;
-  PLATINUM = 3;
-}
-
-enum EUserStatus {
-  PENDING = 0;
-  ACTIVE = 1;
-  BANNED = 2;
+  // merchant_user
+  rpc createMerchantUser(merchant_user.CreateMerchantUserInput)
+      returns (merchant_user.MerchantUser) {}
 }
 
 message User {
@@ -70,16 +42,16 @@ message User {
   // reserved field
   optional string email = 8;
   optional string password = 9;
-  optional EActionRole actionRole = 10;
-  optional EUserStatus status = 11;
+  optional commons.EActionRole actionRole = 10;
+  optional commons.EUserStatus status = 11;
   optional string fullName = 12;
   optional string contact = 13;
   optional string phoneNumber = 14;
   optional int32 dobDay = 15;
   optional int32 dobMonth = 16;
   optional int32 dobYear = 17;
-  optional EUserRole role = 18;
-  optional EUserGender gender = 19;
+  optional commons.EUserRole role = 18;
+  optional commons.EUserGender gender = 19;
   optional string occupation = 20;
   optional string avatar = 21;
   optional string address = 22;
@@ -88,7 +60,7 @@ message User {
   optional int32 wardCode = 25;
   optional string referrer = 26;
   optional string referrerCode = 27;
-  optional ECustomerLevel level = 28;
+  optional commons.ECustomerLevel level = 28;
   optional string customerCode = 29;
   optional string facebook = 30;
   optional string zaloPhone = 31;
@@ -104,21 +76,23 @@ message User {
   optional int32 branchId = 41;
   optional double latitude = 42;
   optional double longitude = 43;
+  optional bool isRetailCustomer = 44;
+  optional int32 merchantId = 45;
 }
 
 message CreateUserInput {
   optional string email = 1;
   optional string password = 2;
-  optional EActionRole actionRole = 3;
-  optional EUserStatus status = 4;
+  optional commons.EActionRole actionRole = 3;
+  optional commons.EUserStatus status = 4;
   optional string fullName = 5;
   optional string contact = 6;
   optional string phoneNumber = 7;
   optional int32 dobDay = 8;
   optional int32 dobMonth = 9;
   optional int32 dobYear = 10;
-  optional EUserRole role = 11;
-  optional EUserGender gender = 12;
+  optional commons.EUserRole role = 11;
+  optional commons.EUserGender gender = 12;
   optional string occupation = 13;
   optional string avatar = 14;
   optional string address = 15;
@@ -127,7 +101,7 @@ message CreateUserInput {
   optional int32 wardCode = 18;
   optional string referrer = 19;
   optional string referrerCode = 20;
-  optional ECustomerLevel level = 21;
+  optional commons.ECustomerLevel level = 21;
   optional string customerCode = 22;
   optional string facebook = 23;
   optional string zaloPhone = 24;
@@ -143,6 +117,8 @@ message CreateUserInput {
   optional int32 branchId = 34;
   optional double latitude = 35;
   optional double longitude = 36;
+  optional int32 merchantId = 37;
+  optional bool isRetailCustomer = 38;
 }
 
 message CreateUserRequest {
@@ -180,16 +156,16 @@ message UpdateUserData {
   oneof kind {
     string email = 1;
     string password = 2;
-    EActionRole actionRole = 3;
-    EUserStatus status = 4;
+    commons.EActionRole actionRole = 3;
+    commons.EUserStatus status = 4;
     string fullName = 5;
     string contact = 6;
     string phoneNumber = 7;
     int32 dobDay = 8;
     int32 dobMonth = 9;
     int32 dobYear = 10;
-    EUserRole role = 11;
-    EUserGender gender = 12;
+    commons.EUserRole role = 11;
+    commons.EUserGender gender = 12;
     string occupation = 13;
     string avatar = 14;
     string address = 15;
@@ -198,7 +174,7 @@ message UpdateUserData {
     int32 wardCode = 18;
     string referrer = 19;
     string referrerCode = 20;
-    ECustomerLevel level = 21;
+    commons.ECustomerLevel level = 21;
     string customerCode = 22;
     string facebook = 23;
     string zaloPhone = 24;

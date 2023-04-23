@@ -8,6 +8,7 @@ import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/mer
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { Booking, BookingPaginationResponse } from '@/api-gateway/types';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
+import { ESortDirection } from '@/api-gateway/dtos/user/user.dto';
 
 @Resolver(() => Booking)
 export class BookingQueryResolver {
@@ -25,7 +26,7 @@ export class BookingQueryResolver {
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+    @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: ESortDirection,
   ): Promise<BookingPaginationResponse> {
     const query = { where: {} };
 
@@ -44,7 +45,7 @@ export class BookingQueryResolver {
       page: page ? page : 1,
       limit: limit ? limit : 10,
       orderBy: orderBy ? orderBy : 'updatedAt',
-      orderDirection: orderDirection ? orderDirection : 'DESC',
+      orderDirection: orderDirection ?? ESortDirection.DESC,
     });
 
     return result;

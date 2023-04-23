@@ -371,7 +371,7 @@ type ResponseAuthGrpc {
 }
 
 type Query {
-  getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
+  getUsers(merchantId: Float, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): UsersConnection!
   getUser(id: Float!): UserPayload!
   userCount(q: String): Float!
   me: UserPayload!
@@ -385,9 +385,14 @@ type Query {
   findAllServiceGroups(q: String): GroupConnection!
   findServiceById(id: Float!): Service!
   findAllBranchServices(q: String): ServiceConnection!
-  findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): ServiceOffsetPagination!
-  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): ServiceOffsetPagination!
-  findAllBooking(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BookingPaginationResponse!
+  findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): ServiceOffsetPagination!
+  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): ServiceOffsetPagination!
+  findAllBooking(q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): BookingPaginationResponse!
+}
+
+enum ESortDirection {
+  ASC
+  DESC
 }
 
 type Mutation {

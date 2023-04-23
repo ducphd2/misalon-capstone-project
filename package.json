@@ -32,10 +32,12 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api-gateway/test/jest-e2e.json",
-    "migrate:user-service:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n",
-    "migrate:merchant-service:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n",
-    "migrate:up": "ts-node ./node_modules/typeorm/cli.js migration:run",
-    "migrate:down": "ts-node ./node_modules/typeorm/cli.js migration:revert"
+    "migrate:user-service:create": "ts-node ./node_modules/typeorm/cli.js --config apps/user-service/ormconfig.ts migration:create  -n",
+    "migrate:user-service:up": "ts-node ./node_modules/typeorm/cli.js --config apps/user-service/ormconfig.ts migration:run",
+    "migrate:user-service:down": "ts-node ./node_modules/typeorm/cli.js --config apps/user-service/ormconfig.ts migration:revert",
+    "migrate:merchant-service:create": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:create  -n",
+    "migrate:merchant-service:up": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:run",
+    "migrate:merchant-service:down": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:revert"
   },
   "dependencies": {
     "@apollo/server": "^4.6.0",
@@ -65,6 +67,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cloudinary": "^1.36.1",
+    "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
     "graphql-depth-limit": "^1.1.0",
     "graphql-upload-minimal": "^1.5.4",

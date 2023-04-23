@@ -3,7 +3,7 @@ import { EServiceShowType, EServiceType } from '@libs/grpc-types/protos/service'
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('service')
+@Entity('services')
 export class ServiceEntity extends BaseEntity {
   @Column('integer', { name: 'group_id', nullable: false })
   groupId?: number;

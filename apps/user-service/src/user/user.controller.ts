@@ -7,12 +7,13 @@ import {
   UserServiceControllerMethods,
 } from '@libs/grpc-types';
 import { CreateDeviceInput, Device, Devices } from '@libs/grpc-types/protos/device';
+import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { GrpcLogInterceptor } from 'interceptors/interceptors';
-import { Observable } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
+import { MerchantUserService } from '../merchant-user/merchant-user.service';
 
 import { UserService } from './user.service';
 
@@ -21,7 +22,15 @@ import { UserService } from './user.service';
 @Controller()
 @UserServiceControllerMethods()
 export class UserController implements UserServiceController {
-  constructor(private readonly userService: UserService, private readonly deviceService: DeviceService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly deviceService: DeviceService,
+    private readonly merchantUserService: MerchantUserService,
+  ) {}
+
+  async createMerchantUser(request: CreateMerchantUserInput): Promise<MerchantUser> {
+    return await this.merchantUserService.create(request);
+  }
 
   async upsertDevice(request: CreateDeviceInput): Promise<Device> {
     return await this.deviceService.upsertDevice(request);

@@ -1,7 +1,8 @@
 import { Column, Entity } from 'typeorm';
+
 import { BaseEntity } from '../base.entity';
 
-@Entity('image')
+@Entity('images')
 export class ImageEntity extends BaseEntity {
   @Column('smallint', { name: 'description', nullable: true })
   description: string;

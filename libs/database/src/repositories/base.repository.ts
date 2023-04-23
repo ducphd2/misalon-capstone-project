@@ -33,7 +33,7 @@ export class BaseRepository<Model extends BaseEntity> {
   }
 
   async findById(id: string | number, opts?: FindOneOptions<Model>): Promise<Model> {
-    return instanceToPlain(await this.model.findOneOrFail(id, { ...opts })) as Model;
+    return instanceToPlain(await this.model.findOne(id, { ...opts })) as Model;
   }
 
   async findRaw(where: FindConditions<Model>, options: FindOneOptions<Model>): Promise<Model> {
@@ -85,7 +85,7 @@ export class BaseRepository<Model extends BaseEntity> {
     return instanceToPlain(await this.model.save(entity)) as Model;
   }
 
-  async update(id: string | number, entity: QueryDeepPartialEntity<Model>): Promise<UpdateResult> {
+  async update(id: string | number, entity: QueryDeepPartialEntity<Model>): Promise<object> {
     return await this.model.update(id, entity);
   }
 
@@ -99,6 +99,7 @@ export class BaseRepository<Model extends BaseEntity> {
   merge(oldEntity: Model, entity: DeepPartial<Model>): Model {
     return instanceToPlain(this.model.merge(oldEntity, entity)) as Model;
   }
+
   async preload(entity: DeepPartial<Model>): Promise<Model> {
     return instanceToPlain(await this.model.preload(entity)) as Model;
   }

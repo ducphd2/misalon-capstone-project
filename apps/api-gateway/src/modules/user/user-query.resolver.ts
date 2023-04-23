@@ -7,6 +7,7 @@ import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { User, UserPayload, UsersConnection } from '@/api-gateway/types/user';
+import { ESortDirection } from '@/api-gateway/dtos/user/user.dto';
 
 @Resolver(() => UsersConnection)
 export class UserQueryResolver {
@@ -15,22 +16,22 @@ export class UserQueryResolver {
   @Query(() => UsersConnection)
   @UseGuards(GqlAuthGuard)
   async getUsers(
+    @Args('merchantId', { nullable: true }) merchantId?: number,
     @Args('q', { nullable: true }) q?: string,
-    @Args('first', { nullable: true }) first?: number,
-    @Args('last', { nullable: true }) last?: number,
-    @Args('before', { nullable: true }) before?: string,
-    @Args('after', { nullable: true }) after?: string,
+    @Args('limit', { nullable: true }) limit?: number,
+    @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
+    @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: ESortDirection,
   ): Promise<UsersConnection> {
-    const query = { where: {} };
-
-    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
-
-    merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
-
     const result = await this.userService.find({
-      ...query,
-      where: JSON.stringify(query.where),
+      where: JSON.stringify({
+        merchantId,
+      }),
+      searchKey: !isEmpty(q) ? `%${q}%` : undefined,
+      page: page ? page : 1,
+      limit: limit ? limit : 10,
+      orderBy: orderBy ? orderBy : 'updatedAt',
+      orderDirection: orderDirection ?? ESortDirection.DESC,
     });
 
     return result;

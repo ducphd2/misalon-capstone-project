@@ -7,6 +7,39 @@ export enum ESortDirection {
   DESC = 1,
 }
 
+export enum EUserGender {
+  MALE = 0,
+  FEMALE = 1,
+  OTHER = 2,
+}
+
+export enum EActionRole {
+  MANAGER = 0,
+  RECEPTIONIST = 1,
+  MASTER_WORKER = 2,
+  ASSISTANT_WORKER = 3,
+  USER_ROLE = 4,
+}
+
+export enum EUserRole {
+  USER = 0,
+  ADMIN = 1,
+  SUPER_ADMIN = 2,
+}
+
+export enum ECustomerLevel {
+  NORMAL = 0,
+  SILVER = 1,
+  GOLD = 2,
+  PLATINUM = 3,
+}
+
+export enum EUserStatus {
+  PENDING = 0,
+  ACTIVE = 1,
+  BANNED = 2,
+}
+
 export interface Id {
   id: number;
 }
@@ -47,7 +80,7 @@ export interface QueryRequest {
   limit?: number | undefined;
   searchKey?: string | undefined;
   orderBy?: string | undefined;
-  orderDirection?: string | undefined;
+  orderDirection?: ESortDirection | undefined;
 }
 
 export interface Sort {

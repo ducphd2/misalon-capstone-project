@@ -1,4 +1,4 @@
-import { DeviceEntity, UserEntity } from '@libs/database/entities';
+import { DeviceEntity, MerchantUserEntity, UserEntity } from '@libs/database/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
@@ -20,7 +20,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
           charset: 'utf8mb4',
           // logging: true,
           namingStrategy: new SnakeNamingStrategy(),
-          entities: [UserEntity, DeviceEntity],
+          entities: [UserEntity, DeviceEntity, MerchantUserEntity],
           extra: {
             extensions: ['postgis'],
           },

@@ -42,13 +42,6 @@ export class UserService {
       ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
     }
 
-    const { affected } = await this.userRepository.update(request.id, request.data);
-    if (affected < 1) {
-      ErrorHelper.NotFoundException(USER_MESSAGE.UPDATE.FAIL);
-    }
-
-    const updatedUser = await this.findById(request.id);
-
-    return updatedUser;
+    return await this.userRepository.updateUser(request.id, request.data);
   }
 }

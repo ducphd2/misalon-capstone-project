@@ -1,64 +1,27 @@
 version: '3.9'
+volumes:
+  dbbackups:
+  postgis-data:
+
 
 services:
-  # base-node:
-  #   image: base-node
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
 
-  mongo:
-    image: mongo
+  db:
+    image: kartoza/postgis:15-3.3
+    volumes:
+      - postgis-data:/var/lib/postgresql
+      - dbbackups:/backups
+    environment:
+      # If you need to create multiple database you can add coma separated databases eg gis,data
+      - POSTGRES_DB=gis,user-service,merchant-service,booking-service,notification-service
+      - POSTGRES_USER=admin
+      - POSTGRES_PASS=admin
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      # Add extensions you need to be enabled by default in the DB. Default are the five specified below
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
+      - RUN_AS_ROOT=true
     ports:
-      - 27016:27017
-    networks:
-      - app-net
-
-  # gateway:
-  #   image: base-node
-  #   ports:
-  #     - 3032:3032
-  #   networks:
-  #     - app-net
-  #   environment:
-  #     - APP_NAME=api-gateway
-  #   command: './init.sh'
-  #   volumes:
-  #     - './apps:/project/apps:ro'
-  #     - './libs:/project/libs:ro'
-
-  # auth-service:
-  #   image: base-node
-  #   networks:
-  #     - app-net
-  #   environment:
-  #     - APP_NAME=auth-service
-  #   command: './init.sh'
-  #   volumes:
-  #     - './apps:/project/apps:ro'
-  #     - './libs:/project/libs:ro'
-
-  # user-service:
-  #   image: base-node
-  #   networks:
-  #     - app-net
-  #   environment:
-  #     - APP_NAME=user-service
-  #   command: './init.sh'
-  #   volumes:
-  #     - './apps:/project/apps:ro'
-  #     - './libs:/project/libs:ro'
-
-  # todo-service:
-  #   image: base-node
-  #   networks:
-  #     - app-net
-  #   environment:
-  #     - APP_NAME=todo-service
-  #   command: './init.sh'
-  #   volumes:
-  #     - './apps:/project/apps:ro'
-  #     - './libs:/project/libs:ro'
-
-networks:
-  app-net:
+      - "5433:5432"
+    restart: on-failure
+    healthcheck:
+      test: "PGPASSWORD=docker pg_isready -h 127.0.0.1 -U docker -d gis"

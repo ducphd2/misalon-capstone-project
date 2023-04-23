@@ -1,44 +1,22 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, Id, PageInfo, QueryRequest } from "./commons";
+import {
+  Count,
+  EActionRole,
+  ECustomerLevel,
+  EUserGender,
+  EUserRole,
+  EUserStatus,
+  Id,
+  PageInfo,
+  QueryRequest,
+} from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
+import { CreateMerchantUserInput, MerchantUser } from "./merchant_user";
 
 export const protobufPackage = "ducph_user";
-
-export enum EUserGender {
-  MALE = 0,
-  FEMALE = 1,
-  OTHER = 2,
-}
-
-export enum EActionRole {
-  MANAGER = 0,
-  RECEPTIONIST = 1,
-  MASTER_WORKER = 2,
-  ASSISTANT_WORKER = 3,
-  USER_ROLE = 4,
-}
-
-export enum EUserRole {
-  USER = 0,
-  ADMIN = 1,
-  SUPER_ADMIN = 2,
-}
-
-export enum ECustomerLevel {
-  NORMAL = 0,
-  SILVER = 1,
-  GOLD = 2,
-  PLATINUM = 3,
-}
-
-export enum EUserStatus {
-  PENDING = 0,
-  ACTIVE = 1,
-  BANNED = 2,
-}
 
 export interface User {
   /** default field */
@@ -88,6 +66,8 @@ export interface User {
   branchId?: number | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  isRetailCustomer?: boolean | undefined;
+  merchantId?: number | undefined;
 }
 
 export interface CreateUserInput {
@@ -127,6 +107,8 @@ export interface CreateUserInput {
   branchId?: number | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  merchantId?: number | undefined;
+  isRetailCustomer?: boolean | undefined;
 }
 
 export interface CreateUserRequest {
@@ -226,6 +208,10 @@ export interface UserServiceClient {
   findDevices(request: QueryRequest): Observable<Devices>;
 
   upsertDevice(request: CreateDeviceInput): Observable<Device>;
+
+  /** merchant_user */
+
+  createMerchantUser(request: CreateMerchantUserInput): Observable<MerchantUser>;
 }
 
 export interface UserServiceController {
@@ -254,6 +240,10 @@ export interface UserServiceController {
   findDevices(request: QueryRequest): Promise<Devices> | Observable<Devices> | Devices;
 
   upsertDevice(request: CreateDeviceInput): Promise<Device> | Observable<Device> | Device;
+
+  /** merchant_user */
+
+  createMerchantUser(request: CreateMerchantUserInput): Promise<MerchantUser> | Observable<MerchantUser> | MerchantUser;
 }
 
 export function UserServiceControllerMethods() {
@@ -270,6 +260,7 @@ export function UserServiceControllerMethods() {
       "createDevice",
       "findDevices",
       "upsertDevice",
+      "createMerchantUser",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
