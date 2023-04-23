@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package merchant_user;
+
+import "commons.proto";
+
+message MerchantUser {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional commons.EUserRole role = 8;
+  optional commons.EActionRole actionRole = 9;
+  optional commons.EUserStatus status = 10;
+  optional int32 userId = 11;
+  optional int32 merchantId = 12;
+  optional int32 branchId = 13;
+}
+
+message CreateMerchantUserInput {
+  optional commons.EUserRole role = 1;
+  optional commons.EActionRole actionRole = 2;
+  optional commons.EUserStatus status = 3;
+  optional int32 userId = 4;
+  optional int32 merchantId = 5;
+  optional int32 branchId = 6;
+}
+
+message MerchantUsers {
+  repeated MerchantUser items = 1;
+  optional commons.PageMeta meta = 2;
+}

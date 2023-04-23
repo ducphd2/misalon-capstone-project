@@ -5,6 +5,7 @@ import * as BookingProto from './protos/booking';
 import * as NotificationProto from './protos/notification';
 import * as BranchProto from './protos/branch';
 import * as DeviceProto from './protos/device';
+import * as MerchantUserProto from './protos/merchant_user';
 
 export * from './config';
 
@@ -13,6 +14,15 @@ export * from './clients';
 
 export * from './protos/user';
 
-export { CommonProto, UserProto, MerchantProto, BookingProto, NotificationProto, BranchProto, DeviceProto };
+export {
+  CommonProto,
+  UserProto,
+  MerchantProto,
+  BookingProto,
+  NotificationProto,
+  BranchProto,
+  DeviceProto,
+  MerchantUserProto,
+};
 
 export const GrpcMetadataErrorKey = 'custom-grpc-error';

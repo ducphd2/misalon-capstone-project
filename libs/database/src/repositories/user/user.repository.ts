@@ -9,4 +9,15 @@ export class UserRepository extends BaseRepository<UserEntity> {
   constructor(@InjectRepository(UserEntity) readonly userModel: Repository<UserEntity>) {
     super(userModel);
   }
+
+  async updateUser(id: number, update: Partial<UserEntity>): Promise<UserEntity> {
+    try {
+      const updatedEntity = await this.findById(id);
+      this.merge(updatedEntity, update);
+      this.createModel(update).updateSearchColumn();
+      return this.save(updatedEntity);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

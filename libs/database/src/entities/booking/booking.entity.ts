@@ -3,7 +3,7 @@ import { EBookingStatus } from '@libs/grpc-types/protos/booking';
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('booking')
+@Entity('bookings')
 export class BookingEntity extends BaseEntity {
   @Column('smallint', { name: 'status', nullable: true })
   status?: EBookingStatus;

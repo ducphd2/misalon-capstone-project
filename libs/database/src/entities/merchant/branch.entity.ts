@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('branch')
+@Entity('branchs')
 export class BranchEntity extends BaseEntity {
   @Column('integer', { name: 'merchant_id', nullable: false })
   merchantId?: number;

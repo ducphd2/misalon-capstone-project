@@ -3,7 +3,7 @@ import { EDeviceOs } from '@libs/grpc-types/protos/device';
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('device')
+@Entity('devices')
 export class DeviceEntity extends BaseEntity {
   @Column('integer', { nullable: false })
   userId: number;

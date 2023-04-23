@@ -2,11 +2,11 @@ import { QueryUtils } from '@libs/core';
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
-import { ESortDirection } from '@libs/grpc-types/protos/commons';
 
 import { Service, ServiceConnection, ServiceOffsetPagination } from '@/api-gateway/types';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
+import { ESortDirection } from '@/api-gateway/dtos/user/user.dto';
 
 @Resolver(() => Service)
 export class ServiceQueryResolver {
@@ -42,7 +42,7 @@ export class ServiceQueryResolver {
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+    @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: ESortDirection,
   ): Promise<ServiceOffsetPagination> {
     try {
       const query = {
@@ -53,7 +53,7 @@ export class ServiceQueryResolver {
         page: page ? page : 1,
         limit: limit ? limit : 10,
         orderBy: orderBy ? orderBy : 'updatedAt',
-        orderDirection: orderDirection ? orderDirection : 'DESC',
+        orderDirection: orderDirection ?? ESortDirection.DESC,
       };
 
       const result = await this.merchantService.findServiceOffsetPagination({
@@ -74,7 +74,7 @@ export class ServiceQueryResolver {
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+    @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: ESortDirection,
   ): Promise<ServiceOffsetPagination> {
     try {
       const query = {
@@ -82,7 +82,7 @@ export class ServiceQueryResolver {
         page: page ? page : 1,
         limit: limit ? limit : 10,
         orderBy: orderBy ? orderBy : 'updatedAt',
-        orderDirection: orderDirection ? orderDirection : 'DESC',
+        orderDirection: orderDirection ?? ESortDirection.DESC,
         where: {},
       };
 

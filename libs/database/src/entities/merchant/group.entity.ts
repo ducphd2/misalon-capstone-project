@@ -1,7 +1,8 @@
 import { Column, Entity } from 'typeorm';
+
 import { BaseEntity } from '../base.entity';
 
-@Entity('group')
+@Entity('groups')
 export class GroupEntity extends BaseEntity {
   @Column('integer', { name: 'merchant_id', nullable: false })
   merchantId?: number;

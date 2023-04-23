@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('notification')
+@Entity('notifications')
 export class NotificationEntity extends BaseEntity {
   @Column('integer', { nullable: false })
   userId: number;

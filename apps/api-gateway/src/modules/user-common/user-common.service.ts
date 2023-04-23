@@ -11,6 +11,7 @@ import {
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 
 import { Device } from '@/api-gateway/types';
 
@@ -63,5 +64,10 @@ export class UserCommonService implements OnModuleInit {
 
   async upsertDevice(data: CreateDeviceInput): Promise<Device> {
     return await firstValueFrom(this.userService.upsertDevice(data));
+  }
+
+  // Merchant user
+  async createMerchantUser(data: CreateMerchantUserInput): Promise<MerchantUser> {
+    return await firstValueFrom(this.userService.createMerchantUser(data));
   }
 }

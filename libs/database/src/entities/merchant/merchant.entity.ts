@@ -3,7 +3,7 @@ import { ObjectType } from '@nestjs/graphql';
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('merchant')
+@Entity('merchants')
 @ObjectType()
 export class MerchantEntity extends BaseEntity {
   @Column('integer', { name: 'user_id', nullable: false })

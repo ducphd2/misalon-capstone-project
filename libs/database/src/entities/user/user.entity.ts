@@ -1,18 +1,19 @@
-import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/user';
+import { toUFT8NonSpecialCharacters } from '@libs/core';
 import { hash } from 'argon2';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
+import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 
 import { BaseEntity } from '../base.entity';
 
-@Entity('user')
+@Entity('users')
 export class UserEntity extends BaseEntity {
-  @Column('varchar', { nullable: false })
+  @Column('varchar', { nullable: true })
   email?: string;
 
-  @Column('varchar', { nullable: false })
+  @Column('varchar', { nullable: true })
   password?: string;
 
-  @Column('smallint', { nullable: false })
+  @Column('smallint', { nullable: true })
   role?: EUserRole;
 
   @Column('smallint', { nullable: true })
@@ -26,6 +27,9 @@ export class UserEntity extends BaseEntity {
 
   @Column('varchar', { nullable: true })
   fullName?: string;
+
+  @Column('boolean', { nullable: true })
+  isRetailCustomer?: boolean;
 
   @Column('varchar', { nullable: true })
   contact?: string;
@@ -108,6 +112,9 @@ export class UserEntity extends BaseEntity {
   @Column('integer', { nullable: true })
   branchId?: number;
 
+  @Column('integer', { nullable: true })
+  merchantId?: number;
+
   @Column({
     type: 'double precision',
     default: 0,
@@ -120,6 +127,9 @@ export class UserEntity extends BaseEntity {
   })
   longitude?: number;
 
+  @Column('tsvector', { nullable: true })
+  search?: string;
+
   @BeforeInsert()
   async hashPassword(): Promise<void> {
     try {
@@ -129,5 +139,16 @@ export class UserEntity extends BaseEntity {
     } catch (error) {
       console.log('Hash password error: ', error);
     }
+  }
+
+  @BeforeInsert()
+  updateSearchColumn(): void {
+    const columnsToConcatenate = ['email', 'fullName', 'address', 'contact', 'phoneNumber'];
+    const concatenatedValues = columnsToConcatenate
+      .map((columnName) => this[columnName]) // retrieve column values using bracket notation
+      .filter((value) => value !== null && value !== undefined) // remove null or undefined values
+      .join(' ');
+
+    this.search = concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues));
   }
 }
