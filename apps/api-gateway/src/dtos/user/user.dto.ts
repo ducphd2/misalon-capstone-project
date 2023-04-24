@@ -1,129 +1,9 @@
-import { Field, InputType, registerEnumType } from '@nestjs/graphql';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { Transform, TransformFnParams } from 'class-transformer';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 import { Match } from '@/api-gateway/core/decorators';
-
-export enum ESortDirection {
-  ASC = 0,
-  DESC = 1,
-}
-
-export enum EServiceShowType {
-  BOTH = 0,
-  CASHIER = 1,
-  BOOKING = 2,
-  NONE = 3,
-}
-
-export enum EServiceType {
-  SERVICE = 0,
-  PRODUCT = 1,
-}
-
-export enum EServeImageType {
-  MERCHANT = 0,
-  BRANCH = 1,
-  GROUP = 2,
-  SERVICE = 3,
-}
-
-export enum EImageType {
-  PHOTO = 0,
-  VIDEO = 1,
-}
-
-export enum EDeviceOs {
-  ANDROID = 0,
-  IOS = 1,
-}
-
-export enum EUserGender {
-  MALE = 0,
-  FEMALE = 1,
-  OTHER = 2,
-}
-
-export enum EActionRole {
-  MANAGER = 0,
-  RECEPTIONIST = 1,
-  MASTER_WORKER = 2,
-  ASSISTANT_WORKER = 3,
-  USER_ROLE = 4,
-}
-
-export enum EUserRole {
-  USER = 0,
-  ADMIN = 1,
-  SUPER_ADMIN = 2,
-}
-
-export enum ECustomerLevel {
-  NORMAL = 0,
-  SILVER = 1,
-  GOLD = 2,
-  PLATINUM = 3,
-}
-
-export enum EUserStatus {
-  PENDING = 0,
-  ACTIVE = 1,
-  BANNED = 2,
-}
-
-export enum EBookingStatus {
-  PENDING = 0,
-  APPROVE = 1,
-  CANCELLED = 2,
-  REJECT = 3,
-}
-
-registerEnumType(EDeviceOs, {
-  name: 'EDeviceOs',
-});
-
-registerEnumType(EUserRole, {
-  name: 'EUserRole',
-});
-
-registerEnumType(EActionRole, {
-  name: 'EActionRole',
-});
-
-registerEnumType(EUserGender, {
-  name: 'EUserGender',
-});
-
-registerEnumType(EUserStatus, {
-  name: 'EUserStatus',
-});
-
-registerEnumType(ECustomerLevel, {
-  name: 'ECustomerLevel',
-});
-
-registerEnumType(EBookingStatus, {
-  name: 'EBookingStatus',
-});
-
-registerEnumType(ESortDirection, {
-  name: 'ESortDirection',
-});
-
-registerEnumType(EServeImageType, {
-  name: 'EServeImageType',
-});
-
-registerEnumType(EImageType, {
-  name: 'EImageType',
-});
-
-registerEnumType(EServiceType, {
-  name: 'EServiceType',
-});
-
-registerEnumType(EServiceShowType, {
-  name: 'EServiceShowType',
-});
+import { ECustomerLevel, EDeviceOs, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 @InputType()
 export class UserInputDto {
@@ -160,4 +40,144 @@ export class ChangePasswordInput {
   @IsString()
   @IsNotEmpty()
   confirmPassword: string;
+}
+
+@InputType()
+export class AddOperatorDto {
+  @Field(() => String, { nullable: true })
+  @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
+  @IsEmail()
+  @IsOptional()
+  email: string;
+
+  @Field()
+  @MaxLength(30)
+  @MinLength(5)
+  @IsString()
+  @IsOptional()
+  password: string;
+
+  @Field(() => String, { nullable: true })
+  @IsNotEmpty()
+  @IsString()
+  fullName: string;
+
+  @Field(() => EUserRole, { nullable: false, defaultValue: EUserRole.ADMIN })
+  @IsEnum(EUserRole)
+  @IsNotEmpty()
+  role: EUserRole;
+
+  @Field(() => EUserStatus, { nullable: true })
+  @IsOptional()
+  @IsEnum(EUserStatus)
+  status: EUserStatus;
+
+  @Field(() => EUserGender, { nullable: true })
+  @IsEnum(EUserGender)
+  @IsOptional()
+  gender: EUserGender;
+
+  @Field(() => ECustomerLevel, { nullable: true })
+  @IsOptional()
+  level?: ECustomerLevel;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  contact: string;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  dobDay: number;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  dobMonth: number;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  dobYear: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  occupation?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  avatar?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  address?: string;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  cityCode?: number;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  districtCode?: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  wardCode?: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  referrer?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  referrerCode?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  customerCode?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  facebook?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  zaloPhone?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  height?: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  weight?: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  memberCardNo?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  company?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  taxNo?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  note?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  relatedUser?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  relatedUserRole?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  relatedUserPhone?: string;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  branchId?: number;
 }

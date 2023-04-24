@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { EActionRole, EUserRole, EUserStatus, PageMeta } from "./commons";
+import { EUserRole, EUserStatus, PageMeta } from "./commons";
 
 export const protobufPackage = "merchant_user";
 
@@ -16,7 +16,6 @@ export interface MerchantUser {
     | undefined;
   /** reserved field */
   role?: EUserRole | undefined;
-  actionRole?: EActionRole | undefined;
   status?: EUserStatus | undefined;
   userId?: number | undefined;
   merchantId?: number | undefined;
@@ -25,7 +24,6 @@ export interface MerchantUser {
 
 export interface CreateMerchantUserInput {
   role?: EUserRole | undefined;
-  actionRole?: EActionRole | undefined;
   status?: EUserStatus | undefined;
   userId?: number | undefined;
   merchantId?: number | undefined;

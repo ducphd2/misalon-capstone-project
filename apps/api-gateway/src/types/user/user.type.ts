@@ -3,7 +3,7 @@ import { Field, Float, HideField, InputType, Int, ObjectType, PartialType } from
 import { BaseType, ErrorPayload, PageInfo } from './../base';
 
 import { CreateUserInputDto } from '@/api-gateway/dtos';
-import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/user/user.dto';
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 import { Merchant } from '@/api-gateway/types/merchant';
 import { DevicePaging } from '@/api-gateway/types/user/device.type';
 
@@ -29,9 +29,6 @@ export class User extends BaseType {
 
   @Field(() => ECustomerLevel, { nullable: true })
   level?: ECustomerLevel;
-
-  @Field(() => EActionRole, { nullable: true })
-  actionRole?: EActionRole;
 
   @Field({ nullable: true })
   contact?: string;

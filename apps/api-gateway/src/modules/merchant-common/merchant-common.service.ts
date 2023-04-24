@@ -40,6 +40,10 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.findById(id));
   }
 
+  async findOne(request: QueryRequest): Promise<NullableMerchant> {
+    return await firstValueFrom(this.merchantService.findOne(request));
+  }
+
   async find(query: QueryRequest): Promise<MerchantPagination> {
     return await firstValueFrom(this.merchantService.find(query));
   }

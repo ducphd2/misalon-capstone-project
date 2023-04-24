@@ -8,7 +8,7 @@ import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/mer
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { Booking, BookingPaginationResponse } from '@/api-gateway/types';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
-import { ESortDirection } from '@/api-gateway/dtos/user/user.dto';
+import { ESortDirection } from '@/api-gateway/dtos/common';
 
 @Resolver(() => Booking)
 export class BookingQueryResolver {

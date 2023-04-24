@@ -42,7 +42,6 @@ message User {
   // reserved field
   optional string email = 8;
   optional string password = 9;
-  optional commons.EActionRole actionRole = 10;
   optional commons.EUserStatus status = 11;
   optional string fullName = 12;
   optional string contact = 13;
@@ -83,7 +82,6 @@ message User {
 message CreateUserInput {
   optional string email = 1;
   optional string password = 2;
-  optional commons.EActionRole actionRole = 3;
   optional commons.EUserStatus status = 4;
   optional string fullName = 5;
   optional string contact = 6;
@@ -156,7 +154,6 @@ message UpdateUserData {
   oneof kind {
     string email = 1;
     string password = 2;
-    commons.EActionRole actionRole = 3;
     commons.EUserStatus status = 4;
     string fullName = 5;
     string contact = 6;

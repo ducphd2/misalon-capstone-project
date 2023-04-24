@@ -1,7 +1,7 @@
 import { Field, ID, InputType, ObjectType, PartialType } from '@nestjs/graphql';
 
 import { DeviceInputDto } from '@/api-gateway/dtos';
-import { EDeviceOs } from '@/api-gateway/dtos/user/user.dto';
+import { EDeviceOs } from '@/api-gateway/dtos/common';
 import { BaseType, PageMeta } from '@/api-gateway/types/base';
 
 @ObjectType()

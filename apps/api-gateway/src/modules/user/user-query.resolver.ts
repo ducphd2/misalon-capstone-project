@@ -7,7 +7,7 @@ import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { User, UserPayload, UsersConnection } from '@/api-gateway/types/user';
-import { ESortDirection } from '@/api-gateway/dtos/user/user.dto';
+import { ESortDirection } from '@/api-gateway/dtos/common';
 
 @Resolver(() => UsersConnection)
 export class UserQueryResolver {

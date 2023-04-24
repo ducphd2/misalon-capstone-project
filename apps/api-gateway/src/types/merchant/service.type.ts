@@ -1,7 +1,7 @@
 import { Field, Float, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
+import { EServiceShowType, EServiceType } from '@/api-gateway/dtos/common';
 import { BaseType, ErrorPayload, PageInfo } from '@/api-gateway/types/base';
-import { EServiceShowType, EServiceType } from '@/api-gateway/dtos/user/user.dto';
 
 @ObjectType()
 export class Service extends BaseType {

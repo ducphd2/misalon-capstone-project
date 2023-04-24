@@ -13,18 +13,14 @@ export enum EUserGender {
   OTHER = 2,
 }
 
-export enum EActionRole {
-  MANAGER = 0,
-  RECEPTIONIST = 1,
-  MASTER_WORKER = 2,
-  ASSISTANT_WORKER = 3,
-  USER_ROLE = 4,
-}
-
 export enum EUserRole {
   USER = 0,
   ADMIN = 1,
   SUPER_ADMIN = 2,
+  MASTER_WORKER = 3,
+  ASSISTANT_WORKER = 4,
+  MANAGER = 5,
+  RECEPTIONIST = 6,
 }
 
 export enum ECustomerLevel {
