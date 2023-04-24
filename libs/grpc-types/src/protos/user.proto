@@ -16,7 +16,6 @@ service UserService {
   rpc count(commons.QueryRequest) returns (commons.Count) {}
   rpc update(UpdateUserInput) returns (FindOneUser) {}
 
-  rpc findOneCustomer(commons.QueryRequest) returns (FindOneCustomerPayload) {}
   rpc deleteCustomer(commons.Id) returns (commons.Count) {}
 
   // device
@@ -27,6 +26,9 @@ service UserService {
   // merchant_user
   rpc createMerchantUser(merchant_user.CreateMerchantUserInput)
       returns (merchant_user.MerchantUser) {}
+
+  rpc addOperator(AddOperatorInput) returns (FindOneUser) {}
+  rpc countCustomer(commons.QueryRequest) returns (commons.Count) {}
 }
 
 message User {
@@ -188,7 +190,7 @@ message UpdateUserData {
   }
 }
 
-message FindOneCustomerPayload {
-  User user = 1;
-  User customer = 2;
+message AddOperatorInput {
+  CreateUserInput user = 1;
+  optional merchant_user.CreateMerchantUserInput merchantUser = 2;
 }

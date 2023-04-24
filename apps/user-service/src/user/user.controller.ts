@@ -27,6 +27,17 @@ export class UserController implements UserServiceController {
     private readonly deviceService: DeviceService,
     private readonly merchantUserService: MerchantUserService,
   ) {}
+  async countCustomer(request: CommonProto.QueryRequest): Promise<CommonProto.Count> {
+    const count = await this.userService.countCustomer(request);
+    return { count };
+  }
+
+  async addOperator(request: UserProto.AddOperatorInput): Promise<FindOneUser> {
+    const user = await this.userService.create(request);
+    await this.merchantUserService.create({ ...request.merchantUser, userId: user.id });
+
+    return { user };
+  }
 
   async createMerchantUser(request: CreateMerchantUserInput): Promise<MerchantUser> {
     return await this.merchantUserService.create(request);
@@ -58,10 +69,6 @@ export class UserController implements UserServiceController {
     const updatedUser = await this.userService.update(request);
 
     return { user: updatedUser };
-  }
-
-  findOneCustomer(request: CommonProto.QueryRequest): Promise<UserProto.FindOneCustomerPayload> {
-    throw new Error('Method not implemented.');
   }
 
   deleteCustomer(request: CommonProto.Id): Promise<CommonProto.Count> {

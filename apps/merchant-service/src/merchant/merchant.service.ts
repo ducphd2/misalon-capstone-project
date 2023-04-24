@@ -35,4 +35,9 @@ export class MerchantService {
     );
     return merchants;
   }
+
+  async findById(id: number): Promise<MerchantEntity> {
+    const merchant = await this.merchantRepository.findById(id);
+    return merchant;
+  }
 }

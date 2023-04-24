@@ -27,6 +27,7 @@ import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { GrpcLogInterceptor } from 'interceptors/interceptors';
 import { Observable } from 'rxjs';
+import { MerchantEntity } from '@libs/database/entities';
 
 import { MerchantService } from './merchant.service';
 
@@ -67,8 +68,9 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     throw new Error('Method not implemented.');
   }
 
-  findById(request: Id): Promise<MerchantProto.NullableMerchant> {
-    throw new Error('Method not implemented.');
+  async findById(id: Id): Promise<MerchantProto.NullableMerchant> {
+    const merchant: MerchantEntity = await this.merchantService.findById(id.id);
+    return { merchant };
   }
 
   branch(request: QueryRequest): NullableBranch | Promise<NullableBranch> | Observable<NullableBranch> {

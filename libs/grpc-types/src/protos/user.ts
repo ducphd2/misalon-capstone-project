@@ -164,9 +164,9 @@ export interface UpdateUserData {
   branchId?: number | undefined;
 }
 
-export interface FindOneCustomerPayload {
-  user: User | undefined;
-  customer: User | undefined;
+export interface AddOperatorInput {
+  user: CreateUserInput | undefined;
+  merchantUser?: CreateMerchantUserInput | undefined;
 }
 
 export const DUCPH_USER_PACKAGE_NAME = "ducph_user";
@@ -184,8 +184,6 @@ export interface UserServiceClient {
 
   update(request: UpdateUserInput): Observable<FindOneUser>;
 
-  findOneCustomer(request: QueryRequest): Observable<FindOneCustomerPayload>;
-
   deleteCustomer(request: Id): Observable<Count>;
 
   /** device */
@@ -199,6 +197,10 @@ export interface UserServiceClient {
   /** merchant_user */
 
   createMerchantUser(request: CreateMerchantUserInput): Observable<MerchantUser>;
+
+  addOperator(request: AddOperatorInput): Observable<FindOneUser>;
+
+  countCustomer(request: QueryRequest): Observable<Count>;
 }
 
 export interface UserServiceController {
@@ -214,10 +216,6 @@ export interface UserServiceController {
 
   update(request: UpdateUserInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
-  findOneCustomer(
-    request: QueryRequest,
-  ): Promise<FindOneCustomerPayload> | Observable<FindOneCustomerPayload> | FindOneCustomerPayload;
-
   deleteCustomer(request: Id): Promise<Count> | Observable<Count> | Count;
 
   /** device */
@@ -231,6 +229,10 @@ export interface UserServiceController {
   /** merchant_user */
 
   createMerchantUser(request: CreateMerchantUserInput): Promise<MerchantUser> | Observable<MerchantUser> | MerchantUser;
+
+  addOperator(request: AddOperatorInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
+
+  countCustomer(request: QueryRequest): Promise<Count> | Observable<Count> | Count;
 }
 
 export function UserServiceControllerMethods() {
@@ -242,12 +244,13 @@ export function UserServiceControllerMethods() {
       "findOne",
       "count",
       "update",
-      "findOneCustomer",
       "deleteCustomer",
       "createDevice",
       "findDevices",
       "upsertDevice",
       "createMerchantUser",
+      "addOperator",
+      "countCustomer",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -2,59 +2,21 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-import { Match } from '@/api-gateway/core/decorators';
-import { ECustomerLevel, EDeviceOs, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 @InputType()
-export class UserInputDto {
-  @Field(() => EDeviceOs)
-  @IsEnum(EDeviceOs)
-  @IsNotEmpty()
-  os: EDeviceOs;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  deviceId: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  token: string;
-}
-
-@InputType()
-export class ChangePasswordInput {
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  currentPassword: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  newPassword: string;
-
-  @Field()
-  @Match('newPassword')
-  @IsString()
-  @IsNotEmpty()
-  confirmPassword: string;
-}
-
-@InputType()
-export class AddOperatorDto {
-  @Field(() => String, { nullable: false })
+export class AddCustomerDto {
+  @Field(() => String, { nullable: true })
   @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
   @IsEmail()
-  @IsNotEmpty()
+  @IsOptional()
   email: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   @MaxLength(30)
   @MinLength(5)
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   password: string;
 
   @Field(() => String, { nullable: false })
@@ -62,7 +24,7 @@ export class AddOperatorDto {
   @IsString()
   fullName: string;
 
-  @Field(() => EUserRole, { nullable: false, defaultValue: EUserRole.MASTER_WORKER })
+  @Field(() => EUserRole, { nullable: false, defaultValue: EUserRole.USER })
   @IsEnum(EUserRole)
   @IsNotEmpty()
   role: EUserRole;
@@ -84,6 +46,11 @@ export class AddOperatorDto {
   @Field(() => String, { nullable: true })
   @IsOptional()
   contact: string;
+
+  @Field(() => String, { nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  phoneNumber: string;
 
   @Field(() => Int, { nullable: true })
   @IsOptional()
