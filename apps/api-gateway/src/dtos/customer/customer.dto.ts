@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
@@ -152,3 +152,6 @@ export class AddCustomerDto {
   @IsOptional()
   merchantId?: number;
 }
+
+@InputType()
+export class UpdatePartialCustomer extends PartialType<AddCustomerDto>(AddCustomerDto) {}

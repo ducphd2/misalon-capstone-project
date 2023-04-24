@@ -2,6 +2,7 @@ import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import {
   AddOperatorInput,
+  AdminUpdateCustomerInput,
   CreateUserRequest,
   DUCPH_USER_PACKAGE_NAME,
   FindOneUser,
@@ -78,5 +79,14 @@ export class UserCommonService implements OnModuleInit {
 
   async countCustomer(query: QueryRequest) {
     return await firstValueFrom(this.userService.countCustomer(query));
+  }
+
+  // customer
+  async addCustomer(data: AddOperatorInput): Promise<FindOneUser> {
+    return await firstValueFrom(this.userService.addCustomer(data));
+  }
+
+  async updateCustomer(data: AdminUpdateCustomerInput): Promise<FindOneUser> {
+    return await firstValueFrom(this.userService.updateCustomer(data));
   }
 }

@@ -1,6 +1,6 @@
 import { Field, Float, HideField, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
-import { BaseType, ErrorPayload, PageInfo } from './../base';
+import { BaseType, ErrorPayload, PageMeta } from './../base';
 
 import { CreateUserInputDto } from '@/api-gateway/dtos';
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
@@ -121,44 +121,8 @@ export class User extends BaseType {
   devices?: DevicePaging;
 }
 
-@ObjectType()
-export class UserEdge {
-  @Field(() => User)
-  node: User;
-
-  @Field(() => String)
-  cursor: string;
-}
-
-@ObjectType()
-export class UsersConnection {
-  @Field(() => [UserEdge])
-  edges: UserEdge[];
-
-  @Field(() => PageInfo)
-  pageInfo: PageInfo;
-}
-
 @InputType()
 export class UpdatePartialUser extends PartialType<CreateUserInputDto>(CreateUserInputDto) {}
-
-@ObjectType()
-export class UserPaginationResponse {
-  @Field(() => [User])
-  items: User[];
-
-  @Field(() => Int)
-  page: number;
-
-  @Field(() => Int)
-  totalPage: number;
-
-  @Field(() => Int)
-  total: number;
-
-  @Field(() => Int)
-  limit: number;
-}
 
 @ObjectType()
 export class UserPayload {
@@ -167,4 +131,13 @@ export class UserPayload {
 
   @Field(() => User, { nullable: true })
   user?: User;
+}
+
+@ObjectType()
+export class UserPaging {
+  @Field(() => [User], { nullable: true })
+  items?: User[];
+
+  @Field(() => PageMeta, { nullable: true })
+  meta?: PageMeta;
 }

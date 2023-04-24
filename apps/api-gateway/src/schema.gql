@@ -84,11 +84,6 @@ type Merchant {
   branches(q: String): BranchPaging!
 }
 
-type MerchantEdge {
-  node: Merchant!
-  cursor: String!
-}
-
 type MerchantPaging {
   items: [Merchant!]
   meta: PageMeta
@@ -274,19 +269,14 @@ enum ECustomerLevel {
   PLATINUM
 }
 
-type UserEdge {
-  node: User!
-  cursor: String!
-}
-
-type UsersConnection {
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-}
-
 type UserPayload {
   errors: [ErrorPayload!]
   user: User
+}
+
+type UserPaging {
+  items: [User!]
+  meta: PageMeta
 }
 
 type SingleUpload {
@@ -366,7 +356,7 @@ type ResponseAuthGrpc {
 }
 
 type Query {
-  getUsers(merchantId: Float, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): UsersConnection!
+  getUsersByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): UserPaging!
   getUser(id: Float!): UserPayload!
   userCount(q: String): Float!
   me: UserPayload!
@@ -399,8 +389,8 @@ type Mutation {
   updatePassword(data: ChangePasswordInput!): UserPayload!
   addOperator(user: AddOperatorDto!): UserPayload!
   addCustomer(user: AddCustomerDto!): UserPayload!
+  updateCustomer(id: Float!, user: UpdatePartialCustomer!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
-  deleteCustomer(id: Float!): DeletePayload!
   createMerchant(data: CreateMerchantInput!): Merchant!
   createBranch(data: CreateBranchInput!): Branch!
   updateBranch(id: Float!, data: PartialUpdateBranch!): Branch!
@@ -558,6 +548,43 @@ input AddCustomerDto {
   relatedUserPhone: String
   branchId: Int
   merchantId: Int!
+}
+
+input UpdatePartialCustomer {
+  email: String
+  password: String
+  fullName: String
+  role: EUserRole = USER
+  status: EUserStatus
+  gender: EUserGender
+  level: ECustomerLevel
+  contact: String
+  phoneNumber: String
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: String
+  weight: String
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: Int
+  merchantId: Int
 }
 
 input UpdatePartialUser {

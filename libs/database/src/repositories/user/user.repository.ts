@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, FindConditions, FindManyOptions, Repository } from 'typeorm';
+import { IPaginationMeta, IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '../../entities';
 import { BaseRepository } from '../base.repository';
@@ -19,5 +20,13 @@ export class UserRepository extends BaseRepository<UserEntity> {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async findWithPaging(
+    options: IPaginationOptions,
+    findOptions?: FindConditions<UserEntity> | FindManyOptions<UserEntity>,
+  ): Promise<Pagination<UserEntity, IPaginationMeta>> {
+    const result = await this.paginationRepository(this.userModel, options, findOptions);
+    return result;
   }
 }

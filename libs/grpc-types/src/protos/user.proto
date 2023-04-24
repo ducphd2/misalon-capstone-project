@@ -9,7 +9,7 @@ import "merchant_user.proto";
 import "google/protobuf/struct.proto";
 
 service UserService {
-  rpc find(commons.QueryRequest) returns (FindUsersPayload) {}
+  rpc find(commons.QueryRequest) returns (UserPagination) {}
   rpc create(CreateUserRequest) returns (FindOneUser) {}
   rpc findById(commons.Id) returns (NullableUser) {}
   rpc findOne(commons.QueryRequest) returns (NullableUser) {}
@@ -29,6 +29,10 @@ service UserService {
 
   rpc addOperator(AddOperatorInput) returns (FindOneUser) {}
   rpc countCustomer(commons.QueryRequest) returns (commons.Count) {}
+
+  // customer
+  rpc addCustomer(AddOperatorInput) returns (FindOneUser) {}
+  rpc updateCustomer(AdminUpdateCustomerInput) returns (FindOneUser) {}
 }
 
 message User {
@@ -44,81 +48,81 @@ message User {
   // reserved field
   optional string email = 8;
   optional string password = 9;
-  optional commons.EUserStatus status = 11;
-  optional string fullName = 12;
-  optional string contact = 13;
-  optional string phoneNumber = 14;
-  optional int32 dobDay = 15;
-  optional int32 dobMonth = 16;
-  optional int32 dobYear = 17;
-  optional commons.EUserRole role = 18;
-  optional commons.EUserGender gender = 19;
-  optional string occupation = 20;
-  optional string avatar = 21;
-  optional string address = 22;
-  optional int32 cityCode = 23;
-  optional int32 districtCode = 24;
-  optional int32 wardCode = 25;
-  optional string referrer = 26;
-  optional string referrerCode = 27;
-  optional commons.ECustomerLevel level = 28;
-  optional string customerCode = 29;
-  optional string facebook = 30;
-  optional string zaloPhone = 31;
-  optional int32 height = 32;
-  optional int32 weight = 33;
-  optional string memberCardNo = 34;
-  optional string company = 35;
-  optional string taxNo = 36;
-  optional string note = 37;
-  optional string relatedUser = 38;
-  optional string relatedUserRole = 39;
-  optional string relatedUserPhone = 40;
-  optional int32 branchId = 41;
-  optional double latitude = 42;
-  optional double longitude = 43;
-  optional bool isRetailCustomer = 44;
-  optional int32 merchantId = 45;
+  optional commons.EUserStatus status = 10;
+  optional string fullName = 11;
+  optional string contact = 12;
+  optional string phoneNumber = 13;
+  optional int32 dobDay = 14;
+  optional int32 dobMonth = 15;
+  optional int32 dobYear = 16;
+  optional commons.EUserRole role = 17;
+  optional commons.EUserGender gender = 18;
+  optional string occupation = 19;
+  optional string avatar = 20;
+  optional string address = 21;
+  optional int32 cityCode = 22;
+  optional int32 districtCode = 23;
+  optional int32 wardCode = 24;
+  optional string referrer = 25;
+  optional string referrerCode = 26;
+  optional commons.ECustomerLevel level = 27;
+  optional string customerCode = 28;
+  optional string facebook = 29;
+  optional string zaloPhone = 30;
+  optional int32 height = 31;
+  optional int32 weight = 32;
+  optional string memberCardNo = 33;
+  optional string company = 34;
+  optional string taxNo = 35;
+  optional string note = 36;
+  optional string relatedUser = 37;
+  optional string relatedUserRole = 38;
+  optional string relatedUserPhone = 39;
+  optional int32 branchId = 40;
+  optional double latitude = 41;
+  optional double longitude = 42;
+  optional bool isRetailCustomer = 43;
+  optional int32 merchantId = 44;
 }
 
 message CreateUserInput {
   optional string email = 1;
   optional string password = 2;
-  optional commons.EUserStatus status = 4;
-  optional string fullName = 5;
-  optional string contact = 6;
-  optional string phoneNumber = 7;
-  optional int32 dobDay = 8;
-  optional int32 dobMonth = 9;
-  optional int32 dobYear = 10;
-  optional commons.EUserRole role = 11;
-  optional commons.EUserGender gender = 12;
-  optional string occupation = 13;
-  optional string avatar = 14;
-  optional string address = 15;
-  optional int32 cityCode = 16;
-  optional int32 districtCode = 17;
-  optional int32 wardCode = 18;
-  optional string referrer = 19;
-  optional string referrerCode = 20;
-  optional commons.ECustomerLevel level = 21;
-  optional string customerCode = 22;
-  optional string facebook = 23;
-  optional string zaloPhone = 24;
-  optional int32 height = 25;
-  optional int32 weight = 26;
-  optional string memberCardNo = 27;
-  optional string company = 28;
-  optional string taxNo = 29;
-  optional string note = 30;
-  optional string relatedUser = 31;
-  optional string relatedUserRole = 32;
-  optional string relatedUserPhone = 33;
-  optional int32 branchId = 34;
-  optional double latitude = 35;
-  optional double longitude = 36;
-  optional int32 merchantId = 37;
-  optional bool isRetailCustomer = 38;
+  optional commons.EUserStatus status = 3;
+  optional string fullName = 4;
+  optional string contact = 5;
+  optional string phoneNumber = 6;
+  optional int32 dobDay = 7;
+  optional int32 dobMonth = 8;
+  optional int32 dobYear = 9;
+  optional commons.EUserRole role = 10;
+  optional commons.EUserGender gender = 11;
+  optional string occupation = 12;
+  optional string avatar = 13;
+  optional string address = 14;
+  optional int32 cityCode = 15;
+  optional int32 districtCode = 16;
+  optional int32 wardCode = 17;
+  optional string referrer = 18;
+  optional string referrerCode = 19;
+  optional commons.ECustomerLevel level = 20;
+  optional string customerCode = 21;
+  optional string facebook = 22;
+  optional string zaloPhone = 23;
+  optional int32 height = 24;
+  optional int32 weight = 25;
+  optional string memberCardNo = 26;
+  optional string company = 27;
+  optional string taxNo = 28;
+  optional string note = 29;
+  optional string relatedUser = 30;
+  optional string relatedUserRole = 31;
+  optional string relatedUserPhone = 32;
+  optional int32 branchId = 33;
+  optional double latitude = 34;
+  optional double longitude = 35;
+  optional int32 merchantId = 36;
+  optional bool isRetailCustomer = 37;
 }
 
 message CreateUserRequest {
@@ -156,41 +160,53 @@ message UpdateUserData {
   oneof kind {
     string email = 1;
     string password = 2;
-    commons.EUserStatus status = 4;
-    string fullName = 5;
-    string contact = 6;
-    string phoneNumber = 7;
-    int32 dobDay = 8;
-    int32 dobMonth = 9;
-    int32 dobYear = 10;
-    commons.EUserRole role = 11;
-    commons.EUserGender gender = 12;
-    string occupation = 13;
-    string avatar = 14;
-    string address = 15;
-    int32 cityCode = 16;
-    int32 districtCode = 17;
-    int32 wardCode = 18;
-    string referrer = 19;
-    string referrerCode = 20;
-    commons.ECustomerLevel level = 21;
-    string customerCode = 22;
-    string facebook = 23;
-    string zaloPhone = 24;
-    int32 height = 25;
-    int32 weight = 26;
-    string memberCardNo = 27;
-    string company = 28;
-    string taxNo = 29;
-    string note = 30;
-    string relatedUser = 31;
-    string relatedUserRole = 32;
-    string relatedUserPhone = 33;
-    int32 branchId = 34;
+    commons.EUserStatus status = 3;
+    string fullName = 4;
+    string contact = 5;
+    string phoneNumber = 6;
+    int32 dobDay = 7;
+    int32 dobMonth = 8;
+    int32 dobYear = 9;
+    commons.EUserRole role = 10;
+    commons.EUserGender gender = 11;
+    string occupation = 12;
+    string avatar = 13;
+    string address = 14;
+    int32 cityCode = 15;
+    int32 districtCode = 16;
+    int32 wardCode = 17;
+    string referrer = 18;
+    string referrerCode = 19;
+    commons.ECustomerLevel level = 20;
+    string customerCode = 21;
+    string facebook = 22;
+    string zaloPhone = 23;
+    int32 height = 24;
+    int32 weight = 25;
+    string memberCardNo = 26;
+    string company = 27;
+    string taxNo = 28;
+    string note = 29;
+    string relatedUser = 30;
+    string relatedUserRole = 31;
+    string relatedUserPhone = 32;
+    int32 branchId = 33;
+    int32 merchantId = 34;
   }
 }
 
 message AddOperatorInput {
   CreateUserInput user = 1;
   optional merchant_user.CreateMerchantUserInput merchantUser = 2;
+}
+
+message AdminUpdateCustomerInput {
+  int32 id = 1;
+  UpdateUserData user = 2;
+  optional merchant_user.CreateMerchantUserInput merchantUser = 3;
+}
+
+message UserPagination {
+  repeated User items = 1;
+  optional commons.PageMeta meta = 2;
 }

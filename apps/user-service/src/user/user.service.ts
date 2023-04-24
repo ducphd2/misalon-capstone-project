@@ -3,8 +3,9 @@ import { CommonProto, UserProto } from '@libs/grpc-types';
 import { UserRepository } from '@libs/database/repositories';
 import { MerchantUserEntity, UserEntity } from '@libs/database/entities';
 import { isEmpty } from 'lodash';
-import { ErrorHelper } from '@libs/core';
+import { ErrorHelper, LIMIT, PAGE } from '@libs/core';
 import { USER_MESSAGE } from '@libs/core/message';
+import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 import { DeviceService } from '../device/device.service';
 
@@ -68,5 +69,23 @@ export class UserService {
     const [customers, count] = await queryBuilder.getManyAndCount();
 
     return count;
+  }
+
+  async findWithPaging(request: CommonProto.QueryRequest): Promise<Pagination<UserEntity, IPaginationMeta>> {
+    const userInput = 'John';
+    const searchQuery = `plainto_tsquery('english', '${userInput}')`;
+
+    const a = this.userRepository.getModel().createQueryBuilder();
+
+    const result = await this.userRepository.findWithPaging(
+      {
+        page: request?.page ?? PAGE,
+        limit: request.limit ?? LIMIT,
+      },
+      {
+        where: JSON.parse(request.where) ?? undefined,
+      },
+    );
+    return result;
   }
 }
