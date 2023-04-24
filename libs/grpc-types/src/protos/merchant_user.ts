@@ -35,4 +35,17 @@ export interface MerchantUsers {
   meta?: PageMeta | undefined;
 }
 
+export interface UpdateMerchantUserData {
+  role?: EUserRole | undefined;
+  status?: EUserStatus | undefined;
+  userId?: number | undefined;
+  merchantId?: number | undefined;
+  branchId?: number | undefined;
+}
+
+export interface UpdateMerchantUserInput {
+  id: number;
+  data: UpdateMerchantUserData | undefined;
+}
+
 export const MERCHANT_USER_PACKAGE_NAME = "merchant_user";

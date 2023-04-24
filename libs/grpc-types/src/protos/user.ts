@@ -1,7 +1,17 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, ECustomerLevel, EUserGender, EUserRole, EUserStatus, Id, PageInfo, QueryRequest } from "./commons";
+import {
+  Count,
+  ECustomerLevel,
+  EUserGender,
+  EUserRole,
+  EUserStatus,
+  Id,
+  PageInfo,
+  PageMeta,
+  QueryRequest,
+} from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
 import { CreateMerchantUserInput, MerchantUser } from "./merchant_user";
@@ -162,6 +172,7 @@ export interface UpdateUserData {
   relatedUserRole?: string | undefined;
   relatedUserPhone?: string | undefined;
   branchId?: number | undefined;
+  merchantId?: number | undefined;
 }
 
 export interface AddOperatorInput {
@@ -169,10 +180,21 @@ export interface AddOperatorInput {
   merchantUser?: CreateMerchantUserInput | undefined;
 }
 
+export interface AdminUpdateCustomerInput {
+  id: number;
+  user: UpdateUserData | undefined;
+  merchantUser?: CreateMerchantUserInput | undefined;
+}
+
+export interface UserPagination {
+  items: User[];
+  meta?: PageMeta | undefined;
+}
+
 export const DUCPH_USER_PACKAGE_NAME = "ducph_user";
 
 export interface UserServiceClient {
-  find(request: QueryRequest): Observable<FindUsersPayload>;
+  find(request: QueryRequest): Observable<UserPagination>;
 
   create(request: CreateUserRequest): Observable<FindOneUser>;
 
@@ -201,10 +223,16 @@ export interface UserServiceClient {
   addOperator(request: AddOperatorInput): Observable<FindOneUser>;
 
   countCustomer(request: QueryRequest): Observable<Count>;
+
+  /** customer */
+
+  addCustomer(request: AddOperatorInput): Observable<FindOneUser>;
+
+  updateCustomer(request: AdminUpdateCustomerInput): Observable<FindOneUser>;
 }
 
 export interface UserServiceController {
-  find(request: QueryRequest): Promise<FindUsersPayload> | Observable<FindUsersPayload> | FindUsersPayload;
+  find(request: QueryRequest): Promise<UserPagination> | Observable<UserPagination> | UserPagination;
 
   create(request: CreateUserRequest): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
@@ -233,6 +261,12 @@ export interface UserServiceController {
   addOperator(request: AddOperatorInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
   countCustomer(request: QueryRequest): Promise<Count> | Observable<Count> | Count;
+
+  /** customer */
+
+  addCustomer(request: AddOperatorInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
+
+  updateCustomer(request: AdminUpdateCustomerInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 }
 
 export function UserServiceControllerMethods() {
@@ -251,6 +285,8 @@ export function UserServiceControllerMethods() {
       "createMerchantUser",
       "addOperator",
       "countCustomer",
+      "addCustomer",
+      "updateCustomer",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -11,6 +11,7 @@ import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/m
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { GrpcLogInterceptor } from 'interceptors/interceptors';
+import { Observable } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
 import { MerchantUserService } from '../merchant-user/merchant-user.service';
@@ -27,6 +28,23 @@ export class UserController implements UserServiceController {
     private readonly deviceService: DeviceService,
     private readonly merchantUserService: MerchantUserService,
   ) {}
+  async updateCustomer(request: UserProto.AdminUpdateCustomerInput): Promise<FindOneUser> {
+    const updatedUser = await this.userService.update({ id: request.id, data: request.user });
+
+    // TODO: Need to implement update merchant_user
+    // const updatedMerchantUser = await this.merchantUserService.create();
+
+    return {
+      user: updatedUser,
+    };
+  }
+
+  async addCustomer(request: UserProto.AddOperatorInput): Promise<FindOneUser> {
+    const user = await this.userService.create(request);
+    await this.merchantUserService.create({ ...request.merchantUser, userId: user.id });
+
+    return { user };
+  }
   async countCustomer(request: CommonProto.QueryRequest): Promise<CommonProto.Count> {
     const count = await this.userService.countCustomer(request);
     return { count };
@@ -56,8 +74,9 @@ export class UserController implements UserServiceController {
     return devices;
   }
 
-  find(request: CommonProto.QueryRequest): Promise<UserProto.FindUsersPayload> {
-    throw new Error('Method not implemented.');
+  async find(request: CommonProto.QueryRequest): Promise<UserProto.UserPagination> {
+    const result = await this.userService.findWithPaging(request);
+    return result;
   }
 
   async count(request: CommonProto.QueryRequest): Promise<CommonProto.Count> {

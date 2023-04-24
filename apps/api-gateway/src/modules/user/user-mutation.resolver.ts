@@ -1,4 +1,4 @@
-import { ErrorHelper, MERCHANT_MESSAGE, PasswordUtils, USER_MESSAGE } from '@libs/core';
+import { CUSTOMER_MESSAGE, ErrorHelper, MERCHANT_MESSAGE, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { UserEntity } from '@libs/database/entities';
 import { Count, EUserRole } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash';
 
 import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards';
-import { AddCustomerDto, AddOperatorDto, ChangePasswordInput } from '@/api-gateway/dtos';
+import { AddCustomerDto, AddOperatorDto, ChangePasswordInput, UpdatePartialCustomer } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { DeletePayload, UpdatePartialUser, User, UserPayload } from '@/api-gateway/types';
@@ -103,16 +103,69 @@ export class UserMutationResolver {
         ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
       }
 
-      const user = await this.userService.addOperator({
+      const user = await this.userService.addCustomer({
         user: {
           ...customerInput,
-          role: customerInput?.role ?? EUserRole.MASTER_WORKER,
+          role: EUserRole.USER,
           branchId: customerInput?.branchId,
           merchantId: merchant.id,
         },
         merchantUser: {
           branchId: customerInput?.branchId,
           merchantId: merchant.id,
+          role: EUserRole.USER,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      console.log('Add customer error: ', error);
+      throw new Error(error);
+    }
+  }
+
+  @Mutation(() => UserPayload)
+  @UseGuards(GqlAuthGuard)
+  async updateCustomer(
+    @CurrentUser() admin: UserEntity,
+    @Args('id') userId: number,
+    @Args('user') customerInput: UpdatePartialCustomer,
+  ): Promise<UserPayload> {
+    try {
+      const currentCustomer = await this.userService.findById({ id: userId });
+
+      if (isEmpty(currentCustomer.user)) {
+        ErrorHelper.HttpBadRequestException(CUSTOMER_MESSAGE.READ.NOT_FOUND);
+      }
+
+      if (customerInput?.branchId) {
+        const { branch } = await this.merchantService.findBranchById({ id: customerInput?.branchId });
+
+        if (isEmpty(branch)) {
+          ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.MERCHANT_NOT_FOUND);
+        }
+      }
+
+      const { count } = await this.userService.countCustomer({
+        where: JSON.stringify({
+          email: customerInput?.email,
+          phoneNumber: customerInput?.phoneNumber,
+          merchantId: customerInput?.merchantId,
+        }),
+      });
+
+      if (count > 1) {
+        ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
+      }
+
+      const user = await this.userService.updateCustomer({
+        id: userId,
+        user: {
+          ...customerInput,
+          role: customerInput?.role ?? EUserRole.MASTER_WORKER,
+        },
+        merchantUser: {
+          ...customerInput,
           role: customerInput?.role ?? EUserRole.MASTER_WORKER,
         },
       });
@@ -129,11 +182,5 @@ export class UserMutationResolver {
   async updateUser(@Args('id') id: number, @Args('data') data: UpdatePartialUser): Promise<UserPayload> {
     const user = await this.userService.update(id, data);
     return user;
-  }
-
-  @Mutation(() => DeletePayload)
-  @UseGuards(GqlAuthGuard)
-  async deleteCustomer(@Args('id') id: number): Promise<Count> {
-    return await this.userService.deleteCustomer(id);
   }
 }

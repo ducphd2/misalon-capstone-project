@@ -5,24 +5,24 @@ import { isEmpty, merge } from 'lodash';
 
 import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
-import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { User, UserPayload, UsersConnection } from '@/api-gateway/types/user';
 import { ESortDirection } from '@/api-gateway/dtos/common';
+import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
+import { User, UserPaging, UserPayload } from '@/api-gateway/types';
 
-@Resolver(() => UsersConnection)
+@Resolver()
 export class UserQueryResolver {
   constructor(private readonly userService: UserCommonService, private readonly queryUtils: QueryUtils) {}
 
-  @Query(() => UsersConnection)
+  @Query(() => UserPaging)
   @UseGuards(GqlAuthGuard)
-  async getUsers(
-    @Args('merchantId', { nullable: true }) merchantId?: number,
+  async getUsersByMerchant(
+    @Args('merchantId') merchantId: number,
     @Args('q', { nullable: true }) q?: string,
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
     @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: ESortDirection,
-  ): Promise<UsersConnection> {
+  ): Promise<UserPaging> {
     const result = await this.userService.find({
       where: JSON.stringify({
         merchantId,
