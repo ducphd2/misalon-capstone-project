@@ -19,7 +19,7 @@
     "pm2-remove": "./scripts/pm2-remove.sh",
     "pm2-build": "./scripts/build.sh",
     "local:start": "./scripts/pm2-start.sh",
-    "pm2-start": "yarn && yarn prebuild && yarn pm2-remove  && yarn pm2-build && yarn local:start",
+    "pm2-start": "yarn && yarn prebuild && yarn pm2-remove  && yarn pm2-build && yarn migrate:up:db && yarn local:start",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -35,7 +35,9 @@
     "migrate:user-service:down": "ts-node ./node_modules/typeorm/cli.js --config apps/user-service/ormconfig.ts migration:revert",
     "migrate:merchant-service:create": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:create  -n",
     "migrate:merchant-service:up": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:run",
-    "migrate:merchant-service:down": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:revert"
+    "migrate:merchant-service:down": "ts-node ./node_modules/typeorm/cli.js --config apps/merchant-service/ormconfig.ts migration:revert",
+    "migrate:up:db": "yarn migrate:user-service:up && yarn migrate:merchant-service:up",
+    "migrate:down:db": "yarn migrate:user-service:down && yarn migrate:merchant-service:down"
   },
   "dependencies": {
     "@apollo/server": "^4.6.0",

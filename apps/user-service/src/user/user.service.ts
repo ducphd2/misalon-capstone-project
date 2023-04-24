@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CommonProto, UserProto } from '@libs/grpc-types';
 import { UserRepository } from '@libs/database/repositories';
-import { UserEntity } from '@libs/database/entities';
+import { MerchantUserEntity, UserEntity } from '@libs/database/entities';
 import { isEmpty } from 'lodash';
 import { ErrorHelper } from '@libs/core';
 import { USER_MESSAGE } from '@libs/core/message';
 
 import { DeviceService } from '../device/device.service';
+
+import { EUserRole } from '@/api-gateway/dtos';
 
 @Injectable()
 export class UserService {
@@ -43,5 +45,28 @@ export class UserService {
     }
 
     return await this.userRepository.updateUser(request.id, request.data);
+  }
+
+  async countCustomer(request: CommonProto.QueryRequest): Promise<number> {
+    const where = JSON.parse(request.where);
+    const queryBuilder = this.userRepository
+      .getModel()
+      .createQueryBuilder('user')
+      .leftJoinAndMapOne('room.merchant_user', MerchantUserEntity, 'merchant_user')
+      .where('user.id = merchant_user.user_id')
+      .andWhere('user.role = :role', { role: EUserRole.USER })
+      .andWhere('merchant_user.merchant_id = :merchantId', { merchantId: where?.merchantId });
+
+    if (where?.email) {
+      queryBuilder.andWhere('user.email = :email', { email: where.email });
+    }
+
+    if (where?.phoneNumber) {
+      queryBuilder.andWhere('user.phoneNumber = :phoneNumber', { phoneNumber: where.phoneNumber });
+    }
+
+    const [customers, count] = await queryBuilder.getManyAndCount();
+
+    return count;
   }
 }

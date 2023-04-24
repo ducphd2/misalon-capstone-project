@@ -397,7 +397,8 @@ type Mutation {
   register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto, device: DeviceInputDto): ResponseAuthGrpc!
   logout: Boolean!
   updatePassword(data: ChangePasswordInput!): UserPayload!
-  addOperator(user: CreateUserInputDto!): UserPayload!
+  addOperator(user: AddOperatorDto!): UserPayload!
+  addCustomer(user: AddCustomerDto!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
   deleteCustomer(id: Float!): DeletePayload!
   createMerchant(data: CreateMerchantInput!): Merchant!
@@ -484,6 +485,79 @@ input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
   confirmPassword: String!
+}
+
+input AddOperatorDto {
+  email: String!
+  password: String!
+  fullName: String!
+  role: EUserRole! = MASTER_WORKER
+  status: EUserStatus
+  gender: EUserGender
+  level: ECustomerLevel
+  contact: String
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: String
+  weight: String
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: Int
+  merchantId: Int!
+}
+
+input AddCustomerDto {
+  email: String
+  password: String
+  fullName: String!
+  role: EUserRole! = USER
+  status: EUserStatus
+  gender: EUserGender
+  level: ECustomerLevel
+  contact: String
+  phoneNumber: String!
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  wardCode: String
+  referrer: String
+  referrerCode: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: String
+  weight: String
+  memberCardNo: String
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+  branchId: Int
+  merchantId: Int!
 }
 
 input UpdatePartialUser {

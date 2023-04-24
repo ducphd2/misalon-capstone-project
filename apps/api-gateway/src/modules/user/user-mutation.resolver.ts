@@ -1,12 +1,13 @@
-import { ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
+import { ErrorHelper, MERCHANT_MESSAGE, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { UserEntity } from '@libs/database/entities';
-import { Count } from '@libs/grpc-types/protos/commons';
+import { Count, EUserRole } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { isEmpty } from 'lodash';
 
 import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards';
-import { ChangePasswordInput, CreateUserInputDto } from '@/api-gateway/dtos';
+import { AddCustomerDto, AddOperatorDto, ChangePasswordInput } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { DeletePayload, UpdatePartialUser, User, UserPayload } from '@/api-gateway/types';
@@ -45,14 +46,13 @@ export class UserMutationResolver {
 
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
-  async addOperator(
-    @CurrentUser() admin: UserEntity,
-    @Args('user') userInput: CreateUserInputDto,
-  ): Promise<UserPayload> {
+  async addOperator(@CurrentUser() admin: UserEntity, @Args('user') userInput: AddOperatorDto): Promise<UserPayload> {
     try {
-      const { merchant } = await this.merchantService.findOne({
-        where: JSON.stringify({ userId: admin.id }),
-      });
+      const { merchant } = await this.merchantService.findById({ id: userInput.merchantId });
+
+      if (isEmpty(merchant)) {
+        ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.MERCHANT_NOT_FOUND);
+      }
 
       const { count } = await this.userService.countUser({
         where: JSON.stringify({ email: userInput.email }),
@@ -62,13 +62,64 @@ export class UserMutationResolver {
         ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
       }
 
-      // const user = await this.userService.create({ user: userInput, device: deviceInput });
+      const user = await this.userService.addOperator({
+        user: userInput,
+        merchantUser: {
+          branchId: userInput?.branchId,
+          merchantId: merchant.id,
+          role: userInput?.role ?? EUserRole.MASTER_WORKER,
+        },
+      });
 
-      // return user;
-
-      return;
+      return user;
     } catch (error) {
-      console.log('createCustomer error: ', error);
+      console.log('Add operator error: ', error);
+      throw new Error(error);
+    }
+  }
+
+  @Mutation(() => UserPayload)
+  @UseGuards(GqlAuthGuard)
+  async addCustomer(
+    @CurrentUser() admin: UserEntity,
+    @Args('user') customerInput: AddCustomerDto,
+  ): Promise<UserPayload> {
+    try {
+      const { merchant } = await this.merchantService.findById({ id: customerInput.merchantId });
+
+      if (isEmpty(merchant)) {
+        ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.MERCHANT_NOT_FOUND);
+      }
+
+      const { count } = await this.userService.countCustomer({
+        where: JSON.stringify({
+          email: customerInput?.email,
+          phoneNumber: customerInput?.phoneNumber,
+          merchantId: customerInput?.merchantId,
+        }),
+      });
+
+      if (count > 1) {
+        ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
+      }
+
+      const user = await this.userService.addOperator({
+        user: {
+          ...customerInput,
+          role: customerInput?.role ?? EUserRole.MASTER_WORKER,
+          branchId: customerInput?.branchId,
+          merchantId: merchant.id,
+        },
+        merchantUser: {
+          branchId: customerInput?.branchId,
+          merchantId: merchant.id,
+          role: customerInput?.role ?? EUserRole.MASTER_WORKER,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      console.log('Add customer error: ', error);
       throw new Error(error);
     }
   }
