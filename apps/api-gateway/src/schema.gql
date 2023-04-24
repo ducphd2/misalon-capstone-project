@@ -213,7 +213,6 @@ type User {
   role: EUserRole!
   gender: EUserGender
   level: ECustomerLevel
-  actionRole: EActionRole
   contact: String
   dobDay: Float
   dobMonth: Float
@@ -256,6 +255,10 @@ enum EUserRole {
   USER
   ADMIN
   SUPER_ADMIN
+  MASTER_WORKER
+  ASSISTANT_WORKER
+  MANAGER
+  RECEPTIONIST
 }
 
 enum EUserGender {
@@ -269,14 +272,6 @@ enum ECustomerLevel {
   SILVER
   GOLD
   PLATINUM
-}
-
-enum EActionRole {
-  MANAGER
-  RECEPTIONIST
-  MASTER_WORKER
-  ASSISTANT_WORKER
-  USER_ROLE
 }
 
 type UserEdge {
@@ -402,7 +397,7 @@ type Mutation {
   register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto, device: DeviceInputDto): ResponseAuthGrpc!
   logout: Boolean!
   updatePassword(data: ChangePasswordInput!): UserPayload!
-  createCustomer(user: CreateUserInputDto!, device: DeviceInputDto): UserPayload!
+  addOperator(user: CreateUserInputDto!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
   deleteCustomer(id: Float!): DeletePayload!
   createMerchant(data: CreateMerchantInput!): Merchant!
@@ -442,7 +437,6 @@ input CreateUserInputDto {
   password: String!
   fullName: String
   role: EUserRole = USER
-  actionRole: EActionRole
   status: EUserStatus
   gender: EUserGender
   level: ECustomerLevel
@@ -498,7 +492,6 @@ input UpdatePartialUser {
   password: String
   fullName: String
   role: EUserRole = USER
-  actionRole: EActionRole
   status: EUserStatus
   gender: EUserGender
   level: ECustomerLevel

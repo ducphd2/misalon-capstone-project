@@ -2,7 +2,7 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
-import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/user/user.dto';
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 @InputType()
 export class CreateUserInputDto {
@@ -27,11 +27,6 @@ export class CreateUserInputDto {
   @IsEnum(EUserRole)
   @IsOptional()
   role: EUserRole;
-
-  @Field(() => EActionRole, { nullable: true })
-  @IsEnum(EActionRole)
-  @IsOptional()
-  actionRole: EActionRole;
 
   @Field(() => EUserStatus, { nullable: true })
   @IsOptional()

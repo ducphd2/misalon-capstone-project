@@ -6,7 +6,7 @@ import { isEmpty, merge } from 'lodash';
 import { Service, ServiceConnection, ServiceOffsetPagination } from '@/api-gateway/types';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
-import { ESortDirection } from '@/api-gateway/dtos/user/user.dto';
+import { ESortDirection } from '@/api-gateway/dtos/common';
 
 @Resolver(() => Service)
 export class ServiceQueryResolver {

@@ -1,17 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import {
-  Count,
-  EActionRole,
-  ECustomerLevel,
-  EUserGender,
-  EUserRole,
-  EUserStatus,
-  Id,
-  PageInfo,
-  QueryRequest,
-} from "./commons";
+import { Count, ECustomerLevel, EUserGender, EUserRole, EUserStatus, Id, PageInfo, QueryRequest } from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
 import { CreateMerchantUserInput, MerchantUser } from "./merchant_user";
@@ -32,7 +22,6 @@ export interface User {
   /** reserved field */
   email?: string | undefined;
   password?: string | undefined;
-  actionRole?: EActionRole | undefined;
   status?: EUserStatus | undefined;
   fullName?: string | undefined;
   contact?: string | undefined;
@@ -73,7 +62,6 @@ export interface User {
 export interface CreateUserInput {
   email?: string | undefined;
   password?: string | undefined;
-  actionRole?: EActionRole | undefined;
   status?: EUserStatus | undefined;
   fullName?: string | undefined;
   contact?: string | undefined;
@@ -143,7 +131,6 @@ export interface NullableUser {
 export interface UpdateUserData {
   email?: string | undefined;
   password?: string | undefined;
-  actionRole?: EActionRole | undefined;
   status?: EUserStatus | undefined;
   fullName?: string | undefined;
   contact?: string | undefined;

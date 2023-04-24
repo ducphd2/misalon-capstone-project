@@ -1,5 +1,5 @@
 import { PasswordUtils } from '@libs/core';
-import { EActionRole, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
+import { EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { isEmpty } from 'lodash';
 
@@ -72,7 +72,6 @@ export class AuthResolver {
 
       const merchantUser = await this.usersService.createMerchantUser({
         role: userInput.role ?? EUserRole.ADMIN,
-        actionRole: userInput.actionRole ?? EActionRole.MANAGER,
         branchId: branch.id,
         merchantId: merchant.id,
         status: userInput.status ?? EUserStatus.ACTIVE,

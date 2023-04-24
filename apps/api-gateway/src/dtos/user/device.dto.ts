@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
-import { EDeviceOs } from '@/api-gateway/dtos/user/user.dto';
+import { EDeviceOs } from '@/api-gateway/dtos/common';
 
 @InputType()
 export class DeviceInputDto {

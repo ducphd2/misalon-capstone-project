@@ -1,7 +1,7 @@
 import { toUFT8NonSpecialCharacters } from '@libs/core';
 import { hash } from 'argon2';
 import { BeforeInsert, Column, Entity } from 'typeorm';
-import { EActionRole, ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 
 import { BaseEntity } from '../base.entity';
 
@@ -15,9 +15,6 @@ export class UserEntity extends BaseEntity {
 
   @Column('smallint', { nullable: true })
   role?: EUserRole;
-
-  @Column('smallint', { nullable: true })
-  actionRole?: EActionRole;
 
   @Column('smallint', { nullable: true })
   status?: EUserStatus;

@@ -4,22 +4,25 @@ import { Count } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
-import { CurrentUser } from '@/api-gateway/core/decorators/user/current-user.decorator';
-import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
-import { CreateUserInputDto, DeviceInputDto } from '@/api-gateway/dtos';
-import { ChangePasswordInput } from '@/api-gateway/dtos/user/user.dto';
+import { CurrentUser } from '@/api-gateway/core/decorators';
+import { GqlAuthGuard } from '@/api-gateway/core/guards';
+import { ChangePasswordInput, CreateUserInputDto } from '@/api-gateway/dtos';
+import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { DeletePayload } from '@/api-gateway/types';
-import { UpdatePartialUser, UserPayload } from '@/api-gateway/types/user';
+import { DeletePayload, UpdatePartialUser, User, UserPayload } from '@/api-gateway/types';
 
 @Resolver(() => UserPayload)
 export class UserMutationResolver {
-  constructor(private readonly userService: UserCommonService, private readonly passwordUtils: PasswordUtils) {}
+  constructor(
+    private readonly userService: UserCommonService,
+    private readonly passwordUtils: PasswordUtils,
+    private readonly merchantService: MerchantCommonService,
+  ) {}
 
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
   async updatePassword(
-    @CurrentUser() currentUser: UserEntity,
+    @CurrentUser() currentUser: User,
     @Args('data') data: ChangePasswordInput,
   ): Promise<UserPayload> {
     const { user } = await this.userService.findById({ id: currentUser.id });
@@ -42,11 +45,15 @@ export class UserMutationResolver {
 
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
-  async createCustomer(
+  async addOperator(
+    @CurrentUser() admin: UserEntity,
     @Args('user') userInput: CreateUserInputDto,
-    @Args('device', { type: () => DeviceInputDto, nullable: true }) deviceInput: DeviceInputDto,
   ): Promise<UserPayload> {
     try {
+      const { merchant } = await this.merchantService.findOne({
+        where: JSON.stringify({ userId: admin.id }),
+      });
+
       const { count } = await this.userService.countUser({
         where: JSON.stringify({ email: userInput.email }),
       });
@@ -55,9 +62,11 @@ export class UserMutationResolver {
         ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
       }
 
-      const user = await this.userService.create({ user: userInput, device: deviceInput });
+      // const user = await this.userService.create({ user: userInput, device: deviceInput });
 
-      return user;
+      // return user;
+
+      return;
     } catch (error) {
       console.log('createCustomer error: ', error);
       throw new Error(error);

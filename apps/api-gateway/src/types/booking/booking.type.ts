@@ -1,7 +1,7 @@
 import { UpdateBookingData } from '@libs/grpc-types/protos/booking';
 import { Field, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
-import { EBookingStatus } from '@/api-gateway/dtos/user/user.dto';
+import { EBookingStatus } from '@/api-gateway/dtos/common';
 import { BaseType, ErrorPayload } from '@/api-gateway/types/base';
 
 @ObjectType()

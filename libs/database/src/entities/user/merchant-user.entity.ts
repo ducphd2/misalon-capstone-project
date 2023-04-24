@@ -1,4 +1,4 @@
-import { EActionRole, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
+import { EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { Column, Entity } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
@@ -7,9 +7,6 @@ import { BaseEntity } from '../base.entity';
 export class MerchantUserEntity extends BaseEntity {
   @Column('smallint', { nullable: true })
   role?: EUserRole;
-
-  @Column('smallint', { nullable: true })
-  actionRole?: EActionRole;
 
   @Column('smallint', { nullable: true })
   status?: EUserStatus;
