@@ -1,3 +1,4 @@
+import { MerchantEntity } from '@libs/database/entities';
 import { MerchantProto } from '@libs/grpc-types';
 import {
   Branch,
@@ -10,8 +11,8 @@ import {
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import {
   CreateGroupInput,
-  FindGroupsPayload,
   Group,
+  GroupPagination,
   NullableGroup,
   UpdateGroupInput,
 } from '@libs/grpc-types/protos/group';
@@ -27,18 +28,30 @@ import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { GrpcLogInterceptor } from 'interceptors/interceptors';
 import { Observable } from 'rxjs';
-import { MerchantEntity } from '@libs/database/entities';
+
+import { BranchService } from '../branch/branch.service';
+import { GroupService } from '../group/group.service';
+import { ServicesService } from '../service/service.service';
 
 import { MerchantService } from './merchant.service';
-
-import { BranchService } from '@/merchant-service/branch/branch.service';
 
 @UseFilters(GrpcAllExceptionsFilter)
 @UseInterceptors(GrpcLogInterceptor)
 @Controller()
 @MerchantProto.MerchantServiceControllerMethods()
 export class MerchantController implements MerchantProto.MerchantServiceController {
-  constructor(private readonly merchantService: MerchantService, private readonly branchService: BranchService) {}
+  constructor(
+    private readonly merchantService: MerchantService,
+    private readonly branchService: BranchService,
+    private readonly groupService: GroupService,
+    private readonly servicesService: ServicesService,
+  ) {}
+
+  async groups(request: QueryRequest): Promise<GroupPagination> {
+    const result = await this.groupService.findWithPaging(request);
+
+    return result;
+  }
 
   findAll(
     request: QueryRequest,
@@ -73,8 +86,12 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return { merchant };
   }
 
-  branch(request: QueryRequest): NullableBranch | Promise<NullableBranch> | Observable<NullableBranch> {
-    throw new Error('Method not implemented.');
+  async branch(request: QueryRequest): Promise<NullableBranch> {
+    const branch = await this.branchService.findOne({
+      where: JSON.parse(request.where),
+    });
+
+    return { branch };
   }
 
   async branches(request: QueryRequest): Promise<Branches> {
@@ -82,16 +99,19 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return { branches };
   }
 
-  findBranchById(request: Id): NullableBranch | Promise<NullableBranch> | Observable<NullableBranch> {
-    throw new Error('Method not implemented.');
+  async findBranchById(request: Id): Promise<NullableBranch> {
+    const branch = await this.branchService.findById(request.id);
+    return { branch };
   }
 
-  createBranch(request: CreateBranchInput): Branch | Promise<Branch> | Observable<Branch> {
-    throw new Error('Method not implemented.');
+  async createBranch(request: CreateBranchInput): Promise<Branch> {
+    const branch = await this.branchService.create(request);
+    return branch;
   }
 
-  updateBranch(request: UpdateBranchInput): Branch | Promise<Branch> | Observable<Branch> {
-    throw new Error('Method not implemented.');
+  async updateBranch(request: UpdateBranchInput): Promise<Branch> {
+    const branch = await this.branchService.update(request);
+    return branch;
   }
 
   deleteBranch(request: Id): Count | Observable<Count> | Promise<Count> {
@@ -102,50 +122,62 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     throw new Error('Method not implemented.');
   }
 
-  groups(request: QueryRequest): FindGroupsPayload | Promise<FindGroupsPayload> | Observable<FindGroupsPayload> {
-    throw new Error('Method not implemented.');
-  }
-
   findGroupById(request: Id): NullableGroup | Promise<NullableGroup> | Observable<NullableGroup> {
     throw new Error('Method not implemented.');
   }
 
-  createGroup(request: CreateGroupInput): Group | Promise<Group> | Observable<Group> {
-    throw new Error('Method not implemented.');
+  async createGroup(request: CreateGroupInput): Promise<Group> {
+    const group = await this.groupService.create(request);
+
+    return group;
   }
 
-  updateGroup(request: UpdateGroupInput): Group | Promise<Group> | Observable<Group> {
-    throw new Error('Method not implemented.');
+  async updateGroup(request: UpdateGroupInput): Promise<Group> {
+    const group = await this.groupService.update(request);
+
+    return group;
   }
 
-  deleteGroup(request: Id): Count | Observable<Count> | Promise<Count> {
-    throw new Error('Method not implemented.');
+  async deleteGroup(request: Id): Promise<Count> {
+    const count = await this.groupService.delete(request.id);
+    return { count };
   }
 
-  service(request: QueryRequest): NullableService | Promise<NullableService> | Observable<NullableService> {
-    throw new Error('Method not implemented.');
+  async service(request: QueryRequest): Promise<NullableService> {
+    const service = await this.servicesService.findOne({
+      where: JSON.parse(request.where),
+    });
+
+    return { service };
   }
 
-  services(
-    request: QueryRequest,
-  ): FindServicesPayload | Promise<FindServicesPayload> | Observable<FindServicesPayload> {
-    throw new Error('Method not implemented.');
+  async services(request: QueryRequest): Promise<FindServicesPayload> {
+    const service = await this.servicesService.findWithPaging(request);
+
+    return service;
   }
 
-  findServiceById(request: Id): NullableService | Promise<NullableService> | Observable<NullableService> {
-    throw new Error('Method not implemented.');
+  async findServiceById(request: Id): Promise<NullableService> {
+    const service = await this.servicesService.findById(request.id);
+
+    return { service };
   }
 
-  createService(request: CreateServiceInput): Service | Promise<Service> | Observable<Service> {
-    throw new Error('Method not implemented.');
+  async createService(request: CreateServiceInput): Promise<Service> {
+    const service = await this.servicesService.create(request);
+
+    return service;
   }
 
-  updateService(request: UpdateServiceInput): Service | Promise<Service> | Observable<Service> {
-    throw new Error('Method not implemented.');
+  async updateService(request: UpdateServiceInput): Promise<Service> {
+    const service = await this.servicesService.update(request);
+
+    return service;
   }
 
-  deleteService(request: Id): Count | Observable<Count> | Promise<Count> {
-    throw new Error('Method not implemented.');
+  async deleteService(request: Id): Promise<Count> {
+    const count = await this.servicesService.delete(request.id);
+    return { count };
   }
 
   findServiceOffsetPagination(

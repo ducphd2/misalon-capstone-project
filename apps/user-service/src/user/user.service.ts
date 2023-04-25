@@ -4,6 +4,7 @@ import { CommonProto, UserProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
 import { FindOptions } from 'sequelize';
 import { isEmpty } from 'lodash';
+import { query } from 'express';
 
 import { DeviceService } from '../device/device.service';
 
@@ -19,7 +20,11 @@ export class UserService {
   }
 
   async findById(id: number): Promise<UserModel> {
-    return;
+    const result: UserModel = await this.userRepository.findById(id, {
+      raw: true,
+    });
+
+    return result;
   }
 
   async findOne(dto: CommonProto.QueryRequest): Promise<UserModel> {
@@ -39,7 +44,12 @@ export class UserService {
   }
 
   async update(request: UserProto.UpdateUserInput): Promise<UserModel> {
-    return;
+    const updatedUser = await this.userRepository.update(request.data, {
+      where: {
+        id: request.id,
+      },
+    });
+    return updatedUser[0];
   }
 
   async countCustomer(request: CommonProto.QueryRequest): Promise<number> {
@@ -47,6 +57,18 @@ export class UserService {
   }
 
   async findWithPaging(request: CommonProto.QueryRequest): Promise<any> {
-    return;
+    const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
+
+    const result = await this.userRepository.findAndPaginate(
+      {
+        ...request,
+        where: baseWhereQuery,
+      },
+      {
+        order: [[request.orderBy, request.orderDirection]],
+      },
+    );
+
+    return result;
   }
 }

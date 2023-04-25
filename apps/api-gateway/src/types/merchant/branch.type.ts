@@ -1,5 +1,4 @@
-import { Field, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
-import { UpdateBranchData } from '@libs/grpc-types/protos/branch';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 import { BaseType, ErrorPayload, PageInfo, PageMeta } from '@/api-gateway/types/base';
 
@@ -34,6 +33,12 @@ export class Branch extends BaseType {
 
   @Field(() => String, { nullable: true })
   ward?: string;
+
+  @Field(() => Float, { nullable: true })
+  latitude?: number;
+
+  @Field(() => Float, { nullable: true })
+  longitude?: number;
 }
 
 @ObjectType()
@@ -62,44 +67,6 @@ export class BranchPayload {
   @Field(() => Branch, { nullable: true })
   branch?: Branch;
 }
-
-@InputType()
-export class CreateBranchInput {
-  @Field(() => String, { nullable: true })
-  name?: string;
-
-  @Field(() => String, { nullable: true })
-  phone?: string;
-
-  @Field(() => String, { nullable: true })
-  address?: string;
-
-  @Field(() => Int, { nullable: true })
-  merchantId: number;
-
-  @Field(() => Int, { nullable: true })
-  cityCode?: number;
-
-  @Field(() => Int, { nullable: true })
-  districtCode?: number;
-
-  @Field(() => Int, { nullable: true })
-  wardCode?: number;
-
-  @Field(() => String, { nullable: true })
-  city?: string;
-
-  @Field(() => String, { nullable: true })
-  district?: string;
-
-  @Field(() => String, { nullable: true })
-  ward?: string;
-}
-
-@InputType()
-export class PartialUpdateBranch
-  extends PartialType<CreateBranchInput>(CreateBranchInput)
-  implements UpdateBranchData {}
 
 @ObjectType()
 export class BranchesConnection {

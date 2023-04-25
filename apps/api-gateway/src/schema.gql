@@ -44,6 +44,8 @@ type Branch {
   city: String
   district: String
   ward: String
+  latitude: Float
+  longitude: Float
 }
 
 type BranchEdge {
@@ -51,9 +53,9 @@ type BranchEdge {
   cursor: String!
 }
 
-type BranchConnection {
-  edges: [BranchEdge!]!
-  pageInfo: PageInfo!
+type BranchPayload {
+  errors: [ErrorPayload!]
+  branch: Branch
 }
 
 type BranchesConnection {
@@ -109,9 +111,14 @@ type GroupEdge {
   cursor: String!
 }
 
-type GroupConnection {
-  edges: [GroupEdge!]!
-  pageInfo: PageInfo!
+type GroupPayload {
+  errors: [ErrorPayload!]
+  group: Group
+}
+
+type GroupPaging {
+  items: [Group!]
+  meta: PageMeta
 }
 
 type Service {
@@ -161,6 +168,11 @@ type ServiceConnection {
   pageInfo: PageInfo!
 }
 
+type ServicePayload {
+  errors: [ErrorPayload!]
+  service: Service
+}
+
 type ServiceOffsetPagination {
   items: [Service!]
   page: Int
@@ -201,7 +213,7 @@ type User {
   createdBy: String
   updatedBy: String
   deletedBy: String
-  email: String!
+  email: String
   fullName: String
   status: EUserStatus
   role: EUserRole!
@@ -362,11 +374,11 @@ type Query {
   findMerchantById(id: Float!): Merchant!
   findAllMerchants(q: String): MerchantPaging!
   findAllMerchantsByAdmin(q: String): MerchantPaging!
-  findBranchById(id: Float!): Group!
+  findBranchById(id: Float!): BranchPayload!
   findAllBranches(q: String): BranchesConnection!
-  findAllBranchesByMerchant(merchantId: Float!, q: String): BranchConnection!
-  findAllBranchesByAdmin(q: String): BranchConnection!
-  findAllServiceGroups(q: String): GroupConnection!
+  findAllBranchesByMerchant(merchantId: Float!, q: String): BranchPaging!
+  findGroupById(id: Float!): GroupPayload!
+  findAllGroups(merchantId: Float!, q: String): GroupPaging!
   findServiceById(id: Float!): Service!
   findAllBranchServices(q: String): ServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): ServiceOffsetPagination!
@@ -391,14 +403,14 @@ type Mutation {
   updateCustomer(id: Float!, user: UpdatePartialCustomer!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
   createMerchant(data: CreateMerchantInput!): Merchant!
-  createBranch(data: CreateBranchInput!): Branch!
-  updateBranch(id: Float!, data: PartialUpdateBranch!): Branch!
+  createBranch(data: CreateBranchInput!): BranchPayload!
+  updateBranch(id: Float!, data: PartialUpdateBranch!): BranchPayload!
   deleteBranch(id: Float!): DeletePayload!
-  createGroup(data: CreateGroupInput!): Group!
+  createGroup(data: CreateGroupInput!): GroupPayload!
   updateGroup(id: Float!, data: PartialUpdateGroup!): Group!
   deleteGroup(id: Float!): DeletePayload!
-  createService(data: CreateGroupInput!): Service!
-  updateService(id: Float!, data: PartialUpdateService!): Service!
+  createService(data: CreateServiceInput!): ServicePayload!
+  updateService(id: Float!, data: PartialUpdateService!): ServicePayload!
   deleteService(id: Float!): DeletePayload!
   createBooking(data: CreateBookingInput!): BookingPayload!
   customerCreateBooking(data: CreateBookingInput!): BookingPayload!
@@ -635,16 +647,18 @@ input CreateMerchantInput {
 }
 
 input CreateBranchInput {
-  name: String
-  phone: String
-  address: String
-  merchantId: Int
+  name: String!
+  phone: String!
+  address: String!
+  merchantId: Int!
   cityCode: Int
   districtCode: Int
   wardCode: Int
   city: String
   district: String
   ward: String
+  latitude: Float
+  longitude: Float
 }
 
 input PartialUpdateBranch {
@@ -658,13 +672,15 @@ input PartialUpdateBranch {
   city: String
   district: String
   ward: String
+  latitude: Float
+  longitude: Float
 }
 
 input CreateGroupInput {
-  merchantId: Int
+  merchantId: Int!
   sku: String
   code: String
-  name: String
+  name: String!
   description: String
   image: String
 }
@@ -678,22 +694,38 @@ input PartialUpdateGroup {
   image: String
 }
 
-input PartialUpdateService {
-  merchantId: Int
-  groupId: Int
-  price: Float
+input CreateServiceInput {
+  groupId: Int!
+  sku: String
+  code: String
+  name: String!
+  description: String
+  image: String
+  price: Float!
   initialPrice: Float
-  capitalPrice: Float
   durationHour: Int
   durationMinute: Int
+  type: EServiceType = SERVICE
+  showType: EServiceShowType = BOTH
+  canPrintableInvoice: Boolean
+  merchantId: Int
+}
+
+input PartialUpdateService {
+  groupId: Int
   sku: String
   code: String
   name: String
   description: String
   image: String
-  type: EServiceType
-  showType: EServiceShowType
-  canPrintableInvoice: Int
+  price: Float
+  initialPrice: Float
+  durationHour: Int
+  durationMinute: Int
+  type: EServiceType = SERVICE
+  showType: EServiceShowType = BOTH
+  canPrintableInvoice: Boolean
+  merchantId: Int
 }
 
 input CreateBookingInput {
