@@ -3,6 +3,7 @@ import { BranchModel } from '@libs/database/entities';
 import { BranchRepository } from '@libs/database/repositories';
 import { BranchProto, CommonProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class BranchService {
@@ -21,15 +22,13 @@ export class BranchService {
   }
 
   async findWithPaging(request: CommonProto.QueryRequest): Promise<any> {
-    const merchants = await this.branchRepository.findWithPaging(
-      {
-        page: request?.page ?? PAGE,
-        limit: request.limit ?? LIMIT,
-      },
-      {
-        where: JSON.parse(request.where) ?? undefined,
-      },
-    );
-    return merchants;
+    const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
+
+    const result = await this.branchRepository.findAndPaginate({
+      ...request,
+      where: baseWhereQuery,
+    });
+
+    return result;
   }
 }
