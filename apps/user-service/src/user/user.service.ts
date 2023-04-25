@@ -2,6 +2,8 @@ import { UserModel } from '@libs/database/entities';
 import { UserRepository } from '@libs/database/repositories';
 import { CommonProto, UserProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
+import { FindOptions } from 'sequelize';
+import { isEmpty } from 'lodash';
 
 import { DeviceService } from '../device/device.service';
 
@@ -21,7 +23,15 @@ export class UserService {
   }
 
   async findOne(dto: CommonProto.QueryRequest): Promise<UserModel> {
-    return;
+    const where = !isEmpty(dto.where) ? JSON.parse(dto.where) : undefined;
+
+    const result: UserModel = await this.userRepository.findOne({
+      ...dto,
+      where,
+      raw: true,
+    });
+
+    return result;
   }
 
   async count(query: CommonProto.QueryRequest): Promise<number> {
