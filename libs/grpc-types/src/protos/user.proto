@@ -134,16 +134,6 @@ message FindOneUser {
   User user = 1;
 }
 
-message UserEdge {
-  User node = 1;
-  string cursor = 2;
-}
-
-message FindUsersPayload {
-  repeated UserEdge edges = 1;
-  commons.PageInfo pageInfo = 2;
-}
-
 message UpdateUserInput {
   int32 id = 1;
   UpdateUserData data = 2;

@@ -25,10 +25,10 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
           operatorsAliases: operatorsAliases,
           models: [MerchantModel, BranchModel, GroupModel, ServiceModel, ImageModel, ServeImageModel],
           autoLoadModels: true,
-          // synchronize: true,
-          sync: {
-            force: true,
-          },
+          synchronize: true,
+          // sync: {
+          //   force: true,
+          // },
           query: {
             raw: true,
           },

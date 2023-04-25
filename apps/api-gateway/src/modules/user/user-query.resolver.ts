@@ -23,10 +23,12 @@ export class UserQueryResolver {
     @Args('orderBy', { nullable: true }) orderBy?: string,
     @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: string,
   ): Promise<UserPaging> {
+    const query = { where: { merchantId } };
+
+    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
+
     const result = await this.userService.find({
-      where: JSON.stringify({
-        merchantId,
-      }),
+      where: JSON.stringify(query.where),
       searchKey: !isEmpty(q) ? `%${q}%` : undefined,
       page: page ? page : 1,
       limit: limit ? limit : 10,

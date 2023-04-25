@@ -45,7 +45,7 @@ export interface CreateServiceInput {
   image?: string | undefined;
   type?: EServiceType | undefined;
   showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: number | undefined;
+  canPrintableInvoice?: boolean | undefined;
 }
 
 export interface Service {
@@ -74,7 +74,7 @@ export interface Service {
   image?: string | undefined;
   type?: EServiceType | undefined;
   showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: number | undefined;
+  canPrintableInvoice?: boolean | undefined;
 }
 
 export interface ServiceEdge {

@@ -6,35 +6,39 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
 import { CurrentUser } from '@/api-gateway/core/decorators/user/current-user.decorator';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
+import { CreateServiceInput, PartialUpdateService } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
-import { CreateGroupInput, DeletePayload, PartialUpdateService, Service } from '@/api-gateway/types';
+import { DeletePayload, ServicePayload } from '@/api-gateway/types';
 
-@Resolver(() => Service)
+@Resolver()
 export class ServiceMutationResolver {
   constructor(private readonly merchantService: MerchantCommonService, private readonly queryUtils: QueryUtils) {}
 
-  @Mutation(() => Service)
+  @Mutation(() => ServicePayload)
   @UseGuards(GqlAuthGuard)
-  async createService(@CurrentUser() admin: UserEntity, @Args('data') data: CreateGroupInput): Promise<Service> {
+  async createService(
+    @CurrentUser() admin: UserEntity,
+    @Args('data') data: CreateServiceInput,
+  ): Promise<ServicePayload> {
     try {
-      const result = await this.merchantService.createGroup(data);
-      return result;
+      const service = await this.merchantService.createService(data);
+      return { service };
     } catch (error) {
       console.log('Create service error: ', error);
       throw new Error(error);
     }
   }
 
-  @Mutation(() => Service)
+  @Mutation(() => ServicePayload)
   @UseGuards(GqlAuthGuard)
   async updateService(
     @CurrentUser() admin: UserEntity,
     @Args('id') id: number,
     @Args('data') data: PartialUpdateService,
-  ): Promise<Service> {
+  ): Promise<ServicePayload> {
     try {
-      const result = await this.merchantService.updateService(id, data);
-      return result;
+      const updatedService = await this.merchantService.updateService(id, data);
+      return { service: updatedService };
     } catch (error) {
       console.log('Update service error: ', error);
       throw new Error(error);

@@ -48,7 +48,7 @@ export class Service extends BaseType {
   showType?: EServiceShowType;
 
   @Field(() => Int, { nullable: true })
-  canPrintableInvoice?: number;
+  canPrintableInvoice?: boolean;
 }
 
 @ObjectType()
@@ -123,11 +123,8 @@ export class CreateServiceInput {
   showType?: EServiceShowType;
 
   @Field(() => Int, { nullable: true })
-  canPrintableInvoice?: number;
+  canPrintableInvoice?: boolean;
 }
-
-@InputType()
-export class PartialUpdateService extends PartialType<CreateServiceInput>(CreateServiceInput) {}
 
 @ObjectType()
 export class ServiceOffsetPagination {

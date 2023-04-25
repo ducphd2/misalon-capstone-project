@@ -49,5 +49,5 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   showType?: EServiceShowType;
 
   @Column({ type: DataType.BOOLEAN })
-  canPrintableInvoice?: number;
+  canPrintableInvoice?: boolean;
 }

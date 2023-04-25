@@ -28,7 +28,7 @@ service MerchantService {
 
   // group
   rpc group(commons.QueryRequest) returns (ducph.group.NullableGroup) {}
-  rpc groups(commons.QueryRequest) returns (ducph.group.FindGroupsPayload) {}
+  rpc groups(commons.QueryRequest) returns (ducph.group.GroupPagination) {}
   rpc findGroupById(commons.Id) returns (ducph.group.NullableGroup) {}
   rpc createGroup(ducph.group.CreateGroupInput) returns (ducph.group.Group) {}
   rpc updateGroup(ducph.group.UpdateGroupInput) returns (ducph.group.Group) {}

@@ -7,18 +7,19 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from '@/api-gateway/core/decorators/user/current-user.decorator';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
-import { CreateGroupInput, DeletePayload, Group, PartialUpdateGroup } from '@/api-gateway/types';
+import { DeletePayload, Group, GroupPayload } from '@/api-gateway/types';
+import { CreateGroupInput, PartialUpdateGroup } from '@/api-gateway/dtos';
 
 @Resolver(() => Group)
 export class GroupMutationResolver {
   constructor(private readonly merchantService: MerchantCommonService, private readonly queryUtils: QueryUtils) {}
 
-  @Mutation(() => Group)
+  @Mutation(() => GroupPayload)
   @UseGuards(GqlAuthGuard)
-  async createGroup(@CurrentUser() admin: UserEntity, @Args('data') data: CreateGroupInput): Promise<Group> {
+  async createGroup(@CurrentUser() admin: UserEntity, @Args('data') data: CreateGroupInput): Promise<GroupPayload> {
     try {
-      const result = await this.merchantService.createGroup(data);
-      return result;
+      const group = await this.merchantService.createGroup(data);
+      return { group };
     } catch (error) {
       console.log('Create group error: ', error);
       throw new Error(error);

@@ -1,17 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import {
-  Count,
-  ECustomerLevel,
-  EUserGender,
-  EUserRole,
-  EUserStatus,
-  Id,
-  PageInfo,
-  PageMeta,
-  QueryRequest,
-} from "./commons";
+import { Count, ECustomerLevel, EUserGender, EUserRole, EUserStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
 import { CreateMerchantUserInput, MerchantUser } from "./merchant_user";
@@ -116,16 +106,6 @@ export interface CreateUserRequest {
 
 export interface FindOneUser {
   user: User | undefined;
-}
-
-export interface UserEdge {
-  node: User | undefined;
-  cursor: string;
-}
-
-export interface FindUsersPayload {
-  edges: UserEdge[];
-  pageInfo: PageInfo | undefined;
 }
 
 export interface UpdateUserInput {

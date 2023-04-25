@@ -9,7 +9,7 @@ import { DevicePaging } from '@/api-gateway/types/user/device.type';
 
 @ObjectType()
 export class User extends BaseType {
-  @Field()
+  @Field(() => String, { nullable: true })
   email?: string;
 
   @HideField()

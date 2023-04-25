@@ -66,3 +66,8 @@ message NullableGroup {
     Group group = 2;
   }
 }
+
+message GroupPagination {
+  repeated Group items = 1;
+  optional commons.PageMeta meta = 2;
+}

@@ -1,6 +1,6 @@
 import { CUSTOMER_MESSAGE, ErrorHelper, MERCHANT_MESSAGE, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { UserEntity } from '@libs/database/entities';
-import { Count, EUserRole } from '@libs/grpc-types/protos/commons';
+import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { isEmpty } from 'lodash';
@@ -10,7 +10,7 @@ import { GqlAuthGuard } from '@/api-gateway/core/guards';
 import { AddCustomerDto, AddOperatorDto, ChangePasswordInput, UpdatePartialCustomer } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { DeletePayload, UpdatePartialUser, User, UserPayload } from '@/api-gateway/types';
+import { UpdatePartialUser, User, UserPayload } from '@/api-gateway/types';
 
 @Resolver(() => UserPayload)
 export class UserMutationResolver {

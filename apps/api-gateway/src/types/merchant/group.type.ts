@@ -1,7 +1,7 @@
 import { Field, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 import { UpdateGroupData } from '@libs/grpc-types/protos/group';
 
-import { BaseType, ErrorPayload, PageInfo } from '@/api-gateway/types/base';
+import { BaseType, ErrorPayload, PageInfo, PageMeta } from '@/api-gateway/types/base';
 
 @ObjectType()
 export class Group extends BaseType {
@@ -51,26 +51,11 @@ export class GroupPayload {
   group?: Group;
 }
 
-@InputType()
-export class CreateGroupInput {
-  @Field(() => Int, { nullable: true })
-  merchantId?: number;
+@ObjectType()
+export class GroupPaging {
+  @Field(() => [Group], { nullable: true })
+  items?: Group[];
 
-  @Field(() => String, { nullable: true })
-  sku?: string;
-
-  @Field(() => String, { nullable: true })
-  code?: string;
-
-  @Field(() => String, { nullable: true })
-  name?: string;
-
-  @Field(() => String, { nullable: true })
-  description?: string;
-
-  @Field(() => String, { nullable: true })
-  image?: string;
+  @Field(() => PageMeta, { nullable: true })
+  meta?: PageMeta;
 }
-
-@InputType()
-export class PartialUpdateGroup extends PartialType<CreateGroupInput>(CreateGroupInput) implements UpdateGroupData {}
