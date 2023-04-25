@@ -1,5 +1,5 @@
 import { BRANCH_MESSAGE, ErrorHelper, QueryUtils } from '@libs/core';
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { Count } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
@@ -16,7 +16,7 @@ export class BranchMutationResolver {
 
   @Mutation(() => BranchPayload)
   @UseGuards(GqlAuthGuard)
-  async createBranch(@CurrentUser() admin: UserEntity, @Args('data') data: CreateBranchInput): Promise<BranchPayload> {
+  async createBranch(@CurrentUser() admin: UserModel, @Args('data') data: CreateBranchInput): Promise<BranchPayload> {
     try {
       const branch = await this.merchantService.createBranch(data);
       return { branch };
@@ -29,7 +29,7 @@ export class BranchMutationResolver {
   @Mutation(() => BranchPayload)
   @UseGuards(GqlAuthGuard)
   async updateBranch(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('id') id: number,
     @Args('data') data: PartialUpdateBranch,
   ): Promise<BranchPayload> {
@@ -54,7 +54,7 @@ export class BranchMutationResolver {
 
   @Mutation(() => DeletePayload)
   @UseGuards(GqlAuthGuard)
-  async deleteBranch(@CurrentUser() admin: UserEntity, @Args('id') id: number): Promise<Count> {
+  async deleteBranch(@CurrentUser() admin: UserModel, @Args('id') id: number): Promise<Count> {
     try {
       const result = await this.merchantService.deleteBranch(id);
       return result;

@@ -2,6 +2,7 @@ import { QueryUtils } from '@libs/core';
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
+import { UserModel } from '@libs/database/entities';
 
 import { CurrentUser } from '@/api-gateway/core/decorators';
 import { GqlAuthGuard } from '@/api-gateway/core/guards/jwt.guard';
@@ -63,7 +64,7 @@ export class UserQueryResolver {
 
   @Query(() => UserPayload, { name: 'me' })
   @UseGuards(GqlAuthGuard)
-  async me(@CurrentUser() currentUser: User): Promise<UserPayload> {
+  async me(@CurrentUser() currentUser: UserModel): Promise<UserPayload> {
     const user = await this.userService.findById({ id: currentUser.id });
     return user;
   }

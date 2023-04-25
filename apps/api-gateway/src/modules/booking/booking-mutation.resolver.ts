@@ -1,4 +1,4 @@
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { isNil } from 'lodash';
@@ -42,7 +42,7 @@ export class BookingMutationResolver {
   @UseGuards(GqlAuthGuard)
   @Mutation(() => BookingPayload)
   async customerCreateBooking(
-    @CurrentUser() user: UserEntity,
+    @CurrentUser() user: UserModel,
     @Args('data') data: CreateBookingInput,
   ): Promise<BookingPayload> {
     try {

@@ -1,9 +1,8 @@
-import { UserEntity } from '@libs/database/entities';
+import { DUCPH_USER_PACKAGE_NAME, User, UserProto } from '@libs/grpc-types';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientGrpc } from '@nestjs/microservices';
 import { PassportStrategy } from '@nestjs/passport';
-import { DUCPH_USER_PACKAGE_NAME, User, UserProto } from '@libs/grpc-types';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { lastValueFrom } from 'rxjs';
 

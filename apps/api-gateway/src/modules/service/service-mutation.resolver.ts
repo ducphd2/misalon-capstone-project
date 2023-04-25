@@ -1,5 +1,5 @@
 import { QueryUtils } from '@libs/core';
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { Count } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
@@ -17,7 +17,7 @@ export class ServiceMutationResolver {
   @Mutation(() => ServicePayload)
   @UseGuards(GqlAuthGuard)
   async createService(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('data') data: CreateServiceInput,
   ): Promise<ServicePayload> {
     try {
@@ -32,7 +32,7 @@ export class ServiceMutationResolver {
   @Mutation(() => ServicePayload)
   @UseGuards(GqlAuthGuard)
   async updateService(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('id') id: number,
     @Args('data') data: PartialUpdateService,
   ): Promise<ServicePayload> {
@@ -47,7 +47,7 @@ export class ServiceMutationResolver {
 
   @Mutation(() => DeletePayload)
   @UseGuards(GqlAuthGuard)
-  async deleteService(@CurrentUser() admin: UserEntity, @Args('id') id: number): Promise<Count> {
+  async deleteService(@CurrentUser() admin: UserModel, @Args('id') id: number): Promise<Count> {
     try {
       const result = await this.merchantService.deleteService(id);
       return result;

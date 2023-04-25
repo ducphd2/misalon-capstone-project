@@ -1,10 +1,10 @@
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
-import { Branch, Branches, BranchPagination, CreateBranchInput, NullableBranch, UpdateBranchInput } from './branch';
-import { Count, Id, PageInfo, PageMeta, QueryRequest } from './commons';
-import { NullValue } from './google/protobuf/struct';
-import { CreateGroupInput, Group, GroupPagination, NullableGroup, UpdateGroupInput } from './group';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
+import { Branch, Branches, BranchPagination, CreateBranchInput, NullableBranch, UpdateBranchInput } from "./branch";
+import { Count, Id, PageInfo, PageMeta, QueryRequest } from "./commons";
+import { NullValue } from "./google/protobuf/struct";
+import { CreateGroupInput, Group, GroupPagination, NullableGroup, UpdateGroupInput } from "./group";
 import {
   CreateServiceInput,
   FindServiceOffsetPagination,
@@ -12,9 +12,9 @@ import {
   NullableService,
   Service,
   UpdateServiceInput,
-} from './service';
+} from "./service";
 
-export const protobufPackage = 'merchant';
+export const protobufPackage = "merchant";
 
 export interface UpdateMerchantData {
   name?: string | undefined;
@@ -55,7 +55,9 @@ export interface Merchant {
   deletedAt?: string | undefined;
   createdBy?: string | undefined;
   updatedBy?: string | undefined;
-  deletedBy?: string | undefined;
+  deletedBy?:
+    | string
+    | undefined;
   /** reserved field */
   name?: string | undefined;
   phone?: string | undefined;
@@ -98,7 +100,7 @@ export interface MerchantPagination {
   meta?: PageMeta | undefined;
 }
 
-export const MERCHANT_PACKAGE_NAME = 'merchant';
+export const MERCHANT_PACKAGE_NAME = "merchant";
 
 export interface MerchantServiceClient {
   find(request: QueryRequest): Observable<MerchantPagination>;
@@ -227,43 +229,43 @@ export interface MerchantServiceController {
 export function MerchantServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      'find',
-      'findAll',
-      'findOne',
-      'create',
-      'count',
-      'findById',
-      'branch',
-      'findBranches',
-      'branches',
-      'findBranchById',
-      'createBranch',
-      'updateBranch',
-      'deleteBranch',
-      'group',
-      'groups',
-      'findGroupById',
-      'createGroup',
-      'updateGroup',
-      'deleteGroup',
-      'service',
-      'services',
-      'findServiceById',
-      'createService',
-      'updateService',
-      'deleteService',
-      'findServiceOffsetPagination',
+      "find",
+      "findAll",
+      "findOne",
+      "create",
+      "count",
+      "findById",
+      "branch",
+      "findBranches",
+      "branches",
+      "findBranchById",
+      "createBranch",
+      "updateBranch",
+      "deleteBranch",
+      "group",
+      "groups",
+      "findGroupById",
+      "createGroup",
+      "updateGroup",
+      "deleteGroup",
+      "service",
+      "services",
+      "findServiceById",
+      "createService",
+      "updateService",
+      "deleteService",
+      "findServiceOffsetPagination",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod('MerchantService', method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("MerchantService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod('MerchantService', method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("MerchantService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const MERCHANT_SERVICE_NAME = 'MerchantService';
+export const MERCHANT_SERVICE_NAME = "MerchantService";

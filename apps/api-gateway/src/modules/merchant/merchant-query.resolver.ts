@@ -1,5 +1,5 @@
 import { QueryUtils } from '@libs/core';
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { MerchantPagination } from '@libs/grpc-types/protos/merchant';
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
@@ -38,7 +38,7 @@ export class MerchantQueryResolver {
   @Query(() => MerchantPaging)
   @UseGuards(GqlAuthGuard)
   async findAllMerchantsByAdmin(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('q', { nullable: true }) q?: string,
   ): Promise<MerchantPagination> {
     try {

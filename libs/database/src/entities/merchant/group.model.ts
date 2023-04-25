@@ -1,4 +1,5 @@
-import { Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { toUFT8NonSpecialCharacters } from '@libs/core';
 
 import { BaseModel } from '../base.model';
 
@@ -25,4 +26,21 @@ export class GroupModel extends BaseModel<GroupModel> {
 
   @Column({ type: DataType.TEXT })
   image?: string;
+
+  @Column({
+    type: 'tsvector',
+    allowNull: true,
+  })
+  search?: string;
+
+  @BeforeCreate
+  @BeforeUpdate
+  static async updateSearch(model: GroupModel) {
+    const columnsToConcatenate = ['name', 'code', 'sku', 'description'];
+    const concatenatedValues = columnsToConcatenate
+      .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
+      .join(' ');
+
+    model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
+  }
 }
