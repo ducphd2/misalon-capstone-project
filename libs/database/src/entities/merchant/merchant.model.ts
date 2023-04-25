@@ -1,4 +1,5 @@
-import { Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { toUFT8NonSpecialCharacters } from '@libs/core';
 
 import { BaseModel } from '../base.model';
 
@@ -39,6 +40,18 @@ export class MerchantModel extends BaseModel<MerchantModel> {
   ward?: string;
 
   @Column({
+    type: DataType.FLOAT,
+    defaultValue: 0,
+  })
+  latitude?: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    defaultValue: 0,
+  })
+  longitude?: number;
+
+  @Column({
     type: DataType.GEOMETRY('POINT'),
     allowNull: true,
     defaultValue: { type: 'Point', coordinates: [0, 0] },
@@ -50,4 +63,15 @@ export class MerchantModel extends BaseModel<MerchantModel> {
     allowNull: true,
   })
   search?: string;
+
+  @BeforeCreate
+  @BeforeUpdate
+  static async updateSearch(model: MerchantModel) {
+    const columnsToConcatenate = ['name', 'phone', 'address', 'city', 'district', 'ward'];
+    const concatenatedValues = columnsToConcatenate
+      .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
+      .join(' ');
+
+    model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
+  }
 }

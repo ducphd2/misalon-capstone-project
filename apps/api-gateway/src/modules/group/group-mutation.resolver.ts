@@ -1,5 +1,5 @@
 import { QueryUtils } from '@libs/core';
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { Count } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
@@ -16,7 +16,7 @@ export class GroupMutationResolver {
 
   @Mutation(() => GroupPayload)
   @UseGuards(GqlAuthGuard)
-  async createGroup(@CurrentUser() admin: UserEntity, @Args('data') data: CreateGroupInput): Promise<GroupPayload> {
+  async createGroup(@CurrentUser() admin: UserModel, @Args('data') data: CreateGroupInput): Promise<GroupPayload> {
     try {
       const group = await this.merchantService.createGroup(data);
       return { group };
@@ -29,7 +29,7 @@ export class GroupMutationResolver {
   @Mutation(() => Group)
   @UseGuards(GqlAuthGuard)
   async updateGroup(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('id') id: number,
     @Args('data') data: PartialUpdateGroup,
   ): Promise<Group> {
@@ -44,7 +44,7 @@ export class GroupMutationResolver {
 
   @Mutation(() => DeletePayload)
   @UseGuards(GqlAuthGuard)
-  async deleteGroup(@CurrentUser() admin: UserEntity, @Args('id') id: number): Promise<Count> {
+  async deleteGroup(@CurrentUser() admin: UserModel, @Args('id') id: number): Promise<Count> {
     try {
       const result = await this.merchantService.deleteGroup(id);
       return result;

@@ -1,5 +1,4 @@
-import { LIMIT, PAGE } from '@libs/core/constants';
-import { MerchantEntity } from '@libs/database/entities';
+import { MerchantModel } from '@libs/database/entities';
 import { MerchantRepository } from '@libs/database/repositories';
 import { CommonProto, MerchantProto } from '@libs/grpc-types';
 import { CreateMerchantResponse } from '@libs/grpc-types/protos/merchant';
@@ -22,7 +21,7 @@ export class MerchantService {
     }
   }
 
-  async find(request: CommonProto.QueryRequest): Promise<MerchantEntity[]> {
+  async find(request: CommonProto.QueryRequest): Promise<MerchantModel[]> {
     const merchants = await this.merchantRepository.find(JSON.parse(request.where));
     return merchants;
   }
@@ -38,7 +37,7 @@ export class MerchantService {
     return result;
   }
 
-  async findById(id: number): Promise<MerchantEntity> {
+  async findById(id: number): Promise<MerchantModel> {
     const merchant = await this.merchantRepository.findById(id);
     return merchant;
   }

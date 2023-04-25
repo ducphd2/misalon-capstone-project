@@ -1,4 +1,3 @@
-import { BranchEntity, ServiceEntity } from '@libs/database/entities';
 import {
   BranchPagination,
   Branches,
@@ -71,11 +70,11 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.branches(query));
   }
 
-  async createBranch(data: CreateBranchInput): Promise<BranchEntity> {
+  async createBranch(data: CreateBranchInput): Promise<Branch> {
     return await firstValueFrom(this.merchantService.createBranch(data));
   }
 
-  async updateBranch(id: number, data: UpdateBranchData): Promise<BranchEntity> {
+  async updateBranch(id: number, data: UpdateBranchData): Promise<Branch> {
     return await firstValueFrom(this.merchantService.updateBranch({ id, data }));
   }
 

@@ -1,4 +1,4 @@
-import { DeviceEntity, DeviceModel } from '@libs/database/entities';
+import { DeviceModel } from '@libs/database/entities';
 import {
   CommonProto,
   FindOneUser,
@@ -64,7 +64,7 @@ export class UserController implements UserServiceController {
     return await this.deviceService.upsertDevice(request);
   }
 
-  createDevice(request: CreateDeviceInput): Promise<DeviceEntity> {
+  createDevice(request: CreateDeviceInput): Promise<DeviceModel> {
     throw new Error('Method not implemented.');
   }
 

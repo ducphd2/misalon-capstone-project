@@ -1,5 +1,5 @@
 import { CUSTOMER_MESSAGE, ErrorHelper, MERCHANT_MESSAGE, PasswordUtils, USER_MESSAGE } from '@libs/core';
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
@@ -10,7 +10,7 @@ import { GqlAuthGuard } from '@/api-gateway/core/guards';
 import { AddCustomerDto, AddOperatorDto, ChangePasswordInput, UpdatePartialCustomer } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { UpdatePartialUser, User, UserPayload } from '@/api-gateway/types';
+import { UpdatePartialUser, UserPayload } from '@/api-gateway/types';
 
 @Resolver(() => UserPayload)
 export class UserMutationResolver {
@@ -23,7 +23,7 @@ export class UserMutationResolver {
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
   async updatePassword(
-    @CurrentUser() currentUser: User,
+    @CurrentUser() currentUser: UserModel,
     @Args('data') data: ChangePasswordInput,
   ): Promise<UserPayload> {
     const { user } = await this.userService.findById({ id: currentUser.id });
@@ -46,7 +46,7 @@ export class UserMutationResolver {
 
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
-  async addOperator(@CurrentUser() admin: UserEntity, @Args('user') userInput: AddOperatorDto): Promise<UserPayload> {
+  async addOperator(@CurrentUser() admin: UserModel, @Args('user') userInput: AddOperatorDto): Promise<UserPayload> {
     try {
       const { merchant } = await this.merchantService.findById({ id: userInput.merchantId });
 
@@ -81,7 +81,7 @@ export class UserMutationResolver {
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
   async addCustomer(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('user') customerInput: AddCustomerDto,
   ): Promise<UserPayload> {
     try {
@@ -127,7 +127,7 @@ export class UserMutationResolver {
   @Mutation(() => UserPayload)
   @UseGuards(GqlAuthGuard)
   async updateCustomer(
-    @CurrentUser() admin: UserEntity,
+    @CurrentUser() admin: UserModel,
     @Args('id') userId: number,
     @Args('user') customerInput: UpdatePartialCustomer,
   ): Promise<UserPayload> {

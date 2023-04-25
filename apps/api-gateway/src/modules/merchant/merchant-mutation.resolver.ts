@@ -1,4 +1,4 @@
-import { UserEntity } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
@@ -13,7 +13,7 @@ export class MerchantMutationResolver {
 
   @Mutation(() => Merchant)
   @UseGuards(GqlAuthGuard)
-  async createMerchant(@CurrentUser() admin: UserEntity, @Args('data') data: CreateMerchantInput): Promise<Merchant> {
+  async createMerchant(@CurrentUser() admin: UserModel, @Args('data') data: CreateMerchantInput): Promise<Merchant> {
     try {
       const { merchant, branch } = await this.merchantService.create(data);
       return merchant;

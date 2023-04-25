@@ -1,9 +1,8 @@
-import { Module } from '@nestjs/common';
-import { SecretsModule } from 'libs/modules/global/secrets/module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity, UserModel } from '@libs/database/entities';
+import { UserModel } from '@libs/database/entities';
 import { UserRepository } from '@libs/database/repositories';
+import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { SecretsModule } from 'libs/modules/global/secrets/module';
 
 import { DeviceModule } from '../device/device.module';
 import { MerchantUserModule } from '../merchant-user/merchant-user.module';

@@ -1,4 +1,3 @@
-import { MerchantEntity } from '@libs/database/entities';
 import { MerchantProto } from '@libs/grpc-types';
 import {
   Branch,
@@ -82,7 +81,7 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   }
 
   async findById(id: Id): Promise<MerchantProto.NullableMerchant> {
-    const merchant: MerchantEntity = await this.merchantService.findById(id.id);
+    const merchant = await this.merchantService.findById(id.id);
     return { merchant };
   }
 
