@@ -53,7 +53,7 @@ export class ServiceQueryResolver {
         page: page ? page : 1,
         limit: limit ? limit : 10,
         orderBy: orderBy ? orderBy : 'updatedAt',
-        orderDirection: orderDirection ?? ESortDirection.DESC,
+        orderDirection: 'DESC',
       };
 
       const result = await this.merchantService.findServiceOffsetPagination({
@@ -82,7 +82,7 @@ export class ServiceQueryResolver {
         page: page ? page : 1,
         limit: limit ? limit : 10,
         orderBy: orderBy ? orderBy : 'updatedAt',
-        orderDirection: orderDirection ?? ESortDirection.DESC,
+        orderDirection: 'DESC',
         where: {},
       };
 

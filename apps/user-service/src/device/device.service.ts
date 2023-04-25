@@ -1,53 +1,49 @@
-import { LIMIT, PAGE } from '@libs/core/constants';
-import { DeviceEntity } from '@libs/database/entities';
+import { DeviceModel } from '@libs/database/entities';
 import { DeviceRepository } from '@libs/database/repositories';
 import { CommonProto, DeviceProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { IPaginationMeta, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class DeviceService {
   constructor(private readonly deviceRepository: DeviceRepository) {}
 
-  async create(dto: DeviceProto.CreateDeviceInput): Promise<DeviceEntity> {
+  async create(dto: DeviceProto.CreateDeviceInput): Promise<DeviceModel> {
     const device = await this.deviceRepository.create(dto);
     return device;
   }
 
-  async findById(id: number): Promise<DeviceEntity> {
+  async findById(id: number): Promise<DeviceModel> {
     const device = await this.deviceRepository.findById(id);
     return device;
   }
 
-  async find(dto: CommonProto.QueryRequest): Promise<Pagination<DeviceEntity, IPaginationMeta>> {
-    const devices = await this.deviceRepository.findWithPaging(
-      {
-        page: dto?.page ?? PAGE,
-        limit: dto.limit ?? LIMIT,
-      },
-      {
-        where: JSON.parse(dto.where) ?? undefined,
-      },
-    );
+  async find(request: CommonProto.QueryRequest): Promise<any> {
+    const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
 
-    return devices;
-  }
-
-  async upsertDevice(dto: DeviceProto.CreateDeviceInput): Promise<DeviceEntity> {
-    let device = await this.deviceRepository.findOne({
-      userId: dto.userId,
-      deviceId: dto.deviceId,
-      os: dto.os,
+    const result = await this.deviceRepository.findAndPaginate({
+      ...request,
+      where: baseWhereQuery,
     });
 
-    if (isEmpty(device)) {
-      device = await this.create(dto);
-    } else {
-      await this.deviceRepository.update(device.id, { token: dto.token });
-      device = await this.findById(device.id);
-    }
+    return result;
+  }
 
-    return device;
+  async upsertDevice(dto: DeviceProto.CreateDeviceInput): Promise<DeviceModel> {
+    // let device = await this.deviceRepository.findOne({
+    //   userId: dto.userId,
+    //   deviceId: dto.deviceId,
+    //   os: dto.os,
+    // });
+
+    // if (isEmpty(device)) {
+    //   device = await this.create(dto);
+    // } else {
+    //   await this.deviceRepository.update(device.id, { token: dto.token });
+    //   device = await this.findById(device.id);
+    // }
+
+    // return device;
+    return;
   }
 }

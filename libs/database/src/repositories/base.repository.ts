@@ -1,146 +1,96 @@
-import { LIMIT } from '@libs/core/constants';
-import { BaseEntity } from '@libs/database/entities/base.entity';
-import { instanceToPlain } from 'class-transformer';
-import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { LIMIT, PAGE } from '@libs/core';
+import { IFindAndPaginateOptions, IPaginationRes } from '@libs/interfaces';
 import {
-  DeepPartial,
-  DeleteResult,
-  FindConditions,
-  FindManyOptions,
-  FindOneOptions,
-  Repository,
-  SelectQueryBuilder,
-  UpdateResult,
-} from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+  Attributes,
+  CountOptions,
+  CreateOptions,
+  FindAndCountOptions,
+  FindOptions,
+  UpdateOptions,
+  WhereOptions,
+} from 'sequelize';
+import { Model, Repository } from 'sequelize-typescript';
 
-export class BaseRepository<Model extends BaseEntity> {
-  constructor(protected readonly model: Repository<Model>) {
-    this.model = model;
+export class BaseRepository<T extends Model> {
+  constructor(readonly model: Repository<T>) {}
+
+  async find(options?: FindOptions<T>): Promise<T[]> {
+    return await this.model.findAll(options);
   }
 
-  createModel(entity: DeepPartial<Model>): Model {
-    return this.model.create(entity);
+  async findOne(options?: FindOptions<T>): Promise<T> {
+    return await this.model.findOne(options);
   }
 
-  async create(entity: DeepPartial<Model>): Promise<Model> {
-    const newModel = this.model.create(entity);
-    return instanceToPlain(await this.model.save(newModel as DeepPartial<Model>)) as Model;
+  async findById(id: number, options?: FindOptions<T>): Promise<T> {
+    return await this.model.findByPk(id, options);
   }
 
-  async createMultipleEntities(entities?: DeepPartial<Model>[]): Promise<Array<Model>> {
-    return instanceToPlain(await this.model.save(entities)) as Array<Model>;
-  }
+  async paginate(
+    options?: WhereOptions<T>,
+    page = PAGE,
+    limit = LIMIT,
+    opts?: FindOptions<T>,
+  ): Promise<IPaginationRes<T>> {
+    const offset = (page - 1) * limit;
+    const { rows, count } = await this.rawPaginate({
+      where: { ...options },
+      offset,
+      limit,
+      ...opts,
+    });
 
-  async findById(id: string | number, opts?: FindOneOptions<Model>): Promise<Model> {
-    return instanceToPlain(await this.model.findOne(id, { ...opts })) as Model;
-  }
-
-  async findRaw(where: FindConditions<Model>, options: FindOneOptions<Model>): Promise<Model> {
-    return await this.model.findOne({ ...options, where });
-  }
-
-  async findOneRaw(where: FindConditions<Model>, options?: FindOneOptions<Model>): Promise<Model> {
-    return this.findRaw(where, options);
-  }
-
-  async findOne(where: FindConditions<Model>, options?: FindOneOptions<Model>): Promise<Model> {
-    return instanceToPlain(this.findOneRaw(where, options)) as Model;
-  }
-
-  async findByIds(ids: any[], options?: FindManyOptions<Model>): Promise<Model[]> {
-    return instanceToPlain(await this.model.findByIds(ids, options)) as Model[];
-  }
-
-  async findAndCount(conditions?: FindManyOptions<Model>): Promise<[Model[], number]> {
-    const [items, count] = await this.model.findAndCount(conditions);
-    return [instanceToPlain(items) as Model[], count];
-  }
-
-  async count(options?: FindManyOptions<Model>): Promise<number> {
-    const count = await this.model.count(options);
-    return count;
-  }
-
-  async find(conditions: FindConditions<Model>, options?: FindManyOptions<Model>): Promise<Model[]> {
-    return instanceToPlain(await this.model.find({ where: conditions, ...options })) as Model[];
-  }
-
-  async findCustom(options?: FindManyOptions<Model>): Promise<Model[]> {
-    return instanceToPlain(await this.model.find({ ...options })) as Model[];
-  }
-
-  async findWithPagination(
-    conditions: FindConditions<Model>,
-    options?: FindManyOptions<Model>,
-  ): Promise<{ totalPage: number; payload: Model[] }> {
-    const results = instanceToPlain(await this.model.findAndCount({ where: conditions, ...options }));
     return {
-      totalPage: Math.ceil(results[1] / (options.take ?? LIMIT)),
-      payload: results[0],
-    };
+      items: rows,
+      meta: {
+        total: count,
+        totalPage: Math.ceil(count / LIMIT),
+        page,
+        limit,
+      },
+    } as IPaginationRes<T>;
   }
 
-  async updateItem(entity: DeepPartial<Model>): Promise<Model> {
-    return instanceToPlain(await this.model.save(entity)) as Model;
+  async rawPaginate(options: FindAndCountOptions): Promise<{
+    rows: T[];
+    count: number;
+  }> {
+    return await this.model.findAndCountAll(options);
   }
 
-  async update(id: string | number, entity: QueryDeepPartialEntity<Model>): Promise<object> {
-    return await this.model.update(id, entity);
+  async create(entity: any, opts?: CreateOptions): Promise<T> {
+    const res = await this.model.create(entity, opts);
+    return res.toJSON();
   }
 
-  async updateByConditions(
-    conditions: FindConditions<Model>,
-    entity: QueryDeepPartialEntity<Model>,
-  ): Promise<UpdateResult> {
-    return await this.model.update(conditions, entity);
+  async update(entity: any, opts?: UpdateOptions) {
+    const [affectedCount, affectedRows] = await this.model.update(entity, {
+      ...opts,
+      returning: true,
+    });
+    return affectedRows;
   }
 
-  merge(oldEntity: Model, entity: DeepPartial<Model>): Model {
-    return instanceToPlain(this.model.merge(oldEntity, entity)) as Model;
+  async delete(conditions: FindOptions<T>): Promise<number> {
+    return await this.model.destroy(conditions);
   }
 
-  async preload(entity: DeepPartial<Model>): Promise<Model> {
-    return instanceToPlain(await this.model.preload(entity)) as Model;
-  }
-  async save(entity: DeepPartial<Model>): Promise<Model> {
-    return instanceToPlain(await this.model.save(entity)) as Model;
+  async raw(query: string) {
+    return await this.model.sequelize.query(query);
   }
 
-  async removeItem(
-    criteria: string | string[] | number | number[] | Date | Date[] | FindConditions<Model>,
-  ): Promise<DeleteResult> {
-    return this.model.delete(criteria);
-  }
-
-  async softDeleteItem(entity: FindConditions<Model>): Promise<UpdateResult> {
-    return this.model.softDelete(entity);
-  }
-
-  async paginationRepository(
-    repository: Repository<Model>,
-    options: IPaginationOptions,
-    searchOptions?: FindConditions<Model> | FindManyOptions<Model>,
-  ): Promise<Pagination<Model, IPaginationMeta>> {
-    const { items, meta } = await paginate(repository, options, searchOptions);
-    return {
-      items: instanceToPlain(items) as any,
-      meta,
-    };
-  }
-
-  async paginationQueryBuilder(
-    queryBuilder: SelectQueryBuilder<Model>,
-    options: IPaginationOptions,
-  ): Promise<Pagination<Model, IPaginationMeta>> {
-    const pgResult = await paginate(queryBuilder, options);
-    return {
-      ...pgResult,
-      items: instanceToPlain(pgResult.items) as any,
-    };
-  }
-
-  getModel(): Repository<Model> {
+  getModel(): Repository<T> {
     return this.model;
+  }
+
+  async count(options?: CountOptions): Promise<number> {
+    const result: number = await this.model.count(options);
+    return result;
+  }
+
+  async findAndPaginate(query?: IFindAndPaginateOptions, opts?: FindOptions): Promise<IPaginationRes<T>> {
+    const result: IPaginationRes<T> = await this.paginate(query.where, query.page, query.limit, opts);
+
+    return result;
   }
 }

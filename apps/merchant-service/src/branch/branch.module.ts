@@ -1,13 +1,13 @@
-import { BranchEntity } from '@libs/database/entities';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { BranchModel } from '@libs/database/entities';
 import { BranchRepository } from '@libs/database/repositories';
+import { Module } from '@nestjs/common';
+import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { SequelizeModule } from '@nestjs/sequelize';
 
 import { BranchService } from './branch.service';
 
 @Module({
-  imports: [SecretsModule, TypeOrmModule.forFeature([BranchEntity])],
+  imports: [SecretsModule, SequelizeModule.forFeature([BranchModel])],
   providers: [BranchService, BranchRepository],
   exports: [BranchService],
 })

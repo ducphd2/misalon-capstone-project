@@ -1,13 +1,13 @@
-import { DeviceEntity } from '@libs/database/entities';
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { DeviceModel } from '@libs/database/entities';
 import { DeviceRepository } from '@libs/database/repositories';
+import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { SecretsModule } from 'libs/modules/global/secrets/module';
 
 import { DeviceService } from './device.service';
 
 @Module({
-  imports: [SecretsModule, TypeOrmModule.forFeature([DeviceEntity])],
+  imports: [SecretsModule, SequelizeModule.forFeature([DeviceModel])],
   providers: [DeviceService, DeviceRepository],
   exports: [DeviceService],
 })

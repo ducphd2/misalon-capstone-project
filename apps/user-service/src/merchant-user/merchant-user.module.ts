@@ -1,13 +1,13 @@
-import { MerchantUserEntity } from '@libs/database/entities';
+import { MerchantUserModel } from '@libs/database/entities';
 import { MerchantUserRepository } from '@libs/database/repositories';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
 
 import { MerchantUserService } from './merchant-user.service';
 
 @Module({
-  imports: [SecretsModule, TypeOrmModule.forFeature([MerchantUserEntity])],
+  imports: [SecretsModule, SequelizeModule.forFeature([MerchantUserModel])],
   providers: [MerchantUserService, MerchantUserRepository],
   exports: [MerchantUserService],
 })

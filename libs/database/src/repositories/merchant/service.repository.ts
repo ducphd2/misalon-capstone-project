@@ -1,12 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 
-import { ServiceEntity } from '../../entities';
+import { ServiceModel } from '../../entities';
 import { BaseRepository } from '../base.repository';
 
-@EntityRepository(ServiceEntity)
-export class ServiceRepository extends BaseRepository<ServiceEntity> {
-  constructor(@InjectRepository(ServiceEntity) readonly serviceModel: Repository<ServiceEntity>) {
-    super(serviceModel);
+@Injectable()
+export class ServiceRepository extends BaseRepository<ServiceModel> {
+  constructor(@InjectModel(ServiceModel) readonly model: typeof ServiceModel) {
+    super(model);
   }
 }

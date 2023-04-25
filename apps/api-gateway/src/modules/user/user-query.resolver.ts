@@ -21,7 +21,7 @@ export class UserQueryResolver {
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-    @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: ESortDirection,
+    @Args('orderDirection', { type: () => ESortDirection, nullable: true }) orderDirection?: string,
   ): Promise<UserPaging> {
     const result = await this.userService.find({
       where: JSON.stringify({
@@ -31,7 +31,7 @@ export class UserQueryResolver {
       page: page ? page : 1,
       limit: limit ? limit : 10,
       orderBy: orderBy ? orderBy : 'updatedAt',
-      orderDirection: orderDirection ?? ESortDirection.DESC,
+      orderDirection: 'DESC',
     });
 
     return result;

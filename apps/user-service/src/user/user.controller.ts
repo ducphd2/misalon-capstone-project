@@ -1,4 +1,4 @@
-import { DeviceEntity, UserEntity } from '@libs/database/entities';
+import { DeviceEntity, DeviceModel } from '@libs/database/entities';
 import {
   CommonProto,
   FindOneUser,
@@ -6,12 +6,11 @@ import {
   UserServiceController,
   UserServiceControllerMethods,
 } from '@libs/grpc-types';
-import { CreateDeviceInput, Device, Devices } from '@libs/grpc-types/protos/device';
+import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { GrpcLogInterceptor } from 'interceptors/interceptors';
-import { Observable } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
 import { MerchantUserService } from '../merchant-user/merchant-user.service';
@@ -61,7 +60,7 @@ export class UserController implements UserServiceController {
     return await this.merchantUserService.create(request);
   }
 
-  async upsertDevice(request: CreateDeviceInput): Promise<Device> {
+  async upsertDevice(request: CreateDeviceInput): Promise<DeviceModel> {
     return await this.deviceService.upsertDevice(request);
   }
 
@@ -95,17 +94,17 @@ export class UserController implements UserServiceController {
   }
 
   async create(data: UserProto.CreateUserRequest): Promise<FindOneUser> {
-    const user: UserEntity = await this.userService.create(data);
+    const user = await this.userService.create(data);
     return { user };
   }
 
   async findById({ id }: CommonProto.Id): Promise<UserProto.FindOneUser> {
-    const user: UserEntity = await this.userService.findById(id);
+    const user = await this.userService.findById(id);
     return { user };
   }
 
   async findOne(request: CommonProto.QueryRequest): Promise<UserProto.FindOneUser> {
-    const user: UserEntity = await this.userService.findOne(request);
+    const user = await this.userService.findOne(request);
     return { user };
   }
 }

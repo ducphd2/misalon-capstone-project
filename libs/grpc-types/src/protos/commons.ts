@@ -76,7 +76,7 @@ export interface QueryRequest {
   limit?: number | undefined;
   searchKey?: string | undefined;
   orderBy?: string | undefined;
-  orderDirection?: ESortDirection | undefined;
+  orderDirection?: string | undefined;
 }
 
 export interface Sort {
@@ -96,11 +96,10 @@ export interface Paging {
 }
 
 export interface PageMeta {
-  itemCount?: number | undefined;
-  totalItems?: number | undefined;
-  itemsPerPage?: number | undefined;
-  totalPages?: number | undefined;
-  currentPage?: number | undefined;
+  total?: number | undefined;
+  totalPage?: number | undefined;
+  page?: number | undefined;
+  limit?: number | undefined;
 }
 
 export const COMMONS_PACKAGE_NAME = "commons";
