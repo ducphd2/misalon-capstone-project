@@ -45,7 +45,7 @@ export class BookingQueryResolver {
       page: page ? page : 1,
       limit: limit ? limit : 10,
       orderBy: orderBy ? orderBy : 'updatedAt',
-      orderDirection: orderDirection ?? ESortDirection.DESC,
+      orderDirection: 'DESC',
     });
 
     return result;

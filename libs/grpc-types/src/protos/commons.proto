@@ -47,7 +47,7 @@ message QueryRequest {
   optional int32 limit = 3;
   optional string searchKey = 4;
   optional string orderBy = 5;
-  optional ESortDirection orderDirection = 6;
+  optional string orderDirection = 6;
 }
 
 message Sort {
@@ -66,11 +66,10 @@ message Paging {
 }
 
 message PageMeta {
-  optional int32 itemCount = 1;
-  optional int32 totalItems = 2;
-  optional int32 itemsPerPage = 3;
-  optional int32 totalPages = 4;
-  optional int32 currentPage = 5;
+  optional int32 total = 1;
+  optional int32 totalPage = 2;
+  optional int32 page = 3;
+  optional int32 limit = 4;
 }
 
 enum EUserGender {

@@ -1,12 +1,17 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 
+import { NotificationModel } from '../../entities';
 import { BaseRepository } from '../base.repository';
-import { NotificationEntity } from '../../entities';
 
-@EntityRepository(NotificationEntity)
-export class NotificationRepository extends BaseRepository<NotificationEntity> {
-  constructor(@InjectRepository(NotificationEntity) readonly notificationModel: Repository<NotificationEntity>) {
-    super(notificationModel);
+@Injectable()
+export class NotificationRepository extends BaseRepository<NotificationModel> {
+  constructor(@InjectModel(NotificationModel) readonly model: typeof NotificationModel) {
+    super(model);
+  }
+
+  async findWithPaging(options?: any, findOptions?: any): Promise<any> {
+    // const result = await this.paginationRepository(this.deviceModel, options, findOptions);
+    return;
   }
 }

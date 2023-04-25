@@ -1,34 +1,39 @@
-import { DeviceEntity, MerchantUserEntity, UserEntity } from '@libs/database/entities';
+import { operatorsAliases } from '@libs/core';
+import { DeviceModel, MerchantUserModel, UserModel } from '@libs/database/entities';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
+    SequelizeModule.forRootAsync({
       imports: [SecretsModule],
-      useFactory: (secrets: AbstractSecretsService): TypeOrmModuleOptions => {
+      useFactory: async (secrets: AbstractSecretsService): Promise<SequelizeModuleOptions> => {
         return {
-          type: 'postgres',
+          dialect: 'postgres',
           ...secrets.userServiceDatabase,
-          autoLoadEntities: true,
-          synchronize: true,
-          migrations: ['dist/src/db/migrations/*{.ts,.js}'],
-          charset: 'utf8mb4',
-          // logging: true,
-          namingStrategy: new SnakeNamingStrategy(),
-          entities: [UserEntity, DeviceEntity, MerchantUserEntity],
-          extra: {
-            extensions: ['postgis'],
+          logging: false,
+          typeValidation: true,
+          operatorsAliases: operatorsAliases,
+          models: [UserModel, DeviceModel, MerchantUserModel],
+          autoLoadModels: true,
+          // synchronize: true,
+          sync: {
+            force: true,
           },
-          cli: {
-            migrationsDir: 'libs/database/src/migrations/user',
+          query: {
+            raw: true,
           },
-          migrationsRun: true,
-        } as PostgresConnectionOptions;
+          define: {
+            timestamps: true,
+            underscored: true,
+            version: true,
+          },
+          dialectOptions: {
+            charset: 'utf8',
+          },
+        };
       },
       inject: [AbstractSecretsService],
     }),

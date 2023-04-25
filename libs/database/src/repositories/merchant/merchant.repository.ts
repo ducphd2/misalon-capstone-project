@@ -1,21 +1,17 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationMeta, IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
-import { EntityRepository, FindConditions, FindManyOptions, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 
-import { MerchantEntity } from '../../entities';
+import { MerchantModel } from '../../entities';
 import { BaseRepository } from '../base.repository';
 
-@EntityRepository(MerchantEntity)
-export class MerchantRepository extends BaseRepository<MerchantEntity> {
-  constructor(@InjectRepository(MerchantEntity) readonly merchantModel: Repository<MerchantEntity>) {
-    super(merchantModel);
+@Injectable()
+export class MerchantRepository extends BaseRepository<MerchantModel> {
+  constructor(@InjectModel(MerchantModel) readonly model: typeof MerchantModel) {
+    super(model);
   }
 
-  async findWithPaging(
-    options: IPaginationOptions,
-    findOptions?: FindConditions<MerchantEntity> | FindManyOptions<MerchantEntity>,
-  ): Promise<Pagination<MerchantEntity, IPaginationMeta>> {
-    const result = await this.paginationRepository(this.merchantModel, options, findOptions);
-    return result;
+  async findWithPaging(options?: any, findOptions?: any): Promise<MerchantModel> {
+    // const result = await this.paginationRepository(this.deviceModel, options, findOptions);
+    return;
   }
 }

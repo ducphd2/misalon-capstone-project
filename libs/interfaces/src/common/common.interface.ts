@@ -1,3 +1,5 @@
+import { FindAttributeOptions, WhereOptions } from 'sequelize';
+
 export interface IModelConnection<T> {
   edges: IModelEdge<T>[];
   pageInfo: IPageInfo;
@@ -47,4 +49,30 @@ export interface IQueryV2 {
   orderBy?: string;
   orderDirection?: string;
   searchKey?: string;
+}
+
+export interface IPaginationMeta {
+  totalPage: number;
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface IPaginationRes<T> {
+  items: T[];
+  meta: IPaginationMeta;
+}
+
+export interface IFindAndPaginateOptions {
+  attributes?: FindAttributeOptions;
+  where?: WhereOptions;
+  order?: string[];
+  limit?: number;
+  before?: string;
+  after?: string;
+  page?: number;
+  orderBy?: string;
+  orderDirection?: string;
+  offset?: number;
+  keySearch?: string;
 }

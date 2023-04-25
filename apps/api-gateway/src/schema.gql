@@ -20,11 +20,10 @@ type DeletePayload {
 }
 
 type PageMeta {
-  itemCount: Int
-  totalItems: Int
-  itemsPerPage: Int
-  totalPages: Int
-  currentPage: Int
+  total: Int
+  totalPage: Int
+  page: Int
+  limit: Int
 }
 
 type Branch {

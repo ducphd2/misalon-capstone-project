@@ -1,12 +1,12 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 
-import { GroupEntity } from '../../entities';
+import { GroupModel } from '../../entities';
 import { BaseRepository } from '../base.repository';
 
-@EntityRepository(GroupEntity)
-export class GroupRepository extends BaseRepository<GroupEntity> {
-  constructor(@InjectRepository(GroupEntity) readonly groupModel: Repository<GroupEntity>) {
-    super(groupModel);
+@Injectable()
+export class GroupRepository extends BaseRepository<GroupModel> {
+  constructor(@InjectModel(GroupModel) readonly model: typeof GroupModel) {
+    super(model);
   }
 }

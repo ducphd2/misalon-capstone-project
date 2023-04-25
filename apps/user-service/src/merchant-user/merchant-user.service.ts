@@ -13,7 +13,8 @@ export class MerchantUserService {
   }
 
   async update(id: number, dto: MerchantUserProto.CreateMerchantUserInput): Promise<MerchantUserEntity> {
-    await this.merchantUserRepository.update(id, dto);
-    return await this.merchantUserRepository.findById(id);
+    // await this.merchantUserRepository.update(id, dto);
+    // return await this.merchantUserRepository.findById(id);
+    return;
   }
 }

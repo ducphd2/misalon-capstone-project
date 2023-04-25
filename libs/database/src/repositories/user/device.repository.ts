@@ -1,21 +1,20 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { IPaginationMeta, IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
-import { EntityRepository, FindConditions, FindManyOptions, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { IFindAndPaginateOptions, IPaginationRes } from '@libs/interfaces';
+import { FindOptions } from 'sequelize';
 
-import { DeviceEntity } from '../../entities';
+import { DeviceModel } from '../../entities';
 import { BaseRepository } from '../base.repository';
 
-@EntityRepository(DeviceEntity)
-export class DeviceRepository extends BaseRepository<DeviceEntity> {
-  constructor(@InjectRepository(DeviceEntity) readonly deviceModel: Repository<DeviceEntity>) {
-    super(deviceModel);
+@Injectable()
+export class DeviceRepository extends BaseRepository<DeviceModel> {
+  constructor(@InjectModel(DeviceModel) readonly model: typeof DeviceModel) {
+    super(model);
   }
 
-  async findWithPaging(
-    options: IPaginationOptions,
-    findOptions?: FindConditions<DeviceEntity> | FindManyOptions<DeviceEntity>,
-  ): Promise<Pagination<DeviceEntity, IPaginationMeta>> {
-    const result = await this.paginationRepository(this.deviceModel, options, findOptions);
+  async findAndPaginate(query?: IFindAndPaginateOptions, opts?: FindOptions): Promise<IPaginationRes<DeviceModel>> {
+    const result: IPaginationRes<DeviceModel> = await this.paginate(query.where, query.page, query.limit, opts);
+
     return result;
   }
 }

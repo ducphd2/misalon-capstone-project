@@ -1,41 +1,46 @@
+import { operatorsAliases } from '@libs/core';
 import {
-  BranchEntity,
-  GroupEntity,
-  ImageEntity,
-  MerchantEntity,
-  ServeImageEntity,
-  ServiceEntity,
+  BranchModel,
+  GroupModel,
+  ImageModel,
+  MerchantModel,
+  ServeImageModel,
+  ServiceModel,
 } from '@libs/database/entities';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
+    SequelizeModule.forRootAsync({
       imports: [SecretsModule],
-      useFactory: (secrets: AbstractSecretsService): TypeOrmModuleOptions => {
+      useFactory: async (secrets: AbstractSecretsService): Promise<SequelizeModuleOptions> => {
         return {
-          type: 'postgres',
+          dialect: 'postgres',
           ...secrets.merchantServiceDatabase,
-          autoLoadEntities: true,
-          synchronize: true,
-          migrations: ['dist/src/db/migrations/*{.ts,.js}'],
-          charset: 'utf8mb4',
-          // logging: true,
-          namingStrategy: new SnakeNamingStrategy(),
-          entities: [MerchantEntity, BranchEntity, GroupEntity, ServiceEntity, ImageEntity, ServeImageEntity],
-          extra: {
-            extensions: ['postgis'],
+          logging: false,
+          typeValidation: true,
+          operatorsAliases: operatorsAliases,
+          models: [MerchantModel, BranchModel, GroupModel, ServiceModel, ImageModel, ServeImageModel],
+          autoLoadModels: true,
+          // synchronize: true,
+          sync: {
+            force: true,
           },
-          cli: {
-            migrationsDir: 'libs/database/src/migrations/merchant',
+          query: {
+            raw: true,
           },
-          migrationsRun: true,
-        } as PostgresConnectionOptions;
+          define: {
+            timestamps: true,
+            underscored: true,
+            version: true,
+          },
+          dialectOptions: {
+            charset: 'utf8',
+          },
+        };
       },
       inject: [AbstractSecretsService],
     }),
