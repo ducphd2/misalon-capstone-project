@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { UploadService } from './upload.service';
 import { UploadResolver } from './upload.resolver';
@@ -8,7 +9,7 @@ import { UploadRestService } from '@/api-gateway/modules/upload/upload-rest.serv
 import { UploadController } from '@/api-gateway/modules/upload/upload.controller';
 
 @Module({
-  providers: [CloudinaryProvider, UploadService, UploadResolver, UploadRestService],
+  providers: [ConfigModule, CloudinaryProvider, UploadService, UploadResolver, UploadRestService],
   controllers: [UploadController],
   exports: [CloudinaryProvider, UploadService, UploadRestService],
 })

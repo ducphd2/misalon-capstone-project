@@ -15,7 +15,8 @@ export class UploadController {
       if (!files.length) {
         throw new HttpException('File not found', HttpStatus.BAD_REQUEST);
       }
-      return await this.uploadService.uploadFiles(files);
+      const result = await this.uploadService.uploadFiles(files);
+      return result;
     } catch (error) {
       this.logger.error(error.message);
       throw new HttpException('Upload file failed', HttpStatus.BAD_REQUEST);
