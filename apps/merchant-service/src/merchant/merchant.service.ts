@@ -41,4 +41,16 @@ export class MerchantService {
     const merchant = await this.merchantRepository.findById(id);
     return merchant;
   }
+
+  async findOne(dto: CommonProto.QueryRequest): Promise<MerchantModel> {
+    const where = !isEmpty(dto.where) ? JSON.parse(dto.where) : undefined;
+
+    const result = await this.merchantRepository.findOne({
+      ...dto,
+      where,
+      raw: true,
+    });
+
+    return result;
+  }
 }

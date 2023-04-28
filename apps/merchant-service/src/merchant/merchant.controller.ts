@@ -23,9 +23,9 @@ import {
   Service,
   UpdateServiceInput,
 } from '@libs/grpc-types/protos/service';
+import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
-import { GrpcLogInterceptor } from 'interceptors/interceptors';
 import { Observable } from 'rxjs';
 
 import { BranchService } from '../branch/branch.service';
@@ -67,8 +67,9 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return merchants;
   }
 
-  findOne(request: QueryRequest): Promise<MerchantProto.NullableMerchant> {
-    throw new Error('Method not implemented.');
+  async findOne(request: QueryRequest): Promise<MerchantProto.NullableMerchant> {
+    const merchant = await this.merchantService.findOne(request);
+    return { merchant };
   }
 
   async create(request: MerchantProto.CreateInput): Promise<MerchantProto.CreateMerchantResponse> {

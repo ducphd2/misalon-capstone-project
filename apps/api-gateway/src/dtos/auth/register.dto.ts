@@ -1,8 +1,10 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { Transform, TransformFnParams } from 'class-transformer';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsDefined, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
+import { CreateMerchantInputDto } from '@/api-gateway/dtos/merchant';
+import { DeviceInputDto } from '@/api-gateway/dtos/user';
 
 @InputType()
 export class CreateUserInputDto {
@@ -141,4 +143,21 @@ export class CreateUserInputDto {
   @Field(() => Int, { nullable: true })
   @IsOptional()
   branchId?: number;
+}
+
+export class RegisterPayload {
+  @IsNotEmpty()
+  @IsDefined()
+  @Type(() => CreateUserInputDto)
+  user: CreateUserInputDto;
+
+  @IsOptional()
+  @IsDefined()
+  @Type(() => CreateMerchantInputDto)
+  merchant: CreateMerchantInputDto;
+
+  @IsOptional()
+  @IsDefined()
+  @Type(() => DeviceInputDto)
+  device: DeviceInputDto;
 }

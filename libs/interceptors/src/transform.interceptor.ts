@@ -1,9 +1,9 @@
 import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { omit } from 'lodash';
 
 export interface MetaInterface {
-  headers: any;
   params: any;
   status: boolean;
   errorCode?: string;
@@ -11,29 +11,37 @@ export interface MetaInterface {
 }
 
 export interface Response<T> {
-  meta: MetaInterface;
+  meta?: string;
+  statusCode?: number;
+  message?: string;
   result: T;
+}
+
+export interface ResponseHandleData {
+  code?: number;
+  meta?: string;
+  statusCode?: number;
+  message?: string;
 }
 
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
-  private logger = new Logger('HTTP');
+  private logger = new Logger(TransformInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<Response<any>> {
-    const { method, url, body, headers, params, status } = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest();
+    const response = context.switchToHttp().getResponse<ResponseHandleData>();
+    const { method, url, body, params, status } = request;
     this.logger.log(`REQ [${method} ${url}]:-> ${JSON.stringify(body)}`);
     return next.handle().pipe(
-      map((data) => {
+      map((data: any) => {
         const res = {
-          meta: {
-            headers: headers,
-            params: params,
-            status: status,
-            timestamp: new Date(),
-          },
-          result: data,
+          meta: JSON.stringify({ params: params, status: status, timestamp: new Date() }),
+          message: data?.message ?? response.message ?? request?.message ?? 'Ok',
+          code: data?.statusCode ?? status ?? response.code ?? response.statusCode,
+          statusCode: data?.statusCode ?? status ?? response.statusCode,
+          result: omit(data, ['message']),
         };
-        this.logger.log(`RES [${method} ${url}] :-> ${JSON.stringify(res)}`);
         return res;
       }),
     );

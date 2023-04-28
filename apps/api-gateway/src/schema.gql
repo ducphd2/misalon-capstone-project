@@ -397,7 +397,6 @@ type Mutation {
   login(data: InputLoginRequest!): ResponseAuthGrpc!
   register(user: CreateUserInputDto!, merchant: CreateMerchantInputDto, device: DeviceInputDto): ResponseAuthGrpc!
   logout: Boolean!
-  updatePassword(data: ChangePasswordInput!): UserPayload!
   addOperator(user: AddOperatorDto!): UserPayload!
   addCustomer(user: AddCustomerDto!): UserPayload!
   updateCustomer(id: Float!, user: UpdatePartialCustomer!): UserPayload!
@@ -482,17 +481,13 @@ input CreateMerchantInputDto {
   ward: String
 }
 
-input ChangePasswordInput {
-  currentPassword: String!
-  newPassword: String!
-  confirmPassword: String!
-}
-
 input AddOperatorDto {
   email: String!
   password: String!
   fullName: String!
   role: EUserRole! = MASTER_WORKER
+  merchantId: Int!
+  branchId: Int!
   status: EUserStatus
   gender: EUserGender
   level: ECustomerLevel
@@ -520,11 +515,10 @@ input AddOperatorDto {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
-  branchId: Int
-  merchantId: Int!
 }
 
 input AddCustomerDto {
+  merchantId: Int!
   email: String
   password: String
   fullName: String!
@@ -558,10 +552,10 @@ input AddCustomerDto {
   relatedUserRole: String
   relatedUserPhone: String
   branchId: Int
-  merchantId: Int!
 }
 
 input UpdatePartialCustomer {
+  merchantId: Int
   email: String
   password: String
   fullName: String
@@ -595,7 +589,6 @@ input UpdatePartialCustomer {
   relatedUserRole: String
   relatedUserPhone: String
   branchId: Int
-  merchantId: Int
 }
 
 input UpdatePartialUser {

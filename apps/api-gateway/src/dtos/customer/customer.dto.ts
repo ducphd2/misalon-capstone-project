@@ -1,11 +1,16 @@
 import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 @InputType()
 export class AddCustomerDto {
+  @Field(() => Int, { nullable: false })
+  @IsInt()
+  @IsNotEmpty()
+  merchantId?: number;
+
   @Field(() => String, { nullable: true })
   @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
   @IsEmail()
@@ -20,8 +25,8 @@ export class AddCustomerDto {
   password: string;
 
   @Field(() => String, { nullable: false })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   fullName: string;
 
   @Field(() => EUserRole, { nullable: false, defaultValue: EUserRole.USER })
@@ -147,10 +152,6 @@ export class AddCustomerDto {
   @Field(() => Int, { nullable: true })
   @IsOptional()
   branchId?: number;
-
-  @Field(() => Int, { nullable: false })
-  @IsOptional()
-  merchantId?: number;
 }
 
 @InputType()

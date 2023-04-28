@@ -1,25 +1,6 @@
-import { ValidationArguments, ValidationOptions, registerDecorator } from 'class-validator';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export function Match<T>(property: keyof T, validationOptions?: ValidationOptions) {
-  return (object: any, propertyName: string) => {
-    registerDecorator({
-      name: 'Match',
-      target: object.constructor,
-      propertyName,
-      constraints: [property],
-      options: validationOptions,
-      validator: {
-        validate(value: any, args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
-          const relatedValue = (args.object as any)[relatedPropertyName];
-          return value === relatedValue;
-        },
-
-        defaultMessage(args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
-          return `${propertyName} must match ${relatedPropertyName} exactly`;
-        },
-      },
-    });
-  };
-}
+export const User = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
+  const request = ctx.switchToHttp().getRequest();
+  return request.user;
+});

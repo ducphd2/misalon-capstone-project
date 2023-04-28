@@ -2,7 +2,7 @@ import { UserModel } from '@libs/database/entities';
 import { UserRepository } from '@libs/database/repositories';
 import { CommonProto, UserProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
-import { FindOptions } from 'sequelize';
+import { FindOptions, Sequelize, WhereOptions } from 'sequelize';
 import { isEmpty } from 'lodash';
 import { query } from 'express';
 
@@ -56,16 +56,16 @@ export class UserService {
     return;
   }
 
-  async findWithPaging(request: CommonProto.QueryRequest): Promise<any> {
-    const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
+  async findWithPaging(query: CommonProto.QueryRequest): Promise<any> {
+    const baseWhere = !isEmpty(query.where) ? JSON.parse(query.where) : undefined;
 
     const result = await this.userRepository.findAndPaginate(
       {
-        ...request,
-        where: baseWhereQuery,
+        ...query,
+        where: baseWhere,
       },
       {
-        order: [[request.orderBy, request.orderDirection]],
+        order: [[query.orderBy, query.orderDirection]],
       },
     );
 

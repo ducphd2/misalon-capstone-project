@@ -1,8 +1,20 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { LIMIT, PAGE } from '@libs/core';
 
-import { Match } from '@/api-gateway/core/decorators';
+import { Match } from '@/api-gateway/core';
 import { ECustomerLevel, EDeviceOs, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 @InputType()
@@ -58,14 +70,24 @@ export class AddOperatorDto {
   password: string;
 
   @Field(() => String, { nullable: false })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   fullName: string;
 
   @Field(() => EUserRole, { nullable: false, defaultValue: EUserRole.MASTER_WORKER })
   @IsEnum(EUserRole)
   @IsNotEmpty()
   role: EUserRole;
+
+  @Field(() => Int, { nullable: false })
+  @IsNotEmpty()
+  @IsInt()
+  merchantId?: number;
+
+  @Field(() => Int, { nullable: false })
+  @IsNotEmpty()
+  @IsInt()
+  branchId?: number;
 
   @Field(() => EUserStatus, { nullable: true })
   @IsOptional()
@@ -176,12 +198,32 @@ export class AddOperatorDto {
   @Field(() => String, { nullable: true })
   @IsOptional()
   relatedUserPhone?: string;
+}
 
-  @Field(() => Int, { nullable: true })
+export class PaginateUserDto {
   @IsOptional()
-  branchId?: number;
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  page?: number = PAGE;
 
-  @Field(() => Int, { nullable: false })
   @IsOptional()
-  merchantId?: number;
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  limit?: number = LIMIT;
+
+  @IsString()
+  @IsOptional()
+  q?: string;
+
+  @IsString()
+  @IsOptional()
+  orderBy?: string = 'createdAt';
+
+  @IsString()
+  @IsOptional()
+  orderDirection?: string = 'DESC';
+
+  @IsBoolean()
+  @IsOptional()
+  excludeMe: boolean;
 }

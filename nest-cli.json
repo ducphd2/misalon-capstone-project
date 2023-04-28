@@ -6,7 +6,12 @@
   "root": "apps/api-gateway",
   "compilerOptions": {
     "assets": [
-      "**/*.proto"
+      "**/*.proto",
+      {
+        "include": "i18n/**/*",
+        "watchAssets": true,
+        "outDir": "dist/apps/api-gateway"
+      }
     ],
     "watchAssets": true,
     "webpack": true,
