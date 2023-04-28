@@ -1,12 +1,11 @@
 import { CUSTOMER_MESSAGE, ErrorHelper, MERCHANT_MESSAGE, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
-import { UseGuards } from '@nestjs/common';
+import { Body, Post, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { isEmpty } from 'lodash';
 
-import { CurrentUser } from '@/api-gateway/core/decorators';
-import { GqlAuthGuard } from '@/api-gateway/core/guards';
+import { JwtAuthGuard, User } from '@/api-gateway/core';
 import { AddCustomerDto, AddOperatorDto, ChangePasswordInput, UpdatePartialCustomer } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
@@ -20,12 +19,8 @@ export class UserMutationResolver {
     private readonly merchantService: MerchantCommonService,
   ) {}
 
-  @Mutation(() => UserPayload)
-  @UseGuards(GqlAuthGuard)
-  async updatePassword(
-    @CurrentUser() currentUser: UserModel,
-    @Args('data') data: ChangePasswordInput,
-  ): Promise<UserPayload> {
+  @UseGuards(JwtAuthGuard)
+  async updatePassword(@User() currentUser: UserModel, @Body() data: ChangePasswordInput): Promise<UserPayload> {
     const { user } = await this.userService.findById({ id: currentUser.id });
 
     const isSame: boolean = await this.passwordUtils.compare(data.currentPassword, user.password);
@@ -45,13 +40,13 @@ export class UserMutationResolver {
   }
 
   @Mutation(() => UserPayload)
-  @UseGuards(GqlAuthGuard)
-  async addOperator(@CurrentUser() admin: UserModel, @Args('user') userInput: AddOperatorDto): Promise<UserPayload> {
+  @UseGuards(JwtAuthGuard)
+  async addOperator(@User() admin: UserModel, @Args('user') userInput: AddOperatorDto): Promise<UserPayload> {
     try {
       const { merchant } = await this.merchantService.findById({ id: userInput.merchantId });
 
       if (isEmpty(merchant)) {
-        ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.MERCHANT_NOT_FOUND);
+        ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
       }
 
       const { count } = await this.userService.countUser({
@@ -79,16 +74,13 @@ export class UserMutationResolver {
   }
 
   @Mutation(() => UserPayload)
-  @UseGuards(GqlAuthGuard)
-  async addCustomer(
-    @CurrentUser() admin: UserModel,
-    @Args('user') customerInput: AddCustomerDto,
-  ): Promise<UserPayload> {
+  @UseGuards(JwtAuthGuard)
+  async addCustomer(@User() admin: UserModel, @Args('user') customerInput: AddCustomerDto): Promise<UserPayload> {
     try {
       const { merchant } = await this.merchantService.findById({ id: customerInput.merchantId });
 
       if (isEmpty(merchant)) {
-        ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.MERCHANT_NOT_FOUND);
+        ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
       }
 
       const { count } = await this.userService.countCustomer({
@@ -125,9 +117,9 @@ export class UserMutationResolver {
   }
 
   @Mutation(() => UserPayload)
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async updateCustomer(
-    @CurrentUser() admin: UserModel,
+    @User() admin: UserModel,
     @Args('id') userId: number,
     @Args('user') customerInput: UpdatePartialCustomer,
   ): Promise<UserPayload> {
@@ -142,7 +134,7 @@ export class UserMutationResolver {
         const { branch } = await this.merchantService.findBranchById({ id: customerInput?.branchId });
 
         if (isEmpty(branch)) {
-          ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.MERCHANT_NOT_FOUND);
+          ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
         }
       }
 
@@ -177,7 +169,7 @@ export class UserMutationResolver {
     }
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => UserPayload)
   async updateUser(@Args('id') id: number, @Args('data') data: UpdatePartialUser): Promise<UserPayload> {
     const user = await this.userService.update(id, data);

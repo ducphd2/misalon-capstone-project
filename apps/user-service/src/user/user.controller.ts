@@ -10,7 +10,7 @@ import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
-import { GrpcLogInterceptor } from 'interceptors/interceptors';
+import { GrpcLogInterceptor } from '@libs/interceptors';
 
 import { DeviceService } from '../device/device.service';
 import { MerchantUserService } from '../merchant-user/merchant-user.service';

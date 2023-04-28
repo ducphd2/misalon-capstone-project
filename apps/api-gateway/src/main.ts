@@ -1,28 +1,25 @@
+import { TransformInterceptor } from '@libs/interceptors';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { graphqlUploadExpress } from 'graphql-upload-minimal';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 import { AppModule } from './app.module';
+
+import { HttpExceptionFilter } from '@/api-gateway/core';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get<ConfigService>(ConfigService);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useWebSocketAdapter(new IoAdapter(app));
+  app.setGlobalPrefix('api');
 
-  app.use((req: any, res: any, next: any) => {
-    if (req.url.includes('/graphql')) {
-      // only graphql request
-      graphqlUploadExpress({
-        maxFileSize: 1000000,
-        maxFiles: 10,
-      })(req, res, next);
-    } else {
-      next();
-    }
-  });
+  app.enableShutdownHooks();
 
   await app.listen(configService.get<number>('PORT'));
   return app;

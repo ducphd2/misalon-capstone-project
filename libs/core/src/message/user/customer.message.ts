@@ -1,6 +1,7 @@
 export const CUSTOMER_MESSAGE = {
   CREATE: {
     EXIST_EMAIL: 'The email is exist',
+    SUCCESSFUL: 'Create customer successfully',
   },
   UPDATE: {
     FAIL: 'Can not update customer',

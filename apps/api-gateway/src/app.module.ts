@@ -1,9 +1,10 @@
+import { join } from 'path';
+
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { GqlLoggingInterceptor } from 'interceptors/interceptors/logging.interceptor';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 
 import { UserModule } from './modules/user/user.module';
 
@@ -21,6 +22,14 @@ import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: join(__dirname, 'i18n'),
+        watch: true,
+      },
+      resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
+    }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useClass: GqlConfigService,
@@ -35,11 +44,5 @@ import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
     BookingModule,
   ],
   controllers: [],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: GqlLoggingInterceptor,
-    },
-  ],
 })
 export class AppModule {}

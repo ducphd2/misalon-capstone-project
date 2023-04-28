@@ -28,3 +28,13 @@ export function toUFT8NonSpecialCharacters(str: string): string {
   str = str.replace(/\u02C6|\u0306|\u031B/g, ''); // Â, Ê, Ă, Ơ, Ư
   return str;
 }
+
+export function Property(className = 'fields', defaultValue: unknown = undefined): PropertyDecorator {
+  return (target: Record<string, unknown>, name: string): void => {
+    if (defaultValue !== undefined) {
+      target[name] = defaultValue;
+    }
+
+    Reflect.defineMetadata(className, true, target, name);
+  };
+}

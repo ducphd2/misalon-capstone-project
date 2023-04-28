@@ -17,7 +17,9 @@ export class BranchService {
   }
 
   async find(request: CommonProto.QueryRequest): Promise<BranchModel[]> {
-    const branches = await this.branchRepository.find(JSON.parse(request.where));
+    const branches = await this.branchRepository.find({
+      where: JSON.parse(request.where),
+    });
 
     return branches;
   }

@@ -1,4 +1,5 @@
-export const MERCHANT_MESSAGE = {
+export const COMMON_MESSAGE = {
+  INVALID: 'Invalid request',
   CREATE: {
     EXIST_EMAIL: 'The email is exist',
   },

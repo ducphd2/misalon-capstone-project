@@ -11,10 +11,10 @@ export class GrpcLogInterceptor implements NestInterceptor {
     const method = context.getHandler().name;
     const contextType = context.getType();
     const controllerName = context.getClass().name;
-    this.logger.log(`REQ [${contextType}]:[${controllerName}]:[${method}]:-> ${JSON.stringify(reqBody)}`);
+    this.logger.log(`GRPC-REQUEST: [${contextType}]:[${controllerName}]:[${method}]:-> ${JSON.stringify(reqBody)}`);
     return next.handle().pipe(
       tap((data) => {
-        this.logger.log(`RES [${contextType}]:[${controllerName}]:[${method}]:-> ${JSON.stringify(data)}`);
+        this.logger.log(`GRPC-RESPONSE: [${contextType}]:[${controllerName}]:[${method}]}`);
       }),
     );
   }
