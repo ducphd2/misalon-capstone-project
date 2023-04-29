@@ -1,14 +1,16 @@
 import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 
-import { GroupMutationResolver } from './group-mutation.resolver';
-import { GroupQueryResolver } from './group-query.resolver';
-import { GroupTypeResolver } from './group-type.resolver';
+import { MerchantCommonModule } from '../merchant-common/merchant-common.module';
 
-import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
+import { GroupService } from './group.service';
+import { GroupController } from './group.controller';
+
+import { MessageComponent } from '@/api-gateway/core';
 
 @Module({
   imports: [MerchantCommonModule, UtilsModule],
-  providers: [GroupQueryResolver, GroupMutationResolver, GroupTypeResolver],
+  providers: [GroupService, MessageComponent],
+  controllers: [GroupController],
 })
 export class GroupModule {}
