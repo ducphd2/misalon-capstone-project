@@ -53,20 +53,6 @@ type BranchEdge {
   cursor: String!
 }
 
-type BranchPayload {
-  errors: [ErrorPayload!]
-  branch: Branch
-}
-
-type BranchesConnection {
-  branches: [Branch!]!
-}
-
-type BranchPaging {
-  items: [Branch!]
-  meta: PageMeta
-}
-
 type Merchant {
   id: Int!
   createdAt: String
@@ -82,7 +68,7 @@ type Merchant {
   districtCode: Int
   wardCode: Int
   userId: ID
-  branches(q: String): BranchPaging!
+  branches: [Branch!]
 }
 
 type MerchantPaging {
@@ -371,12 +357,6 @@ type Query {
   getUser(id: Float!): UserPayload!
   userCount(q: String): Float!
   me: UserPayload!
-  findMerchantById(id: Float!): Merchant!
-  findAllMerchants(q: String): MerchantPaging!
-  findAllMerchantsByAdmin(q: String): MerchantPaging!
-  findBranchById(id: Float!): BranchPayload!
-  findAllBranches(q: String): BranchesConnection!
-  findAllBranchesByMerchant(merchantId: Float!, q: String): BranchPaging!
   findGroupById(id: Float!): GroupPayload!
   findAllGroups(merchantId: Float!, q: String): GroupPaging!
   findServiceById(id: Float!): Service!
@@ -401,10 +381,6 @@ type Mutation {
   addCustomer(user: AddCustomerDto!): UserPayload!
   updateCustomer(id: Float!, user: UpdatePartialCustomer!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
-  createMerchant(data: CreateMerchantInput!): Merchant!
-  createBranch(data: CreateBranchInput!): BranchPayload!
-  updateBranch(id: Float!, data: PartialUpdateBranch!): BranchPayload!
-  deleteBranch(id: Float!): DeletePayload!
   createGroup(data: CreateGroupInput!): GroupPayload!
   updateGroup(id: Float!, data: PartialUpdateGroup!): Group!
   deleteGroup(id: Float!): DeletePayload!
@@ -625,48 +601,6 @@ input UpdatePartialUser {
   relatedUserRole: String
   relatedUserPhone: String
   branchId: Int
-}
-
-input CreateMerchantInput {
-  name: String
-  phone: String
-  address: String
-  cityCode: Int
-  districtCode: Int
-  wardCode: Int
-  city: String
-  district: String
-  ward: String
-}
-
-input CreateBranchInput {
-  name: String!
-  phone: String!
-  address: String!
-  merchantId: Int!
-  cityCode: Int
-  districtCode: Int
-  wardCode: Int
-  city: String
-  district: String
-  ward: String
-  latitude: Float
-  longitude: Float
-}
-
-input PartialUpdateBranch {
-  name: String
-  phone: String
-  address: String
-  merchantId: Int
-  cityCode: Int
-  districtCode: Int
-  wardCode: Int
-  city: String
-  district: String
-  ward: String
-  latitude: Float
-  longitude: Float
 }
 
 input CreateGroupInput {

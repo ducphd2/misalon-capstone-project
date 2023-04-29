@@ -1,13 +1,14 @@
 import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 
-import { BranchMutationResolver } from '@/api-gateway/modules/branch/branch-mutation.resolver';
-import { BranchQueryResolver } from '@/api-gateway/modules/branch/branch-query.resolver';
-import { BranchTypeResolver } from '@/api-gateway/modules/branch/branch-type.resolver';
-import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
+import { MerchantCommonModule } from '../merchant-common/merchant-common.module';
+
+import { BranchService } from './branch.service';
+
+import { MessageComponent } from '@/api-gateway/core';
 
 @Module({
   imports: [MerchantCommonModule, UtilsModule],
-  providers: [BranchQueryResolver, BranchMutationResolver, BranchTypeResolver],
+  providers: [BranchService, MessageComponent],
 })
 export class BranchModule {}

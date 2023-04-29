@@ -9,12 +9,10 @@ import {
 import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { Args, Mutation } from '@nestjs/graphql';
+import { Args } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
-import { Sequelize } from 'sequelize';
 
 import { User } from '@/api-gateway/core';
-import { GqlAuthGuard } from '@/api-gateway/core/guards';
 import { JwtAuthGuard } from '@/api-gateway/core/guards/auth.guard';
 import {
   AddCustomerDto,
@@ -25,7 +23,7 @@ import {
 } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { UpdatePartialUser, UserPaging, UserPayload } from '@/api-gateway/types';
+import { UpdatePartialUser, UserPayload } from '@/api-gateway/types';
 
 @Controller('users')
 export class UserController {
@@ -201,7 +199,7 @@ export class UserController {
 
     if (!isEmpty(query?.q)) {
       merge(where, {
-        _or: [{ fuzzySearch: { _iLike: `%${query.q}%` } }],
+        _or: [{ search: { _iLike: `%${query.q}%` } }],
       });
     }
 

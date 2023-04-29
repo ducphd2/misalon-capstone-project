@@ -6,6 +6,7 @@
         "**/node_modules": true
     },
     "editor.codeActionsOnSave": {
+        "source.fixAll": true,
         "source.fixAll.eslint": true
     },
     "files.exclude": {

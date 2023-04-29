@@ -54,12 +54,12 @@ export class MerchantModel extends BaseModel<MerchantModel> {
   @Column({
     type: DataType.GEOMETRY('POINT'),
     allowNull: true,
-    defaultValue: { type: 'Point', coordinates: [0, 0] },
+    // defaultValue: { type: 'Point', coordinates: [0, 0] },
   })
   coordinate: { type: 'Point'; coordinates: [number, number] };
 
   @Column({
-    type: 'tsvector',
+    type: DataType.TEXT,
     allowNull: true,
   })
   search?: string;

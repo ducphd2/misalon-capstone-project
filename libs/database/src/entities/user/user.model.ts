@@ -131,18 +131,15 @@ export class UserModel extends BaseModel<UserModel> {
   @Column({
     type: DataType.GEOMETRY('POINT'),
     allowNull: true,
-    defaultValue: { type: 'Point', coordinates: [0, 0] },
+    // defaultValue: { type: 'Point', coordinates: [0, 0] },
   })
   coordinate: { type: 'Point'; coordinates: [number, number] };
 
   @Column({
-    type: 'tsvector',
+    type: DataType.TEXT,
     allowNull: true,
   })
   search?: string;
-
-  @Column({ type: DataType.TEXT })
-  fuzzySearch?: string;
 
   @BeforeCreate
   @BeforeUpdate
@@ -160,16 +157,5 @@ export class UserModel extends BaseModel<UserModel> {
       .join(' ');
 
     model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
-  }
-
-  @BeforeCreate
-  @BeforeUpdate
-  static async updateFuzzySearch(model: UserModel) {
-    const columnsToConcatenate = ['email', 'fullName', 'contact', 'phoneNumber', 'address'];
-    const concatenatedValues = columnsToConcatenate
-      .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
-      .join(' ');
-
-    model.setDataValue('fuzzySearch', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
   }
 }

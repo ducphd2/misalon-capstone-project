@@ -28,7 +28,7 @@ export class GroupModel extends BaseModel<GroupModel> {
   image?: string;
 
   @Column({
-    type: 'tsvector',
+    type: DataType.TEXT,
     allowNull: true,
   })
   search?: string;
