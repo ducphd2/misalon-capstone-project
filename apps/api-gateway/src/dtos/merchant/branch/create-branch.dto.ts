@@ -1,43 +1,56 @@
-import { Field, Float, InputType, Int, PartialType } from '@nestjs/graphql';
+import { Field } from '@nestjs/graphql';
+import { PartialType } from '@nestjs/mapped-types';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-@InputType()
 export class CreateBranchInput {
   @Field(() => String, { nullable: false })
+  @IsString()
+  @IsNotEmpty()
   name?: string;
 
-  @Field(() => String, { nullable: false })
+  @IsString()
+  @IsNotEmpty()
   phone?: string;
 
-  @Field(() => String, { nullable: false })
+  @IsString()
+  @IsNotEmpty()
   address?: string;
 
-  @Field(() => Int, { nullable: false })
+  @IsNumber()
+  @IsNotEmpty()
   merchantId: number;
 
-  @Field(() => Int, { nullable: true })
+  @IsNumber()
+  @IsOptional()
   cityCode?: number;
 
-  @Field(() => Int, { nullable: true })
+  @IsNumber()
+  @IsOptional()
   districtCode?: number;
 
-  @Field(() => Int, { nullable: true })
+  @IsNumber()
+  @IsOptional()
   wardCode?: number;
 
-  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
   city?: string;
 
-  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
   district?: string;
 
-  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
   ward?: string;
 
-  @Field(() => Float, { nullable: true })
+  @IsNumber()
+  @IsOptional()
   latitude?: number;
 
-  @Field(() => Float, { nullable: true })
+  @IsNumber()
+  @IsOptional()
   longitude?: number;
 }
 
-@InputType()
 export class PartialUpdateBranch extends PartialType<CreateBranchInput>(CreateBranchInput) {}

@@ -14,11 +14,6 @@ type ErrorPayload {
   message: [String!]
 }
 
-type DeletePayload {
-  errors: [ErrorPayload!]
-  count: Int
-}
-
 type PageMeta {
   total: Int
   totalPage: Int
@@ -137,24 +132,6 @@ enum EServiceShowType {
 type ServiceEdge {
   node: Service!
   cursor: String!
-}
-
-type ServiceConnection {
-  edges: [ServiceEdge!]!
-  pageInfo: PageInfo!
-}
-
-type ServicePayload {
-  errors: [ErrorPayload!]
-  service: Service
-}
-
-type ServiceOffsetPagination {
-  items: [Service!]
-  page: Int
-  totalPage: Int
-  total: Int
-  limit: Int
 }
 
 type Device {
@@ -347,10 +324,6 @@ type Query {
   getUser(id: Float!): UserPayload!
   userCount(q: String): Float!
   me: UserPayload!
-  findServiceById(id: Float!): Service!
-  findAllBranchServices(q: String): ServiceConnection!
-  findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): ServiceOffsetPagination!
-  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): ServiceOffsetPagination!
   findAllBooking(q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): BookingPaginationResponse!
 }
 
@@ -369,9 +342,6 @@ type Mutation {
   addCustomer(user: AddCustomerDto!): UserPayload!
   updateCustomer(id: Float!, user: UpdatePartialCustomer!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
-  createService(data: CreateServiceInput!): ServicePayload!
-  updateService(id: Float!, data: PartialUpdateService!): ServicePayload!
-  deleteService(id: Float!): DeletePayload!
   createBooking(data: CreateBookingInput!): BookingPayload!
   customerCreateBooking(data: CreateBookingInput!): BookingPayload!
   updateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
@@ -586,40 +556,6 @@ input UpdatePartialUser {
   relatedUserRole: String
   relatedUserPhone: String
   branchId: Int
-}
-
-input CreateServiceInput {
-  groupId: Int!
-  sku: String
-  code: String
-  name: String!
-  description: String
-  image: String
-  price: Float!
-  initialPrice: Float
-  durationHour: Int
-  durationMinute: Int
-  type: EServiceType = SERVICE
-  showType: EServiceShowType = BOTH
-  canPrintableInvoice: Boolean
-  merchantId: Int
-}
-
-input PartialUpdateService {
-  groupId: Int
-  sku: String
-  code: String
-  name: String
-  description: String
-  image: String
-  price: Float
-  initialPrice: Float
-  durationHour: Int
-  durationMinute: Int
-  type: EServiceType = SERVICE
-  showType: EServiceShowType = BOTH
-  canPrintableInvoice: Boolean
-  merchantId: Int
 }
 
 input CreateBookingInput {

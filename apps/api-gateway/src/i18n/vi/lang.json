@@ -35,5 +35,22 @@
       "SUCCESS": "Xóa nhóm dịch vụ thành công",
       "FAIL": "Xóa nhóm dịch vụ thất bại"
     }
+  },
+  "SERVICE": {
+    "CREATE": {
+      "SUCCESS": "Tạo dịch vụ thành công",
+      "FAIL": "Tạo dịch vụ thất bại"
+    },
+    "READ": {
+      "NOT_EXIST": "Dịch vụ này không tồn tại."
+    },
+    "UPDATE": {
+      "SUCCESS": "Cập nhật dịch vụ thành công",
+      "FAIL": "Cập nhật dịch vụ thất bại"
+    },
+    "DELETE": {
+      "SUCCESS": "Xóa dịch vụ thành công",
+      "FAIL": "Xóa dịch vụ thất bại"
+    }
   }
 }
