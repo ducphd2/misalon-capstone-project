@@ -22,9 +22,6 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   @Column({ type: DataType.DOUBLE, defaultValue: 0 })
   initialPrice?: number;
 
-  @Column({ type: DataType.DOUBLE, defaultValue: 0 })
-  capitalPrice?: number;
-
   @Column({ type: DataType.INTEGER })
   durationHour?: number;
 
@@ -64,7 +61,7 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   @BeforeCreate
   @BeforeUpdate
   static async updateSearch(model: ServiceModel) {
-    const columnsToConcatenate = ['name', 'code', 'sku', 'price', 'description'];
+    const columnsToConcatenate = ['name', 'code', 'sku', 'price', 'initialPrice', 'description'];
     const concatenatedValues = columnsToConcatenate
       .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
       .join(' ');

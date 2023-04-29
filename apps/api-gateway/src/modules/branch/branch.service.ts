@@ -11,7 +11,7 @@ import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/mer
 export class BranchService {
   constructor(private readonly merchantService: MerchantCommonService, private readonly i18n: MessageComponent) {}
 
-  async createBranch(admin: UserModel, data: CreateBranchInput, lang?: string) {
+  async createBranch(data: CreateBranchInput, lang?: string) {
     const branch = await this.merchantService.createBranch(data);
     return {
       message: this.i18n.lang('lang.BRANCH.CREATE.SUCCESS', { lang }),
@@ -19,7 +19,7 @@ export class BranchService {
     };
   }
 
-  async updateBranch(admin: UserModel, id: number, data: PartialUpdateBranch, lang?: string) {
+  async updateBranch(id: number, data: PartialUpdateBranch, lang?: string) {
     const { branch } = await this.merchantService.branch({
       where: JSON.stringify({
         id,
@@ -37,7 +37,7 @@ export class BranchService {
     };
   }
 
-  async deleteBranch(admin: UserModel, id: number, lang?: string) {
+  async deleteBranch(id: number, lang?: string) {
     const result = await this.merchantService.deleteBranch(id);
     return {
       message: this.i18n.lang('lang.BRANCH.DELETE.SUCCESS', { lang }),

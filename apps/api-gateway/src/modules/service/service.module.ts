@@ -1,14 +1,15 @@
 import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 
-import { ServiceMutationResolver } from './service-mutation.resolver';
-import { ServiceQueryResolver } from './service-query.resolver';
-import { ServiceTypeResolver } from './service-type.resolver';
+import { ServiceController } from './service.controller';
+import { ServicesService } from './service.service';
 
+import { MessageComponent } from '@/api-gateway/core';
 import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
 
 @Module({
   imports: [MerchantCommonModule, UtilsModule],
-  providers: [ServiceQueryResolver, ServiceMutationResolver, ServiceTypeResolver],
+  providers: [ServicesService, MessageComponent],
+  controllers: [ServiceController],
 })
 export class ServiceModule {}

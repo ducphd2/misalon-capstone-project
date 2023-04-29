@@ -160,7 +160,7 @@ export class MerchantCommonService implements OnModuleInit {
     return result;
   }
 
-  async findAllGroup(merchantId?: number, query?: BaseQueryDto) {
+  async findAllGroups(merchantId?: number, query?: BaseQueryDto) {
     let where = null;
 
     if (merchantId) {
@@ -178,6 +178,31 @@ export class MerchantCommonService implements OnModuleInit {
     }
 
     const result = await this.findGroups({
+      ...query,
+      where: where ? JSON.stringify(where) : null,
+    });
+
+    return result;
+  }
+
+  async findAllServices(query?: BaseQueryDto, merchantId?: number) {
+    let where = null;
+
+    if (merchantId) {
+      where = {
+        merchantId,
+      };
+    }
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.findService({
       ...query,
       where: where ? JSON.stringify(where) : null,
     });

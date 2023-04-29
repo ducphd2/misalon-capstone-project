@@ -1190,7 +1190,7 @@
     "@types/jsonwebtoken" "8.5.8"
     jsonwebtoken "8.5.1"
 
-"@nestjs/mapped-types@1.2.2":
+"@nestjs/mapped-types@1.2.2", "@nestjs/mapped-types@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-1.2.2.tgz#d9ddb143776e309dbc1a518ac1607fddac1e140e"
   integrity sha512-3dHxLXs3M0GPiriAcCFFJQHoDFUuzTD5w6JDhE7TyfT89YKpe6tcCCIqOZWdXmt9AZjjK30RkHRSFF+QEnWFQg==

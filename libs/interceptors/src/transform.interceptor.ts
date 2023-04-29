@@ -31,12 +31,12 @@ export class TransformInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<Response<any>> {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse<ResponseHandleData>();
-    const { method, url, body, params, status } = request;
+    const { method, url, body, params, status, query } = request;
     this.logger.log(`REQ [${method} ${url}]:-> ${JSON.stringify(body)}`);
     return next.handle().pipe(
       map((data: any) => {
         const res = {
-          meta: JSON.stringify({ params: params, status: status, timestamp: new Date() }),
+          meta: JSON.stringify({ params: params, status: status, query, timestamp: new Date() }),
           message: data?.message ?? response.message ?? request?.message ?? 'Ok',
           code: data?.statusCode ?? status ?? response.code ?? response.statusCode,
           statusCode: data?.statusCode ?? status ?? response.statusCode,

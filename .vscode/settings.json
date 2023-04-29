@@ -1,7 +1,7 @@
 {
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
-    "editor.fontSize": 11.5,
+    "editor.fontSize": 12,
     "search.exclude": {
         "**/node_modules": true
     },

@@ -41,7 +41,14 @@ export class MerchantController {
   @Get(':id/groups')
   @UseGuards(JwtAuthGuard)
   async findGroups(@User() admin: UserModel, @Param('id') id: number, @Query() query?: BaseQueryDto) {
-    const result = await this.merchantService.findAllGroup(id, query);
+    const result = await this.merchantService.findAllGroups(id, query);
+    return result;
+  }
+
+  @Get(':id/services')
+  @UseGuards(JwtAuthGuard)
+  async findServices(@Param('id') id: number, @Query() query?: BaseQueryDto) {
+    const result = await this.merchantService.findAllServices(query, id);
     return result;
   }
 

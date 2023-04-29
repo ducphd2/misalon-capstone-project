@@ -8,9 +8,7 @@
       "FAIL": "Created branch fail"
     },
     "READ": {
-      "NOT_EXIST": "This branch does not exist.",
-      "SUCCESS": "Deleted branch successfully",
-      "FAIL": "Deleted branch fail"
+      "NOT_EXIST": "This branch does not exist."
     },
     "UPDATE": {
       "SUCCESS": "Updated branch successfully",
@@ -27,9 +25,7 @@
       "FAIL": "Created group fail"
     },
     "READ": {
-      "NOT_EXIST": "This group does not exist.",
-      "SUCCESS": "Deleted group successfully",
-      "FAIL": "Deleted group fail"
+      "NOT_EXIST": "This group does not exist."
     },
     "UPDATE": {
       "SUCCESS": "Updated group successfully",
@@ -38,6 +34,23 @@
     "DELETE": {
       "SUCCESS": "Deleted group successfully",
       "FAIL": "Deleted group fail"
+    }
+  },
+  "SERVICE": {
+    "CREATE": {
+      "SUCCESS": "Created service successfully",
+      "FAIL": "Created service fail"
+    },
+    "READ": {
+      "NOT_EXIST": "This service does not exist."
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated service successfully",
+      "FAIL": "Updated service fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted service successfully",
+      "FAIL": "Deleted service fail"
     }
   }
 }
