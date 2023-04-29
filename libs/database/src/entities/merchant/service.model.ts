@@ -56,7 +56,7 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   canPrintableInvoice?: boolean;
 
   @Column({
-    type: 'tsvector',
+    type: DataType.TEXT,
     allowNull: true,
   })
   search?: string;

@@ -6,34 +6,16 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { LIMIT, PAGE } from '@libs/core';
+
+import { BaseQueryDto } from '../base/base.dto';
 
 import { Match } from '@/api-gateway/core';
-import { ECustomerLevel, EDeviceOs, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
-
-@InputType()
-export class UserInputDto {
-  @Field(() => EDeviceOs)
-  @IsEnum(EDeviceOs)
-  @IsNotEmpty()
-  os: EDeviceOs;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  deviceId: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  token: string;
-}
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 @InputType()
 export class ChangePasswordInput {
@@ -200,29 +182,7 @@ export class AddOperatorDto {
   relatedUserPhone?: string;
 }
 
-export class PaginateUserDto {
-  @IsOptional()
-  @Transform(({ value }) => parseInt(value))
-  @IsNumber()
-  page?: number = PAGE;
-
-  @IsOptional()
-  @Transform(({ value }) => parseInt(value))
-  @IsNumber()
-  limit?: number = LIMIT;
-
-  @IsString()
-  @IsOptional()
-  q?: string;
-
-  @IsString()
-  @IsOptional()
-  orderBy?: string = 'createdAt';
-
-  @IsString()
-  @IsOptional()
-  orderDirection?: string = 'DESC';
-
+export class PaginateUserDto extends BaseQueryDto {
   @IsBoolean()
   @IsOptional()
   excludeMe: boolean;

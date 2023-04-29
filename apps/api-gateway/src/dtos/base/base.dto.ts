@@ -1,18 +1,38 @@
+import { LIMIT, PAGE } from '@libs/core';
+import { Transform } from 'class-transformer';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+
+export class BaseQueryDto {
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  page?: number = PAGE;
+
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  limit?: number = LIMIT;
+
+  @IsString()
+  @IsOptional()
+  q?: string;
+
+  @IsString()
+  @IsOptional()
+  orderBy?: string = 'createdAt';
+
+  @IsString()
+  @IsOptional()
+  orderDirection?: string = 'DESC';
+}
+
 export abstract class BaseDto<T> {
-  /**
-   * BaseModel Constructor
-   *
-   * @param {any} params
-   */
   constructor(params?: Record<string, unknown> | Partial<T>) {
     if (params) {
       this.setAttributes(params);
     }
   }
 
-  /**
-   * @param params
-   */
   setAttributes(params: Record<string, unknown> | Partial<T>): void {
     const keys = Object.keys(params);
 
@@ -21,24 +41,13 @@ export abstract class BaseDto<T> {
     }
   }
 
-  /**
-   * @param {string} name
-   */
   hasProperty(name: string): boolean {
     return true === Reflect.getMetadata('fields', this, name);
   }
 
-  /**
-   * Set a attribute
-   *
-   * @param {string} key
-   * @param {unknown} value
-   */
   setAttribute(key: string, value: unknown): void {
     if (this.hasProperty(key)) {
       this[key] = value;
-    } else {
-      // throw new Error("Property:" + key + " not exist")
     }
   }
 }

@@ -37,7 +37,7 @@ export class BookingModel extends BaseModel<BookingModel> {
   duration?: number;
 
   @Column({
-    type: 'tsvector',
+    type: DataType.TEXT,
     allowNull: true,
   })
   search?: string;
