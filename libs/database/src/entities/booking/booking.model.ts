@@ -13,6 +13,21 @@ export class BookingModel extends BaseModel<BookingModel> {
   status?: EBookingStatus;
 
   @Column({ type: DataType.TEXT })
+  serviceName?: string;
+
+  @Column({ type: DataType.INTEGER })
+  serviceId?: number;
+
+  @Column({ type: DataType.INTEGER })
+  userId?: number;
+
+  @Column({ type: DataType.INTEGER })
+  merchantId?: number;
+
+  @Column({ type: DataType.INTEGER })
+  branchId?: number;
+
+  @Column({ type: DataType.TEXT })
   startTime?: string;
 
   @Column({ type: DataType.TEXT })
@@ -45,7 +60,15 @@ export class BookingModel extends BaseModel<BookingModel> {
   @BeforeCreate
   @BeforeUpdate
   static async updateSearch(model: BookingModel) {
-    const columnsToConcatenate = ['status', 'cancelReason', 'startTime', 'endTime', 'note', 'bookingDate'];
+    const columnsToConcatenate = [
+      'status',
+      'cancelReason',
+      'serviceName',
+      'startTime',
+      'endTime',
+      'note',
+      'bookingDate',
+    ];
     const concatenatedValues = columnsToConcatenate
       .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
       .join(' ');

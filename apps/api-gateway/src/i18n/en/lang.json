@@ -52,5 +52,22 @@
       "SUCCESS": "Deleted service successfully",
       "FAIL": "Deleted service fail"
     }
+  },
+  "BOOKING": {
+    "CREATE": {
+      "SUCCESS": "Created booking successfully",
+      "FAIL": "Created booking fail"
+    },
+    "READ": {
+      "NOT_EXIST": "This booking does not exist."
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated booking successfully",
+      "FAIL": "Updated booking fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted booking successfully",
+      "FAIL": "Deleted booking fail"
+    }
   }
 }

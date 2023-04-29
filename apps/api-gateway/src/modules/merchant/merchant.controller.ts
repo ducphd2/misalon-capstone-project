@@ -6,10 +6,14 @@ import { isEmpty } from 'lodash';
 import { JwtAuthGuard, User } from '@/api-gateway/core';
 import { BaseQueryDto } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
+import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 
 @Controller('merchants')
 export class MerchantController {
-  constructor(private readonly merchantService: MerchantCommonService) {}
+  constructor(
+    private readonly merchantService: MerchantCommonService,
+    private readonly bookingService: BookingCommonService,
+  ) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -49,6 +53,13 @@ export class MerchantController {
   @UseGuards(JwtAuthGuard)
   async findServices(@Param('id') id: number, @Query() query?: BaseQueryDto) {
     const result = await this.merchantService.findAllServices(query, id);
+    return result;
+  }
+
+  @Get(':id/bookings')
+  @UseGuards(JwtAuthGuard)
+  async findBookings(@Param('id') id: number, @Query() query?: BaseQueryDto) {
+    const result = await this.bookingService.findBookings(query, id);
     return result;
   }
 

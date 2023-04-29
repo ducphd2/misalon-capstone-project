@@ -23,7 +23,8 @@ import {
 } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { UpdatePartialUser, UserPayload } from '@/api-gateway/types';
+import { UpdatePartialUser } from '@/api-gateway/types';
+import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 
 @Controller('users')
 export class UserController {
@@ -31,11 +32,12 @@ export class UserController {
     private readonly userService: UserCommonService,
     private readonly passwordUtils: PasswordUtils,
     private readonly merchantService: MerchantCommonService,
+    private readonly bookingService: BookingCommonService,
   ) {}
 
   @Post('change-password')
   @UseGuards(JwtAuthGuard)
-  async updatePassword(@User() currentUser: UserModel, @Body() data: ChangePasswordInput): Promise<UserPayload> {
+  async updatePassword(@User() currentUser: UserModel, @Body() data: ChangePasswordInput) {
     const { user } = await this.userService.findById({ id: currentUser.id });
 
     const isSame: boolean = await this.passwordUtils.compare(data.currentPassword, user.password);
@@ -56,7 +58,7 @@ export class UserController {
 
   @Post('add-operator')
   @UseGuards(JwtAuthGuard)
-  async addOperator(@User() admin: UserModel, @Body() userInput: AddOperatorDto): Promise<UserPayload> {
+  async addOperator(@User() admin: UserModel, @Body() userInput: AddOperatorDto) {
     const { merchant } = await this.merchantService.findById({ id: userInput.merchantId });
 
     if (isEmpty(merchant)) {
@@ -89,7 +91,7 @@ export class UserController {
 
   @Post('add-customer')
   @UseGuards(JwtAuthGuard)
-  async addCustomer(@User() admin: UserModel, @Body() customerInput: AddCustomerDto): Promise<any> {
+  async addCustomer(@User() admin: UserModel, @Body() customerInput: AddCustomerDto) {
     const { merchant } = await this.merchantService.findById({ id: customerInput.merchantId });
 
     if (isEmpty(merchant)) {
@@ -138,7 +140,7 @@ export class UserController {
     @User() admin: UserModel,
     @Param('id') userId: number,
     @Body() customerInput: UpdatePartialCustomer,
-  ): Promise<UserPayload> {
+  ) {
     const currentCustomer = await this.userService.findById({ id: userId });
 
     if (isEmpty(currentCustomer.user)) {
@@ -182,14 +184,14 @@ export class UserController {
 
   @Post('add-user')
   @UseGuards(JwtAuthGuard)
-  async updateUser(@Args('id') id: number, @Args('data') data: UpdatePartialUser): Promise<UserPayload> {
+  async updateUser(@Args('id') id: number, @Args('data') data: UpdatePartialUser) {
     const user = await this.userService.update(id, data);
     return user;
   }
 
   @Get('merchant/:id')
   @UseGuards(JwtAuthGuard)
-  async getOperators(@Param('id') merchantId: number, @Query() query: PaginateUserDto): Promise<any> {
+  async getOperators(@Param('id') merchantId: number, @Query() query: PaginateUserDto) {
     const where = {
       merchantId,
       role: {
@@ -204,12 +206,54 @@ export class UserController {
     }
 
     const result = await this.userService.find({
+      ...query,
       where: JSON.stringify(where),
-      searchKey: query?.q,
-      page: query?.page,
-      limit: query?.limit,
-      orderBy: query?.orderBy,
-      orderDirection: 'DESC',
+    });
+
+    return result;
+  }
+
+  @Get('bookings')
+  @UseGuards(JwtAuthGuard)
+  async findOwnBookings(@User() user: UserModel, @Query() query: PaginateUserDto) {
+    const where = {
+      userId: user.id,
+    };
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query.q}%`,
+        },
+      });
+    }
+
+    const result = await this.bookingService.find({
+      ...query,
+      where: JSON.stringify(where),
+    });
+
+    return result;
+  }
+
+  @Get(':id/bookings')
+  @UseGuards(JwtAuthGuard)
+  async findBookings(@Param('id') userId: number, @Query() query: PaginateUserDto) {
+    const where = {
+      userId,
+    };
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query.q}%`,
+        },
+      });
+    }
+
+    const result = await this.bookingService.find({
+      ...query,
+      where: JSON.stringify(where),
     });
 
     return result;
