@@ -97,16 +97,6 @@ type GroupEdge {
   cursor: String!
 }
 
-type GroupPayload {
-  errors: [ErrorPayload!]
-  group: Group
-}
-
-type GroupPaging {
-  items: [Group!]
-  meta: PageMeta
-}
-
 type Service {
   id: Int!
   createdAt: String
@@ -357,8 +347,6 @@ type Query {
   getUser(id: Float!): UserPayload!
   userCount(q: String): Float!
   me: UserPayload!
-  findGroupById(id: Float!): GroupPayload!
-  findAllGroups(merchantId: Float!, q: String): GroupPaging!
   findServiceById(id: Float!): Service!
   findAllBranchServices(q: String): ServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: ESortDirection): ServiceOffsetPagination!
@@ -381,9 +369,6 @@ type Mutation {
   addCustomer(user: AddCustomerDto!): UserPayload!
   updateCustomer(id: Float!, user: UpdatePartialCustomer!): UserPayload!
   updateUser(id: Float!, data: UpdatePartialUser!): UserPayload!
-  createGroup(data: CreateGroupInput!): GroupPayload!
-  updateGroup(id: Float!, data: PartialUpdateGroup!): Group!
-  deleteGroup(id: Float!): DeletePayload!
   createService(data: CreateServiceInput!): ServicePayload!
   updateService(id: Float!, data: PartialUpdateService!): ServicePayload!
   deleteService(id: Float!): DeletePayload!
@@ -601,24 +586,6 @@ input UpdatePartialUser {
   relatedUserRole: String
   relatedUserPhone: String
   branchId: Int
-}
-
-input CreateGroupInput {
-  merchantId: Int!
-  sku: String
-  code: String
-  name: String!
-  description: String
-  image: String
-}
-
-input PartialUpdateGroup {
-  merchantId: Int
-  sku: String
-  code: String
-  name: String
-  description: String
-  image: String
 }
 
 input CreateServiceInput {

@@ -24,8 +24,9 @@ import {
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { isEmpty, merge } from 'lodash';
 
-import { CreateGroupInput } from '@/api-gateway/dtos';
+import { BaseQueryDto, CreateGroupInput } from '@/api-gateway/dtos';
 import { Branch, CreateServiceInput, Group, Merchant, Service } from '@/api-gateway/types';
 
 @Injectable()
@@ -132,5 +133,55 @@ export class MerchantCommonService implements OnModuleInit {
 
   async findServiceOffsetPagination(query: QueryRequest): Promise<FindServiceOffsetPagination> {
     return await firstValueFrom(this.merchantService.findServiceOffsetPagination(query));
+  }
+
+  async findAllBranches(merchantId?: number, query?: BaseQueryDto) {
+    let where = null;
+
+    if (merchantId) {
+      where = {
+        merchantId,
+      };
+    }
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.findBranches({
+      ...query,
+      where: where ? JSON.stringify(where) : null,
+    });
+
+    return result;
+  }
+
+  async findAllGroup(merchantId?: number, query?: BaseQueryDto) {
+    let where = null;
+
+    if (merchantId) {
+      where = {
+        merchantId,
+      };
+    }
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.findGroups({
+      ...query,
+      where: where ? JSON.stringify(where) : null,
+    });
+
+    return result;
   }
 }

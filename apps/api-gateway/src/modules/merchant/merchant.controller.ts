@@ -1,8 +1,9 @@
+import { UserModel } from '@libs/database/entities';
 import { MerchantPagination } from '@libs/grpc-types/protos/merchant';
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 
-import { JwtAuthGuard } from '@/api-gateway/core';
+import { JwtAuthGuard, User } from '@/api-gateway/core';
 import { BaseQueryDto } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 
@@ -27,6 +28,20 @@ export class MerchantController {
       ...query,
       where: where ? JSON.stringify(where) : null,
     });
+    return result;
+  }
+
+  @Get(':id/branches')
+  @UseGuards(JwtAuthGuard)
+  async findBranches(@User() admin: UserModel, @Param('id') id: number, @Query() query?: BaseQueryDto) {
+    const result = await this.merchantService.findAllBranches(id, query);
+    return result;
+  }
+
+  @Get(':id/groups')
+  @UseGuards(JwtAuthGuard)
+  async findGroups(@User() admin: UserModel, @Param('id') id: number, @Query() query?: BaseQueryDto) {
+    const result = await this.merchantService.findAllGroup(id, query);
     return result;
   }
 

@@ -20,5 +20,24 @@
       "SUCCESS": "Deleted branch successfully",
       "FAIL": "Deleted branch fail"
     }
+  },
+  "GROUP": {
+    "CREATE": {
+      "SUCCESS": "Created group successfully",
+      "FAIL": "Created group fail"
+    },
+    "READ": {
+      "NOT_EXIST": "This group does not exist.",
+      "SUCCESS": "Deleted group successfully",
+      "FAIL": "Deleted group fail"
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated group successfully",
+      "FAIL": "Updated group fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted group successfully",
+      "FAIL": "Deleted group fail"
+    }
   }
 }

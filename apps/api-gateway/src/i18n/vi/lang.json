@@ -18,5 +18,22 @@
       "SUCCESS": "Xóa chi nhánh thành công",
       "FAIL": "Xóa chi nhánh thất bại"
     }
+  },
+  "GROUP": {
+    "CREATE": {
+      "SUCCESS": "Tạo nhóm dịch vụ thành công",
+      "FAIL": "Tạo nhóm dịch vụ thất bại"
+    },
+    "READ": {
+      "NOT_EXIST": "Nhóm dịch vụ này không tồn tại."
+    },
+    "UPDATE": {
+      "SUCCESS": "Cập nhật nhóm dịch vụ thành công",
+      "FAIL": "Cập nhật nhóm dịch vụ thất bại"
+    },
+    "DELETE": {
+      "SUCCESS": "Xóa nhóm dịch vụ thành công",
+      "FAIL": "Xóa nhóm dịch vụ thất bại"
+    }
   }
 }
