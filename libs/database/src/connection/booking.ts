@@ -1,34 +1,39 @@
-import { BookingEntity, BookingUserEntity } from '@libs/database/entities/booking';
+import { operatorsAliases } from '@libs/core';
+import { BookingModel } from '@libs/database/entities/booking';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
+    SequelizeModule.forRootAsync({
       imports: [SecretsModule],
-      useFactory: (secrets: AbstractSecretsService): TypeOrmModuleOptions => {
+      useFactory: async (secrets: AbstractSecretsService): Promise<SequelizeModuleOptions> => {
         return {
-          type: 'postgres',
+          dialect: 'postgres',
           ...secrets.bookingServiceDatabase,
-          autoLoadEntities: true,
+          logging: false,
+          typeValidation: true,
+          operatorsAliases: operatorsAliases,
+          models: [BookingModel],
+          autoLoadModels: true,
           synchronize: true,
-          migrations: ['dist/src/db/migrations/*{.ts,.js}'],
-          charset: 'utf8mb4',
-          // logging: true,
-          namingStrategy: new SnakeNamingStrategy(),
-          entities: [BookingEntity, BookingUserEntity],
-          extra: {
-            extensions: ['postgis'],
+          // sync: {
+          //   force: true,
+          // },
+          query: {
+            raw: true,
           },
-          cli: {
-            migrationsDir: 'libs/database/src/migrations/booking',
+          define: {
+            timestamps: true,
+            underscored: true,
+            version: true,
           },
-          migrationsRun: true,
-        } as PostgresConnectionOptions;
+          dialectOptions: {
+            charset: 'utf8',
+          },
+        };
       },
       inject: [AbstractSecretsService],
     }),

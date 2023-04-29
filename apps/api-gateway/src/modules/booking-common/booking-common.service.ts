@@ -11,7 +11,10 @@ import {
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { isEmpty, merge } from 'lodash';
 import { firstValueFrom } from 'rxjs';
+
+import { BaseQueryDto } from '@/api-gateway/dtos';
 
 @Injectable()
 export class BookingCommonService implements OnModuleInit {
@@ -41,5 +44,30 @@ export class BookingCommonService implements OnModuleInit {
 
   async delete(id: number): Promise<Count> {
     return await firstValueFrom(this.bookingService.delete({ id }));
+  }
+
+  async findBookings(query?: BaseQueryDto, merchantId?: number) {
+    let where = null;
+
+    if (merchantId) {
+      where = {
+        merchantId,
+      };
+    }
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.find({
+      ...query,
+      where: where ? JSON.stringify(where) : null,
+    });
+
+    return result;
   }
 }

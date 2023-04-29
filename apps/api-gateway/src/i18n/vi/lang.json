@@ -52,5 +52,22 @@
       "SUCCESS": "Xóa dịch vụ thành công",
       "FAIL": "Xóa dịch vụ thất bại"
     }
+  },
+  "BOOKING": {
+    "CREATE": {
+      "SUCCESS": "Tạo lịch hẹn thành công",
+      "FAIL": "Tạo lịch hẹn thất bại"
+    },
+    "READ": {
+      "NOT_EXIST": "Lịch hẹn này không tồn tại."
+    },
+    "UPDATE": {
+      "SUCCESS": "Cập nhật lịch hẹn thành công",
+      "FAIL": "Cập nhật lịch hẹn thất bại"
+    },
+    "DELETE": {
+      "SUCCESS": "Xóa lịch hẹn thành công",
+      "FAIL": "Xóa lịch hẹn thất bại"
+    }
   }
 }
