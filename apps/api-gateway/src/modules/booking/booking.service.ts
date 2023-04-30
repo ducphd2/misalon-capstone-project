@@ -5,8 +5,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { isEmpty, merge } from 'lodash';
 
 import { MessageComponent } from '@/api-gateway/core';
+import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/dtos';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
-import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/types';
 
 @Injectable()
 export class BookingService {

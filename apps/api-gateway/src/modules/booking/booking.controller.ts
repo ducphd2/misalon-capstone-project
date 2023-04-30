@@ -4,7 +4,7 @@ import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, UseGuards } 
 import { BookingService } from './booking.service';
 
 import { JwtAuthGuard, User } from '@/api-gateway/core';
-import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/types';
+import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/dtos';
 
 @Controller('bookings')
 export class BookingController {
@@ -15,9 +15,9 @@ export class BookingController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createBooking(@User() user: UserModel, @Body() bookingInput: CreateBookingInput) {
-    const booking = await this.bookingService.create(user, bookingInput);
+    const result = await this.bookingService.create(user, bookingInput);
 
-    return { booking };
+    return result;
   }
 
   @Patch(':id')

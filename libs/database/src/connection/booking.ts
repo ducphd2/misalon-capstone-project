@@ -19,9 +19,9 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
           models: [BookingModel],
           autoLoadModels: true,
           synchronize: true,
-          // sync: {
-          //   force: true,
-          // },
+          sync: {
+            force: true,
+          },
           query: {
             raw: true,
           },

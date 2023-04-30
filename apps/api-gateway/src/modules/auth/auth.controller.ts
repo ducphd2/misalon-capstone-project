@@ -1,7 +1,6 @@
 import { AUTH_MESSAGE, ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Post } from '@nestjs/common';
-import { Context, Mutation } from '@nestjs/graphql';
 import { isEmpty } from 'lodash';
 
 import { InputLoginRequest, RegisterPayload } from '../../dtos';
@@ -103,19 +102,8 @@ export class AuthController {
     };
   }
 
-  @Mutation(() => Boolean)
-  async logout(@Context() context: any): Promise<boolean> {
-    const { res } = context;
-
-    res.cookie('access-token', '', {
-      httpOnly: true,
-      maxAge: 0,
-    });
-    res.cookie('refresh-token', '', {
-      httpOnly: true,
-      maxAge: 0,
-    });
-
+  @Post('logout')
+  async logout(): Promise<boolean> {
     return true;
   }
 }

@@ -9,7 +9,6 @@ import {
 import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { Args } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
 
 import { User } from '@/api-gateway/core';
@@ -21,10 +20,10 @@ import {
   PaginateUserDto,
   UpdatePartialCustomer,
 } from '@/api-gateway/dtos';
+import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { UpdatePartialUser } from '@/api-gateway/types';
-import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 
 @Controller('users')
 export class UserController {
@@ -184,7 +183,7 @@ export class UserController {
 
   @Post('add-user')
   @UseGuards(JwtAuthGuard)
-  async updateUser(@Args('id') id: number, @Args('data') data: UpdatePartialUser) {
+  async updateUser(@Param('id') id: number, @Body() data: UpdatePartialUser) {
     const user = await this.userService.update(id, data);
     return user;
   }
