@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, GqlQuery, Id, QueryRequest } from "./commons";
+import { Count, Id, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "booking";
@@ -104,9 +104,9 @@ export interface BookingServiceClient {
 
   findById(request: Id): Observable<NullableBooking>;
 
-  findOne(request: GqlQuery): Observable<NullableBooking>;
+  findOne(request: QueryRequest): Observable<NullableBooking>;
 
-  count(request: GqlQuery): Observable<Count>;
+  count(request: QueryRequest): Observable<Count>;
 
   create(request: CreateBookingInput): Observable<Booking>;
 
@@ -124,9 +124,9 @@ export interface BookingServiceController {
 
   findById(request: Id): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
 
-  findOne(request: GqlQuery): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
+  findOne(request: QueryRequest): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
 
-  count(request: GqlQuery): Promise<Count> | Observable<Count> | Count;
+  count(request: QueryRequest): Promise<Count> | Observable<Count> | Count;
 
   create(request: CreateBookingInput): Promise<Booking> | Observable<Booking> | Booking;
 

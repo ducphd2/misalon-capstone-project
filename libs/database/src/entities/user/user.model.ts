@@ -131,7 +131,6 @@ export class UserModel extends BaseModel<UserModel> {
   @Column({
     type: DataType.GEOMETRY('POINT'),
     allowNull: true,
-    // defaultValue: { type: 'Point', coordinates: [0, 0] },
   })
   coordinate: { type: 'Point'; coordinates: [number, number] };
 
@@ -157,5 +156,16 @@ export class UserModel extends BaseModel<UserModel> {
       .join(' ');
 
     model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
+  }
+
+  @BeforeCreate
+  @BeforeUpdate
+  static async upsertCoordinate(model: UserModel) {
+    if (model.latitude && model.longitude) {
+      model.coordinate = {
+        type: 'Point',
+        coordinates: [model.latitude, model.longitude],
+      };
+    }
   }
 }

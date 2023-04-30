@@ -8,8 +8,8 @@ import "google/protobuf/struct.proto";
 service BookingService {
   rpc find(commons.QueryRequest) returns (FindBookingOffsetPagination) {}
   rpc findById(commons.Id) returns (NullableBooking) {}
-  rpc findOne(commons.GqlQuery) returns (NullableBooking) {}
-  rpc count(commons.GqlQuery) returns (commons.Count) {}
+  rpc findOne(commons.QueryRequest) returns (NullableBooking) {}
+  rpc count(commons.QueryRequest) returns (commons.Count) {}
   rpc create(CreateBookingInput) returns (Booking) {}
   rpc customerCreate(CreateBookingInput) returns (Booking) {}
   rpc update(UpdateBookingInput) returns (Booking) {}

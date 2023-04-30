@@ -61,6 +61,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
     'no-console': 'off',
     'func-names': 'off',
     'no-underscore-dangle': 'off',

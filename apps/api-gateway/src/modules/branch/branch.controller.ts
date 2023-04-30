@@ -6,7 +6,6 @@ import { BranchService } from './branch.service';
 import { JwtAuthGuard } from '@/api-gateway/core';
 import { CreateBranchInput, PartialUpdateBranch } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
-import { BranchPayload } from '@/api-gateway/types';
 
 @Controller('branches')
 export class BranchController {
@@ -18,14 +17,14 @@ export class BranchController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async createBranch(@Body() data: CreateBranchInput): Promise<BranchPayload> {
+  async createBranch(@Body() data: CreateBranchInput) {
     const result = await this.branchService.createBranch(data);
     return result;
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  async updateBranch(@Param('id') id: number, @Body() data: PartialUpdateBranch): Promise<BranchPayload> {
+  async updateBranch(@Param('id') id: number, @Body() data: PartialUpdateBranch) {
     const result = await this.branchService.updateBranch(id, data);
     return result;
   }
