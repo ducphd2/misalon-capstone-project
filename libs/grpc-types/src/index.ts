@@ -12,8 +12,6 @@ export * from './config';
 export * from './servers';
 export * from './clients';
 
-export * from './protos/user';
-
 export {
   CommonProto,
   UserProto,

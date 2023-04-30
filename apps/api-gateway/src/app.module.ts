@@ -30,10 +30,6 @@ import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
       },
       resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
     }),
-    GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      useClass: GqlConfigService,
-    }),
     UploadModule,
     AuthModule,
     UserModule,
@@ -43,6 +39,5 @@ import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
     ServiceModule,
     BookingModule,
   ],
-  controllers: [],
 })
 export class AppModule {}

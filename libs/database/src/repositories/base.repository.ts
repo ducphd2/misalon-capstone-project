@@ -1,5 +1,7 @@
 import { LIMIT, PAGE } from '@libs/core';
+import { CommonProto } from '@libs/grpc-types';
 import { IFindAndPaginateOptions, IPaginationRes } from '@libs/interfaces';
+import { isEmpty } from 'lodash';
 import {
   Attributes,
   CountOptions,
@@ -90,6 +92,17 @@ export class BaseRepository<T extends Model> {
 
   async findAndPaginate(query?: IFindAndPaginateOptions, opts?: FindOptions): Promise<IPaginationRes<T>> {
     const result: IPaginationRes<T> = await this.paginate(query.where, query.page, query.limit, opts);
+
+    return result;
+  }
+
+  async countByGrpc(query: CommonProto.QueryRequest) {
+    const where = !isEmpty(query.where) ? JSON.parse(query.where) : undefined;
+
+    const result = await this.count({
+      ...query,
+      where,
+    });
 
     return result;
   }

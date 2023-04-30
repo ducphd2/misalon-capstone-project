@@ -8,9 +8,8 @@ import { PassportModule } from '@nestjs/passport';
 
 import { JwtRefreshStrategy, JwtStrategy } from '../../core/strategies';
 
-import { AuthResolver } from './auth.resolver';
-import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 
 import { JwtEnumService } from '@/api-gateway/core/strategies/jwt.enum';
 import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
@@ -27,7 +26,6 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
   controllers: [AuthController],
   providers: [
     AuthService,
-    AuthResolver,
     JwtStrategy,
     JwtRefreshStrategy,
     {

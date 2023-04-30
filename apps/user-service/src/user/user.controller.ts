@@ -1,16 +1,10 @@
 import { DeviceModel } from '@libs/database/entities';
-import {
-  CommonProto,
-  FindOneUser,
-  UserProto,
-  UserServiceController,
-  UserServiceControllerMethods,
-} from '@libs/grpc-types';
+import { CommonProto, UserProto } from '@libs/grpc-types';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
+import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
-import { GrpcLogInterceptor } from '@libs/interceptors';
 
 import { DeviceService } from '../device/device.service';
 import { MerchantUserService } from '../merchant-user/merchant-user.service';
@@ -20,14 +14,15 @@ import { UserService } from './user.service';
 @UseFilters(GrpcAllExceptionsFilter)
 @UseInterceptors(GrpcLogInterceptor)
 @Controller()
-@UserServiceControllerMethods()
-export class UserController implements UserServiceController {
+@UserProto.UserServiceControllerMethods()
+export class UserController implements UserProto.UserServiceController {
   constructor(
     private readonly userService: UserService,
     private readonly deviceService: DeviceService,
     private readonly merchantUserService: MerchantUserService,
   ) {}
-  async updateCustomer(request: UserProto.AdminUpdateCustomerInput): Promise<FindOneUser> {
+
+  async updateCustomer(request: UserProto.AdminUpdateCustomerInput): Promise<UserProto.FindOneUser> {
     const updatedUser = await this.userService.update({ id: request.id, data: request.user });
 
     // TODO: Need to implement update merchant_user
@@ -38,7 +33,7 @@ export class UserController implements UserServiceController {
     };
   }
 
-  async addCustomer(request: UserProto.AddOperatorInput): Promise<FindOneUser> {
+  async addCustomer(request: UserProto.AddOperatorInput): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(request);
     await this.merchantUserService.create({ ...request.merchantUser, userId: user.id });
 
@@ -49,7 +44,7 @@ export class UserController implements UserServiceController {
     return { count };
   }
 
-  async addOperator(request: UserProto.AddOperatorInput): Promise<FindOneUser> {
+  async addOperator(request: UserProto.AddOperatorInput): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(request);
     await this.merchantUserService.create({ ...request.merchantUser, userId: user.id });
 
@@ -93,7 +88,7 @@ export class UserController implements UserServiceController {
     throw new Error('Method not implemented.');
   }
 
-  async create(data: UserProto.CreateUserRequest): Promise<FindOneUser> {
+  async create(data: UserProto.CreateUserRequest): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(data);
     return { user };
   }

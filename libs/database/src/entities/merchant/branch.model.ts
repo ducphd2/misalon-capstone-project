@@ -74,4 +74,15 @@ export class BranchModel extends BaseModel<BranchModel> {
 
     model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
   }
+
+  @BeforeCreate
+  @BeforeUpdate
+  static async upsertCoordinate(model: BranchModel) {
+    if (model.latitude && model.longitude) {
+      model.coordinate = {
+        type: 'Point',
+        coordinates: [model.latitude, model.longitude],
+      };
+    }
+  }
 }

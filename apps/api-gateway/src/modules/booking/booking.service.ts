@@ -6,31 +6,15 @@ import { isEmpty, merge } from 'lodash';
 
 import { MessageComponent } from '@/api-gateway/core';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
-import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
-import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/types';
 
 @Injectable()
 export class BookingService {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(
-    private readonly bookingService: BookingCommonService,
-    private readonly userService: UserCommonService,
-    private readonly merchantService: MerchantCommonService,
-    private readonly i18n: MessageComponent,
-  ) {}
+  constructor(private readonly bookingService: BookingCommonService, private readonly i18n: MessageComponent) {}
 
   async create(user: UserModel, data: CreateBookingInput, lang?: string) {
-    const { service } = await this.merchantService.findServiceById({
-      id: data.serviceId,
-    });
-
-    if (isEmpty(service)) {
-      this.logger.error(`Branch service is not found, ${JSON.stringify(data)}`);
-      ErrorHelper.HttpNotFoundException(this.i18n.lang('lang.SERVICE.READ.NOT_EXIST', { lang }));
-    }
-
     if (user.role === EUserRole.USER) {
       merge(data, {
         userId: user.id,

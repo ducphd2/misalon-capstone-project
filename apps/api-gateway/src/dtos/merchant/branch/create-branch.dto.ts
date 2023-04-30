@@ -1,9 +1,7 @@
-import { Field } from '@nestjs/graphql';
 import { PartialType } from '@nestjs/mapped-types';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateBranchInput {
-  @Field(() => String, { nullable: false })
   @IsString()
   @IsNotEmpty()
   name?: string;

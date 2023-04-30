@@ -1,14 +1,11 @@
-import { BookingEntity } from '@libs/database/entities/booking';
 import {
   BOOKING_PACKAGE_NAME,
   BOOKING_SERVICE_NAME,
   BookingServiceClient,
   CreateBookingInput,
-  FindBookingOffsetPagination,
-  NullableBooking,
   UpdateBookingData,
 } from '@libs/grpc-types/protos/booking';
-import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
@@ -26,23 +23,23 @@ export class BookingCommonService implements OnModuleInit {
     this.bookingService = this.client.getService<BookingServiceClient>(BOOKING_SERVICE_NAME);
   }
 
-  async create(data: CreateBookingInput): Promise<BookingEntity> {
+  async create(data: CreateBookingInput) {
     return await firstValueFrom(this.bookingService.create(data));
   }
 
-  async findById(id: Id): Promise<NullableBooking> {
+  async findById(id: Id) {
     return await firstValueFrom(this.bookingService.findById(id));
   }
 
-  async find(query: QueryRequest): Promise<FindBookingOffsetPagination> {
+  async find(query: QueryRequest) {
     return await firstValueFrom(this.bookingService.find(query));
   }
 
-  async update(id: number, data: UpdateBookingData): Promise<BookingEntity> {
+  async update(id: number, data: UpdateBookingData) {
     return await firstValueFrom(this.bookingService.update({ id, data }));
   }
 
-  async delete(id: number): Promise<Count> {
+  async delete(id: number) {
     return await firstValueFrom(this.bookingService.delete({ id }));
   }
 

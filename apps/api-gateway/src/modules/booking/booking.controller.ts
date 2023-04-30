@@ -1,4 +1,4 @@
-import { UserModel } from '@libs/database/entities';
+import { UserModel } from '@libs/database';
 import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { BookingService } from './booking.service';
