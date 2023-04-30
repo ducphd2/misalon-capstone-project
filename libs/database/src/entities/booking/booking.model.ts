@@ -21,6 +21,12 @@ export class BookingModel extends BaseModel<BookingModel> {
   @Column({ type: DataType.INTEGER })
   userId?: number;
 
+  @Column({ type: DataType.TEXT })
+  userEmail?: number;
+
+  @Column({ type: DataType.TEXT })
+  userPhoneNumber?: number;
+
   @Column({ type: DataType.INTEGER })
   merchantId?: number;
 

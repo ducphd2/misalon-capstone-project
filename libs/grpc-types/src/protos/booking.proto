@@ -11,7 +11,6 @@ service BookingService {
   rpc findOne(commons.QueryRequest) returns (NullableBooking) {}
   rpc count(commons.QueryRequest) returns (commons.Count) {}
   rpc create(CreateBookingInput) returns (Booking) {}
-  rpc customerCreate(CreateBookingInput) returns (Booking) {}
   rpc update(UpdateBookingInput) returns (Booking) {}
   rpc delete (commons.Id) returns (commons.Count) {}
 }

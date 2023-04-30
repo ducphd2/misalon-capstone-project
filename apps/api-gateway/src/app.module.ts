@@ -1,14 +1,11 @@
 import { join } from 'path';
 
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { GraphQLModule } from '@nestjs/graphql';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 
 import { UserModule } from './modules/user/user.module';
 
-import { GqlConfigService } from '@/api-gateway/gql-config.service';
 import { AuthModule } from '@/api-gateway/modules/auth/auth.module';
 import { BookingModule } from '@/api-gateway/modules/booking/booking.module';
 import { BranchModule } from '@/api-gateway/modules/branch/branch.module';

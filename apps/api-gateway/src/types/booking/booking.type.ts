@@ -29,30 +29,28 @@ export class Booking extends BaseType {
 export class CreateBookingInput {
   name?: string;
 
+  email?: string;
+
   phone?: string;
 
   address?: string;
+
+  merchantId: number;
 
   branchId: number;
 
   serviceId: number;
 
-  cityCode?: number;
-
   status?: EBookingStatus;
 
-  districtCode?: number;
+  userId?: number;
 
-  wardCode?: number;
+  duration?: number;
 
-  city?: string;
+  startTime?: string;
 
-  district?: string;
-
-  ward?: string;
+  endTime?: string;
 }
-
-export class PartialUpdateBooking extends PartialType<CreateBookingInput>(CreateBookingInput) {}
 
 export class BookingPaging {
   items?: Booking[];

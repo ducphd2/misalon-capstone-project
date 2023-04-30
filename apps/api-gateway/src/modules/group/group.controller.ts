@@ -1,9 +1,8 @@
-import { UserModel } from '@libs/database/entities';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { GroupService } from './group.service';
 
-import { JwtAuthGuard, User } from '@/api-gateway/core';
+import { JwtAuthGuard } from '@/api-gateway/core';
 import { CreateGroupInput, PartialUpdateGroup } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 
@@ -13,14 +12,14 @@ export class GroupController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async createGroup(@Body('data') data: CreateGroupInput) {
+  async createGroup(@Body() data: CreateGroupInput) {
     const result = await this.groupService.create(data);
     return result;
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  async updateGroup(@Param('id') id: number, @Body('data') data: PartialUpdateGroup) {
+  async updateGroup(@Param('id') id: number, @Body() data: PartialUpdateGroup) {
     const result = await this.groupService.update(id, data);
     return result;
   }

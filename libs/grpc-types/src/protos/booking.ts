@@ -110,8 +110,6 @@ export interface BookingServiceClient {
 
   create(request: CreateBookingInput): Observable<Booking>;
 
-  customerCreate(request: CreateBookingInput): Observable<Booking>;
-
   update(request: UpdateBookingInput): Observable<Booking>;
 
   delete(request: Id): Observable<Count>;
@@ -130,8 +128,6 @@ export interface BookingServiceController {
 
   create(request: CreateBookingInput): Promise<Booking> | Observable<Booking> | Booking;
 
-  customerCreate(request: CreateBookingInput): Promise<Booking> | Observable<Booking> | Booking;
-
   update(request: UpdateBookingInput): Promise<Booking> | Observable<Booking> | Booking;
 
   delete(request: Id): Promise<Count> | Observable<Count> | Count;
@@ -139,16 +135,7 @@ export interface BookingServiceController {
 
 export function BookingServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = [
-      "find",
-      "findById",
-      "findOne",
-      "count",
-      "create",
-      "customerCreate",
-      "update",
-      "delete",
-    ];
+    const grpcMethods: string[] = ["find", "findById", "findOne", "count", "create", "update", "delete"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("BookingService", method)(constructor.prototype[method], method, descriptor);

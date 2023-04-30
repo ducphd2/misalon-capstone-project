@@ -30,12 +30,10 @@ export class BookingController implements BookingProto.BookingServiceController 
     throw new Error('Method not implemented.');
   }
 
-  create(request: BookingProto.CreateBookingInput): Promise<BookingProto.Booking> {
-    throw new Error('Method not implemented.');
-  }
+  async create(request: BookingProto.CreateBookingInput): Promise<BookingProto.Booking> {
+    const result = await this.bookingService.create(request);
 
-  customerCreate(request: BookingProto.CreateBookingInput): Promise<BookingProto.Booking> {
-    throw new Error('Method not implemented.');
+    return result;
   }
 
   update(request: BookingProto.UpdateBookingInput): Promise<BookingProto.Booking> | Observable<BookingProto.Booking> {

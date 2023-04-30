@@ -1,5 +1,3 @@
-import { registerEnumType } from '@nestjs/graphql';
-
 export enum ESortDirection {
   ASC = 0,
   DESC = 1,
@@ -69,47 +67,3 @@ export enum EBookingStatus {
   CANCELLED = 2,
   REJECT = 3,
 }
-
-registerEnumType(EDeviceOs, {
-  name: 'EDeviceOs',
-});
-
-registerEnumType(EUserRole, {
-  name: 'EUserRole',
-});
-
-registerEnumType(EUserGender, {
-  name: 'EUserGender',
-});
-
-registerEnumType(EUserStatus, {
-  name: 'EUserStatus',
-});
-
-registerEnumType(ECustomerLevel, {
-  name: 'ECustomerLevel',
-});
-
-registerEnumType(EBookingStatus, {
-  name: 'EBookingStatus',
-});
-
-registerEnumType(ESortDirection, {
-  name: 'ESortDirection',
-});
-
-registerEnumType(EServeImageType, {
-  name: 'EServeImageType',
-});
-
-registerEnumType(EImageType, {
-  name: 'EImageType',
-});
-
-registerEnumType(EServiceType, {
-  name: 'EServiceType',
-});
-
-registerEnumType(EServiceShowType, {
-  name: 'EServiceShowType',
-});
