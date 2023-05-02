@@ -10,7 +10,7 @@ export class CreateBookingInput {
 
   @IsOptional()
   @IsEnum(EBookingStatus)
-  status?: EBookingStatus = EBookingStatus.PENDING;
+  status?: EBookingStatus = EBookingStatus.BOOKING_PENDING;
 
   @IsNotEmpty()
   @IsString()

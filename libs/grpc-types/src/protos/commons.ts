@@ -36,6 +36,20 @@ export enum EUserStatus {
   BANNED = 2,
 }
 
+export enum ENotificationType {
+  BOOKING = 0,
+  CHAT = 1,
+  COMMENT = 2,
+  REPLY_COMMENT = 3,
+}
+
+export enum EBookingStatus {
+  BOOKING_PENDING = 0,
+  BOOKING_APPROVE = 1,
+  BOOKING_CANCELLED = 2,
+  BOOKING_REJECT = 3,
+}
+
 export interface Id {
   id: number;
 }

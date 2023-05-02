@@ -1,11 +1,15 @@
+import { NotificationModel, NotificationRepository } from '@libs/database';
 import { Module } from '@nestjs/common';
-import { NotificationController } from './controller/notification.controller';
-import { NotificationService } from './service/notification.service';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { LangModule, MessageComponent } from '@libs/modules';
+
+import { NotificationController } from './notification.controller';
+import { NotificationService } from './notification.service';
 
 @Module({
-  imports: [SecretsModule],
+  imports: [SecretsModule, SequelizeModule.forFeature([NotificationModel]), LangModule],
   controllers: [NotificationController],
-  providers: [NotificationService],
+  providers: [NotificationService, NotificationRepository, MessageComponent],
 })
 export class NotificationModule {}

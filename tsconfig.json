@@ -67,10 +67,10 @@
         "libs/interfaces/src/*"
       ],
       "@libs/modules": [
-        "libs/modules/src"
+        "libs/modules"
       ],
       "@libs/modules/*": [
-        "libs/modules/src/*"
+        "libs/modules/*"
       ],
       "@libs/database": [
         "libs/database/src"

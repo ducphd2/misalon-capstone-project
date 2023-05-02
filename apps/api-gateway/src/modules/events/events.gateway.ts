@@ -13,7 +13,7 @@ import { Injectable } from '@nestjs/common';
 import { MessagesService } from '../messages/message.service';
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
 
-import { EEventMessage } from './events.enum';
+import { EEventMessage } from '@/api-gateway/dtos';
 
 @Injectable()
 @WebSocketGateway({

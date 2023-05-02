@@ -1,14 +1,28 @@
 import { BookingRepository } from '@libs/database';
-import { BookingProto, CommonProto } from '@libs/grpc-types';
-import { Injectable } from '@nestjs/common';
+import { BookingProto, CommonProto, NotificationProto } from '@libs/grpc-types';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty } from 'lodash';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class BookingService {
-  constructor(private readonly bookingRepository: BookingRepository) {}
+export class BookingService implements OnModuleInit {
+  private notificationService: NotificationProto.NotificationServiceClient;
+
+  constructor(
+    private readonly bookingRepository: BookingRepository,
+    @Inject(NotificationProto.NOTIFICATION_PACKAGE_NAME) private client: ClientGrpc,
+  ) {}
+
+  onModuleInit() {
+    this.notificationService = this.client.getService<NotificationProto.NotificationServiceClient>(
+      NotificationProto.NOTIFICATION_SERVICE_NAME,
+    );
+  }
 
   async create(dto: BookingProto.CreateBookingInput) {
     const booking = await this.bookingRepository.create(dto);
+    await firstValueFrom(this.notificationService.createBookingNotification({ ...booking, ...dto }));
     return booking;
   }
 
