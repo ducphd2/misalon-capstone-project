@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { PageInfo, PageMeta } from "./commons";
+import { PageMeta } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "ducph.group";
@@ -45,16 +45,6 @@ export interface Group {
   name?: string | undefined;
   description?: string | undefined;
   image?: string | undefined;
-}
-
-export interface GroupEdge {
-  node: Group | undefined;
-  cursor: string;
-}
-
-export interface FindGroupsPayload {
-  edges: GroupEdge[];
-  pageInfo: PageInfo | undefined;
 }
 
 export interface NullableGroup {

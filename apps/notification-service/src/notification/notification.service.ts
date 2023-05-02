@@ -2,14 +2,42 @@ import { NotificationRepository } from '@libs/database';
 import { CommonProto, NotificationProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
+import { MessageComponent } from '@libs/modules';
+
+import { MailService } from '../mailer/mailer.service';
+
+import { ELangType, ENotificationType } from '@/api-gateway/dtos';
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly notificationRepository: NotificationRepository) {}
+  constructor(
+    private readonly notificationRepository: NotificationRepository,
+    private readonly mailService: MailService,
+    private readonly i18n: MessageComponent,
+  ) {}
 
   async create(request: NotificationProto.CreateNotificationInput) {
-    const booking = await this.notificationRepository.create(request);
-    return booking;
+    const notification = await this.notificationRepository.create(request);
+    return notification;
+  }
+
+  async createBookingNotification(request: NotificationProto.CreateNotificationInput) {
+    const notification = await this.create({
+      bodyEn: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
+        lang: ELangType.EN,
+      }),
+      bodyVi: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
+        lang: ELangType.VI,
+      }),
+      type: ENotificationType.BOOKING,
+      titleEn: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
+        lang: ELangType.EN,
+      }),
+      titleVi: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
+        lang: ELangType.VI,
+      }),
+    });
+    return notification;
   }
 
   async find(request: CommonProto.QueryRequest) {

@@ -50,16 +50,6 @@ message Group {
   optional string image = 13;
 }
 
-message GroupEdge {
-  Group node = 1;
-  string cursor = 2;
-}
-
-message FindGroupsPayload {
-  repeated GroupEdge edges = 1;
-  commons.PageInfo pageInfo = 2;
-}
-
 message NullableGroup {
   oneof kind {
     google.protobuf.NullValue null = 1;

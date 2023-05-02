@@ -114,8 +114,9 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return branch;
   }
 
-  deleteBranch(request: Id): Count | Observable<Count> | Promise<Count> {
-    throw new Error('Method not implemented.');
+  async deleteBranch(request: Id): Promise<Count> {
+    const count = await this.branchService.delete(request.id);
+    return { count };
   }
 
   group(request: QueryRequest): NullableGroup | Promise<NullableGroup> | Observable<NullableGroup> {

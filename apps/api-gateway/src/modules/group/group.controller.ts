@@ -26,7 +26,7 @@ export class GroupController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async deleteGroup(@Body('id') id: number) {
+  async deleteGroup(@Param('id') id: number) {
     const result = await this.groupService.delete(id);
     return result;
   }
