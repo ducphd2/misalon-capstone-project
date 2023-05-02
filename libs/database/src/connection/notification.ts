@@ -1,5 +1,5 @@
 import { operatorsAliases } from '@libs/core';
-import { BookingModel } from '@libs/database/entities/booking';
+import { NotificationModel } from '@libs/database/entities';
 import { Module } from '@nestjs/common';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
@@ -12,16 +12,16 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
       useFactory: async (secrets: AbstractSecretsService): Promise<SequelizeModuleOptions> => {
         return {
           dialect: 'postgres',
-          ...secrets.bookingServiceDatabase,
+          ...secrets.notificationServiceDatabase,
           logging: false,
           typeValidation: true,
           operatorsAliases: operatorsAliases,
-          models: [BookingModel],
+          models: [NotificationModel],
           autoLoadModels: true,
           synchronize: true,
-          // sync: {
-          //   force: true,
-          // },
+          sync: {
+            force: true,
+          },
           query: {
             raw: true,
           },
@@ -39,4 +39,4 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
     }),
   ],
 })
-export class BookingDatabaseModule {}
+export class NotificationDatabaseModule {}

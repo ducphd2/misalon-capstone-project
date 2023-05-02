@@ -15,13 +15,6 @@ service BookingService {
   rpc delete (commons.Id) returns (commons.Count) {}
 }
 
-enum EBookingStatus {
-  PENDING = 0;
-  APPROVE = 1;
-  CANCELLED = 2;
-  REJECT = 3;
-}
-
 message Booking {
   // default field
   int32 id = 1;
@@ -33,7 +26,7 @@ message Booking {
   optional string deletedBy = 7;
 
   // reserved field
-  optional EBookingStatus status = 8;
+  optional commons.EBookingStatus status = 8;
   optional int32 userId = 9;
   optional int32 serviceId = 10;
   optional string startTime = 11;
@@ -56,7 +49,7 @@ message Booking {
 }
 
 message CreateBookingInput {
-  optional EBookingStatus status = 1;
+  optional commons.EBookingStatus status = 1;
   optional int32 userId = 2;
   optional int32 serviceId = 3;
   optional string startTime = 4;
@@ -73,7 +66,7 @@ message CreateBookingInput {
 
 message UpdateBookingData {
   oneof kind {
-    EBookingStatus status = 1;
+    commons.EBookingStatus status = 1;
     int32 userId = 2;
     int32 serviceId = 3;
     string startTime = 4;

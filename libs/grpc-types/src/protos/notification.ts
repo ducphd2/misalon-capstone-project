@@ -1,72 +1,109 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { QueryRequest } from "./commons";
+import { EBookingStatus, ENotificationType } from "./commons";
+import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "notification";
 
 export interface Notification {
+  /** default field */
   id: number;
-  status: string;
-  customerId: number;
-  branchServiceId: number;
-  startTime: string;
-  endTime: string;
-  duration: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  deletedAt?: string | undefined;
+  createdBy?: string | undefined;
+  updatedBy?: string | undefined;
+  deletedBy?:
+    | string
+    | undefined;
+  /** reserved field */
+  status?: EBookingStatus | undefined;
+  userId?: number | undefined;
+  serviceId?: number | undefined;
+  startTime?: string | undefined;
+  endTime?: string | undefined;
+  duration?: number | undefined;
   note?: string | undefined;
-  merchantId: number;
-  branchId: number;
+  merchantId?: number | undefined;
+  branchId?: number | undefined;
   isCustomerCancel?: boolean | undefined;
   cancelReason?: string | undefined;
-  bookingDate: string;
+  bookingDate?: string | undefined;
   isAdminUpdate?: boolean | undefined;
   adminUpdateId?: number | undefined;
   serviceName?: string | undefined;
   customerName?: string | undefined;
   customerEmail?: string | undefined;
   customerAddress?: string | undefined;
+  durationHour?: number | undefined;
+  durationMinute?: number | undefined;
+  senderId?: number | undefined;
+  titleEn?: string | undefined;
+  titleVi?: string | undefined;
+  bodyEn?: string | undefined;
+  bodyVi?: string | undefined;
+  type?: ENotificationType | undefined;
+  data_json?: string | undefined;
 }
 
-export interface NotificationEdge {
-  node: Notification | undefined;
-  cursor: string;
+export interface CreateNotificationInput {
+  status?: EBookingStatus | undefined;
+  userId?: number | undefined;
+  serviceId?: number | undefined;
+  startTime?: string | undefined;
+  endTime?: string | undefined;
+  adminBranchEmail?: string | undefined;
+  customerEmail?: string | undefined;
+  customerName?: string | undefined;
+  bookingDate?: string | undefined;
+  note?: string | undefined;
+  merchantId?: number | undefined;
+  branchId?: number | undefined;
+  serviceName?: string | undefined;
+  senderId?: number | undefined;
+  titleEn?: string | undefined;
+  titleVi?: string | undefined;
+  bodyEn?: string | undefined;
+  bodyVi?: string | undefined;
+  type?: ENotificationType | undefined;
+  data_json?: string | undefined;
 }
 
-export interface FindAllBookingsPagination {
-  items: Notification[];
-  page: number;
-  totalPage: number;
-  total: number;
-  limit: number;
+export interface NullableNotification {
+  null?: NullValue | undefined;
+  notification?: Notification | undefined;
 }
 
 export const NOTIFICATION_PACKAGE_NAME = "notification";
 
-export interface BookingServiceGrpcClient {
-  findAll(request: QueryRequest): Observable<FindAllBookingsPagination>;
+export interface NotificationServiceClient {
+  create(request: CreateNotificationInput): Observable<Notification>;
+
+  createBookingNotification(request: CreateNotificationInput): Observable<Notification>;
 }
 
-export interface BookingServiceGrpcController {
-  findAll(
-    request: QueryRequest,
-  ): Promise<FindAllBookingsPagination> | Observable<FindAllBookingsPagination> | FindAllBookingsPagination;
+export interface NotificationServiceController {
+  create(request: CreateNotificationInput): Promise<Notification> | Observable<Notification> | Notification;
+
+  createBookingNotification(
+    request: CreateNotificationInput,
+  ): Promise<Notification> | Observable<Notification> | Notification;
 }
 
-export function BookingServiceGrpcControllerMethods() {
+export function NotificationServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["findAll"];
+    const grpcMethods: string[] = ["create", "createBookingNotification"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("BookingServiceGrpc", method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("NotificationService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("BookingServiceGrpc", method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("NotificationService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const BOOKING_SERVICE_GRPC_SERVICE_NAME = "BookingServiceGrpc";
+export const NOTIFICATION_SERVICE_NAME = "NotificationService";

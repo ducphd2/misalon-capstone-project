@@ -1,17 +1,10 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, Id, QueryRequest } from "./commons";
+import { Count, EBookingStatus, Id, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "booking";
-
-export enum EBookingStatus {
-  PENDING = 0,
-  APPROVE = 1,
-  CANCELLED = 2,
-  REJECT = 3,
-}
 
 export interface Booking {
   /** default field */

@@ -3,44 +3,80 @@ syntax = "proto3";
 package notification;
 
 import "commons.proto";
+import "google/protobuf/struct.proto";
+
+service NotificationService {
+  rpc create(CreateNotificationInput) returns (Notification) {}
+  rpc createBookingNotification(CreateNotificationInput)
+      returns (Notification) {}
+}
 
 message Notification {
+  // default field
   int32 id = 1;
-  string status = 2;
-  int32 customerId = 3;
-  int32 branchServiceId = 4;
-  string startTime = 5;
-  string endTime = 6;
-  int32 duration = 7;
-  string createdAt = 8;
-  string updatedAt = 9;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional commons.EBookingStatus status = 8;
+  optional int32 userId = 9;
+  optional int32 serviceId = 10;
+  optional string startTime = 11;
+  optional string endTime = 12;
+  optional int32 duration = 13;
+  optional string note = 14;
+  optional int32 merchantId = 15;
+  optional int32 branchId = 16;
+  optional bool isCustomerCancel = 17;
+  optional string cancelReason = 18;
+  optional string bookingDate = 19;
+  optional bool isAdminUpdate = 20;
+  optional int32 adminUpdateId = 21;
+  optional string serviceName = 22;
+  optional string customerName = 23;
+  optional string customerEmail = 24;
+  optional string customerAddress = 25;
+  optional int32 durationHour = 26;
+  optional int32 durationMinute = 27;
+  optional int32 senderId = 28;
+  optional string titleEn = 29;
+  optional string titleVi = 30;
+  optional string bodyEn = 31;
+  optional string bodyVi = 32;
+  optional commons.ENotificationType type = 33;
+  optional string data_json = 34;
+}
+
+message CreateNotificationInput {
+  optional commons.EBookingStatus status = 1;
+  optional int32 userId = 2;
+  optional int32 serviceId = 3;
+  optional string startTime = 4;
+  optional string endTime = 5;
+  optional string adminBranchEmail = 6;
+  optional string customerEmail = 7;
+  optional string customerName = 8;
+  optional string bookingDate = 9;
   optional string note = 10;
-  int32 merchantId = 11;
-  int32 branchId = 12;
-  optional bool isCustomerCancel = 13;
-  optional string cancelReason = 14;
-  string bookingDate = 15;
-  optional bool isAdminUpdate = 16;
-  optional int32 adminUpdateId = 17;
-  optional string serviceName = 18;
-  optional string customerName = 19;
-  optional string customerEmail = 20;
-  optional string customerAddress = 21;
+  optional int32 merchantId = 11;
+  optional int32 branchId = 12;
+  optional string serviceName = 13;
+  optional int32 senderId = 14;
+  optional string titleEn = 15;
+  optional string titleVi = 16;
+  optional string bodyEn = 17;
+  optional string bodyVi = 18;
+  optional commons.ENotificationType type = 19;
+  optional string data_json = 20;
 }
 
-message NotificationEdge {
-  Notification node = 1;
-  string cursor = 2;
-}
-
-message FindAllBookingsPagination {
-  repeated Notification items = 1;
-  int32 page = 2;
-  int32 totalPage = 3;
-  int32 total = 4;
-  int32 limit = 5;
-}
-
-service BookingServiceGrpc {
-  rpc findAll (commons.QueryRequest) returns (FindAllBookingsPagination) {}
+message NullableNotification {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    Notification notification = 2;
+  }
 }

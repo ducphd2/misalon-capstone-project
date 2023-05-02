@@ -62,8 +62,28 @@ export enum EUserStatus {
 }
 
 export enum EBookingStatus {
-  PENDING = 0,
-  APPROVE = 1,
-  CANCELLED = 2,
-  REJECT = 3,
+  BOOKING_PENDING = 0,
+  BOOKING_APPROVE = 1,
+  BOOKING_CANCELLED = 2,
+  BOOKING_REJECT = 3,
+}
+
+export enum EEventMessage {
+  CREATE_MESSAGE = 'create_message',
+  RECENT_MESSAGES = 'recent_messages',
+  CONVERSATION_MESSAGES = 'conversation_messages',
+  JOIN_ROOM = 'join_room',
+  NEW_MESSAGE = 'new_message',
+}
+
+export enum ENotificationType {
+  BOOKING = 0,
+  CHAT = 1,
+  COMMENT = 2,
+  REPLY_COMMENT = 3,
+}
+
+export enum ELangType {
+  EN = 'en',
+  VI = 'vi',
 }

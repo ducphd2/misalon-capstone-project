@@ -1,7 +1,7 @@
-import { EBookingStatus } from '@libs/grpc-types/protos/booking';
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
-import { BaseModel } from '@libs/database/entities/base.model';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
+import { BaseModel } from '@libs/database/entities/base.model';
+import { EBookingStatus } from '@libs/grpc-types/protos/commons';
+import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
 
 @Table({
   modelName: 'booking',

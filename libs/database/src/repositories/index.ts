@@ -4,5 +4,8 @@ export * from './user';
 // merchant repository
 export * from './merchant';
 
-// merchant repository
+// booking repository
 export * from './booking';
+
+// notification repository
+export * from './notification';
