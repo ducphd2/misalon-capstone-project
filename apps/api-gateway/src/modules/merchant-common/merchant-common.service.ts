@@ -15,16 +15,11 @@ import {
   MerchantServiceClient,
   NullableMerchant,
 } from '@libs/grpc-types/protos/merchant';
-import {
-  FindServiceOffsetPagination,
-  FindServicesPayload,
-  NullableService,
-  UpdateServiceData,
-} from '@libs/grpc-types/protos/service';
+import { NullableService, ServicePagination, UpdateServiceData } from '@libs/grpc-types/protos/service';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { isEmpty, merge } from 'lodash';
+import { firstValueFrom } from 'rxjs';
 
 import { BaseQueryDto, CreateGroupInput } from '@/api-gateway/dtos';
 import { Branch, CreateServiceInput, Group, Merchant, Service } from '@/api-gateway/types';
@@ -115,7 +110,7 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.service(query));
   }
 
-  async findService(query: QueryRequest): Promise<FindServicesPayload> {
+  async findService(query: QueryRequest): Promise<ServicePagination> {
     return await firstValueFrom(this.merchantService.services(query));
   }
 
@@ -129,10 +124,6 @@ export class MerchantCommonService implements OnModuleInit {
 
   async deleteService(id: number): Promise<Count> {
     return await firstValueFrom(this.merchantService.deleteService({ id }));
-  }
-
-  async findServiceOffsetPagination(query: QueryRequest): Promise<FindServiceOffsetPagination> {
-    return await firstValueFrom(this.merchantService.findServiceOffsetPagination(query));
   }
 
   async findAllBranches(merchantId?: number, query?: BaseQueryDto) {

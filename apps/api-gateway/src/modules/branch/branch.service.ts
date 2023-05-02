@@ -38,10 +38,18 @@ export class BranchService {
   }
 
   async deleteBranch(id: number, lang?: string) {
-    const result = await this.merchantService.deleteBranch(id);
+    const { count } = await this.merchantService.deleteBranch(id);
+
+    if (count < 1) {
+      return {
+        message: this.i18n.lang('lang.BRANCH.DELETE.FAIL', { lang }),
+        count,
+      };
+    }
+
     return {
       message: this.i18n.lang('lang.BRANCH.DELETE.SUCCESS', { lang }),
-      result,
+      count,
     };
   }
 

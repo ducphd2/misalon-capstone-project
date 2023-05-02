@@ -2,17 +2,10 @@
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Branch, Branches, BranchPagination, CreateBranchInput, NullableBranch, UpdateBranchInput } from "./branch";
-import { Count, Id, PageInfo, PageMeta, QueryRequest } from "./commons";
+import { Count, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 import { CreateGroupInput, Group, GroupPagination, NullableGroup, UpdateGroupInput } from "./group";
-import {
-  CreateServiceInput,
-  FindServiceOffsetPagination,
-  FindServicesPayload,
-  NullableService,
-  Service,
-  UpdateServiceInput,
-} from "./service";
+import { CreateServiceInput, NullableService, Service, ServicePagination, UpdateServiceInput } from "./service";
 
 export const protobufPackage = "merchant";
 
@@ -69,16 +62,6 @@ export interface Merchant {
   city?: string | undefined;
   district?: string | undefined;
   ward?: string | undefined;
-}
-
-export interface MerchantEdge {
-  node: Merchant | undefined;
-  cursor: string;
-}
-
-export interface FindMerchantsPayload {
-  edges: MerchantEdge[];
-  pageInfo: PageInfo | undefined;
 }
 
 export interface NullableMerchant {
@@ -149,7 +132,7 @@ export interface MerchantServiceClient {
 
   service(request: QueryRequest): Observable<NullableService>;
 
-  services(request: QueryRequest): Observable<FindServicesPayload>;
+  services(request: QueryRequest): Observable<ServicePagination>;
 
   findServiceById(request: Id): Observable<NullableService>;
 
@@ -158,8 +141,6 @@ export interface MerchantServiceClient {
   updateService(request: UpdateServiceInput): Observable<Service>;
 
   deleteService(request: Id): Observable<Count>;
-
-  findServiceOffsetPagination(request: QueryRequest): Observable<FindServiceOffsetPagination>;
 }
 
 export interface MerchantServiceController {
@@ -211,7 +192,7 @@ export interface MerchantServiceController {
 
   service(request: QueryRequest): Promise<NullableService> | Observable<NullableService> | NullableService;
 
-  services(request: QueryRequest): Promise<FindServicesPayload> | Observable<FindServicesPayload> | FindServicesPayload;
+  services(request: QueryRequest): Promise<ServicePagination> | Observable<ServicePagination> | ServicePagination;
 
   findServiceById(request: Id): Promise<NullableService> | Observable<NullableService> | NullableService;
 
@@ -220,10 +201,6 @@ export interface MerchantServiceController {
   updateService(request: UpdateServiceInput): Promise<Service> | Observable<Service> | Service;
 
   deleteService(request: Id): Promise<Count> | Observable<Count> | Count;
-
-  findServiceOffsetPagination(
-    request: QueryRequest,
-  ): Promise<FindServiceOffsetPagination> | Observable<FindServiceOffsetPagination> | FindServiceOffsetPagination;
 }
 
 export function MerchantServiceControllerMethods() {
@@ -254,7 +231,6 @@ export function MerchantServiceControllerMethods() {
       "createService",
       "updateService",
       "deleteService",
-      "findServiceOffsetPagination",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

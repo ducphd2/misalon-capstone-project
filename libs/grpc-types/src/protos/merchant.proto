@@ -36,13 +36,11 @@ service MerchantService {
 
   // service
   rpc service(commons.QueryRequest) returns (service.NullableService) {}
-  rpc services(commons.QueryRequest) returns (service.FindServicesPayload) {}
+  rpc services(commons.QueryRequest) returns (service.ServicePagination) {}
   rpc findServiceById(commons.Id) returns (service.NullableService) {}
   rpc createService(service.CreateServiceInput) returns (service.Service) {}
   rpc updateService(service.UpdateServiceInput) returns (service.Service) {}
   rpc deleteService(commons.Id) returns (commons.Count) {}
-  rpc findServiceOffsetPagination(commons.QueryRequest)
-      returns (service.FindServiceOffsetPagination) {}
 }
 
 message UpdateMerchantData {
@@ -99,16 +97,6 @@ message Merchant {
   optional string city = 15;
   optional string district = 16;
   optional string ward = 17;
-}
-
-message MerchantEdge {
-  Merchant node = 1;
-  string cursor = 2;
-}
-
-message FindMerchantsPayload {
-  repeated MerchantEdge edges = 1;
-  commons.PageInfo pageInfo = 2;
 }
 
 message NullableMerchant {

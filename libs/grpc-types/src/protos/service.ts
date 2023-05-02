@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { PageInfo } from "./commons";
+import { PageMeta } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "service";
@@ -77,27 +77,14 @@ export interface Service {
   canPrintableInvoice?: boolean | undefined;
 }
 
-export interface ServiceEdge {
-  node: Service | undefined;
-  cursor: string;
-}
-
-export interface FindServicesPayload {
-  edges: ServiceEdge[];
-  pageInfo: PageInfo | undefined;
-}
-
 export interface NullableService {
   null?: NullValue | undefined;
   service?: Service | undefined;
 }
 
-export interface FindServiceOffsetPagination {
+export interface ServicePagination {
   items: Service[];
-  totalPage?: number | undefined;
-  total?: number | undefined;
-  page?: number | undefined;
-  limit?: number | undefined;
+  meta?: PageMeta | undefined;
 }
 
 export const SERVICE_PACKAGE_NAME = "service";

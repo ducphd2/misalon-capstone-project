@@ -80,16 +80,6 @@ message Service {
   optional bool canPrintableInvoice = 22;
 }
 
-message ServiceEdge {
-  Service node = 1;
-  string cursor = 2;
-}
-
-message FindServicesPayload {
-  repeated ServiceEdge edges = 1;
-  commons.PageInfo pageInfo = 2;
-}
-
 message NullableService {
   oneof kind {
     google.protobuf.NullValue null = 1;
@@ -97,10 +87,7 @@ message NullableService {
   }
 }
 
-message FindServiceOffsetPagination {
+message ServicePagination {
   repeated Service items = 1;
-  optional int32 totalPage = 2;
-  optional int32 total = 3;
-  optional int32 page = 4;
-  optional int32 limit = 5;
+  optional commons.PageMeta meta = 2;
 }

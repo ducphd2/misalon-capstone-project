@@ -60,4 +60,12 @@ export class BranchService {
 
     return result;
   }
+
+  async delete(id: number): Promise<number> {
+    const result = await this.branchRepository.delete({
+      where: { id },
+    });
+
+    return result;
+  }
 }
