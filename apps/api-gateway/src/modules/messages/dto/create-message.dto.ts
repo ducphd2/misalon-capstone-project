@@ -1,10 +1,11 @@
 import { IsEnum, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-enum MESSAGE_TYPE{
-  TEXT="TEXT",
-  IMAGE="IMAGE",
-  VIDEO="VIDEO",
+export enum MESSAGE_TYPE {
+  TEXT = 'TEXT',
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
 }
+
 export class CreateMessageDto {
   @IsNotEmpty()
   @IsMongoId()

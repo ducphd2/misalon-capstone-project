@@ -1,16 +1,23 @@
-import { Message, MessageSchema } from './schemas/messages.schema';
-
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule, MongooseModuleFactoryOptions, MongooseModuleOptions } from '@nestjs/mongoose';
+
 import { MessagesService } from './message.service';
-import { MessagesController } from './messages.controller';
+import { Message, MessageSchema } from './schemas/messages.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Message.name, schema: MessageSchema }]),
-    MongooseModule.forRoot('mongodb+srv://taipv:mgtaipv00@cluster0.cu0zyv6.mongodb.net/?retryWrites=true&w=majority'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService): Promise<MongooseModuleFactoryOptions> => {
+        return {
+          uri: configService.get<string>('MESSAGE_DB_URI'),
+        } as MongooseModuleOptions;
+      },
+      inject: [ConfigService],
+    }),
   ],
-  controllers: [MessagesController],
   providers: [MessagesService],
   exports: [MessagesService],
 })
