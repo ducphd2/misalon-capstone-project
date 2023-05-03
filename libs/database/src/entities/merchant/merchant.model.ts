@@ -1,5 +1,7 @@
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
+import { GroupModel } from '@libs/database/entities/merchant/group.model';
+import { ServiceModel } from '@libs/database/entities/merchant/service.model';
 
 import { BaseModel } from '../base.model';
 
@@ -63,6 +65,12 @@ export class MerchantModel extends BaseModel<MerchantModel> {
     allowNull: true,
   })
   search?: string;
+
+  @HasMany(() => GroupModel)
+  groups?: GroupModel[];
+
+  @HasMany(() => ServiceModel)
+  services?: ServiceModel[];
 
   @BeforeCreate
   @BeforeUpdate

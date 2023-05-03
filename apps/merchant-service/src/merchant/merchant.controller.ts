@@ -15,14 +15,7 @@ import {
   NullableGroup,
   UpdateGroupInput,
 } from '@libs/grpc-types/protos/group';
-import {
-  CreateServiceInput,
-  FindServiceOffsetPagination,
-  FindServicesPayload,
-  NullableService,
-  Service,
-  UpdateServiceInput,
-} from '@libs/grpc-types/protos/service';
+import { CreateServiceInput, NullableService, Service, UpdateServiceInput } from '@libs/grpc-types/protos/service';
 import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
@@ -152,7 +145,7 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return { service };
   }
 
-  async services(request: QueryRequest): Promise<FindServicesPayload> {
+  async services(request: QueryRequest) {
     const service = await this.servicesService.findWithPaging(request);
 
     return service;
@@ -179,11 +172,5 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   async deleteService(request: Id): Promise<Count> {
     const count = await this.servicesService.delete(request.id);
     return { count };
-  }
-
-  findServiceOffsetPagination(
-    request: QueryRequest,
-  ): FindServiceOffsetPagination | Promise<FindServiceOffsetPagination> | Observable<FindServiceOffsetPagination> {
-    throw new Error('Method not implemented.');
   }
 }

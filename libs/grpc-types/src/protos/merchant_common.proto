@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package merchant_common;
+
+enum EServiceShowType {
+  BOTH = 0;
+  CASHIER = 1;
+  BOOKING = 2;
+  NONE = 3;
+}
+
+enum EServiceType {
+  SERVICE = 0;
+  PRODUCT = 1;
+}
+
+message Merchant {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional string name = 8;
+  optional string phone = 9;
+  optional string address = 10;
+  optional int32 userId = 11;
+  optional int32 cityCode = 12;
+  optional int32 districtCode = 13;
+  optional int32 wardCode = 14;
+  optional string city = 15;
+  optional string district = 16;
+  optional string ward = 17;
+}
+
+message Group {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional int32 merchantId = 8;
+  optional string sku = 9;
+  optional string code = 10;
+  optional string name = 11;
+  optional string description = 12;
+  optional string image = 13;
+}
+
+message Service {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional int32 merchantId = 8;
+  optional int32 groupId = 9;
+  optional float price = 10;
+  optional float initialPrice = 11;
+  optional float capitalPrice = 12;
+  optional int32 durationHour = 13;
+  optional int32 durationMinute = 14;
+  optional string sku = 15;
+  optional string code = 16;
+  optional string name = 17;
+  optional string description = 18;
+  optional string image = 19;
+  optional EServiceType type = 20;
+  optional EServiceShowType showType = 21;
+  optional bool canPrintableInvoice = 22;
+}
