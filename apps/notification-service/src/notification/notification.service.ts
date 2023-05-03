@@ -1,18 +1,17 @@
+import { EBullEvent } from '@libs/core';
 import { NotificationRepository } from '@libs/database';
 import { CommonProto, NotificationProto } from '@libs/grpc-types';
+import { BullQueueProvider, MessageComponent } from '@libs/modules';
 import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { MessageComponent } from '@libs/modules';
-
-import { MailService } from '../mailer/mailer.service';
 
 import { ELangType, ENotificationType } from '@/api-gateway/dtos';
 
 @Injectable()
 export class NotificationService {
   constructor(
+    private readonly bullQueueProvider: BullQueueProvider,
     private readonly notificationRepository: NotificationRepository,
-    private readonly mailService: MailService,
     private readonly i18n: MessageComponent,
   ) {}
 
@@ -22,20 +21,24 @@ export class NotificationService {
   }
 
   async createBookingNotification(request: NotificationProto.CreateNotificationInput) {
+    const titleEn = this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
+      lang: ELangType.EN,
+    });
+
+    const titleVi = this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
+      lang: ELangType.VI,
+    });
+
     const notification = await this.create({
-      bodyEn: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
-        lang: ELangType.EN,
-      }),
-      bodyVi: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
-        lang: ELangType.VI,
-      }),
       type: ENotificationType.BOOKING,
-      titleEn: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
-        lang: ELangType.EN,
-      }),
-      titleVi: this.i18n.lang('lang.NOTIFICATION.CREATE.BOOKING.SUCCESS', {
-        lang: ELangType.VI,
-      }),
+      titleEn,
+      titleVi,
+      userId: request?.userId,
+    });
+
+    await this.bullQueueProvider.addNotificationEvent(EBullEvent.NOTIFICATION_SEND_EMAIL_BOOKING_EVENT, {
+      ...notification,
+      ...request,
     });
     return notification;
   }
@@ -71,9 +74,5 @@ export class NotificationService {
     });
 
     return result;
-  }
-
-  async sendCustomerMail() {
-    //
   }
 }

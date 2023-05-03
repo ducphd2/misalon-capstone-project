@@ -23,6 +23,10 @@
     "[json]": {
         "editor.formatOnSave": false
     },
+    "[handlebars]": {
+        "editor.formatOnSave": false,
+        "editor.formatOnPaste": false,
+    },
     "prettier.printWidth": 120,
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "javascript.preferences.importModuleSpecifier": "non-relative",

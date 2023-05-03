@@ -91,7 +91,8 @@
   },
   "EMAIL": {
     "BOOKING": {
-      "USER": "Successfully booked a health appointment"
+      "USER": "Successfully booked a health appointment",
+      "ADMIN": "New customer's health appointment"
     }
   }
 }

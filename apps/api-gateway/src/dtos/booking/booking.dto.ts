@@ -14,6 +14,10 @@ export class CreateBookingInput {
 
   @IsNotEmpty()
   @IsString()
+  startTime?: string;
+
+  @IsNotEmpty()
+  @IsString()
   bookingDate?: string;
 
   @IsOptional()

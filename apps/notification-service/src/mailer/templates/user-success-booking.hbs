@@ -220,7 +220,7 @@
 </head>
 
 <body class="">
-    <span class="preheader">Your booking appointment has been created!</span>
+    <span class='preheader'>{{#if lang}}Your booking appointment has been created! {{else}}Lịch hẹn chăm sóc sức khỏe đã được tạo thành công {{/if}}</span>
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
         <tr>
             <td>&nbsp;</td>
@@ -235,6 +235,7 @@
                             <td class="wrapper">
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                     <tr>
+                                        {{#if lang}}
                                         <td>
                                             <p>Hi {{email}},</p>
                                             <p>Your booking appointment has been created!</p>
@@ -242,15 +243,31 @@
                                                 <ul>
                                                     <li>Booking date: {{bookingDate}}</li>
                                                     <li>Booking start time (in planned): {{startTime}}</li>
-                                                    <li>Booking end time (in planned): {{endTime}}</li>
-                                                    <li>Merchant: {{merchantName}}</li>
-                                                    <li>Merchant address: {{merchantAddress}}</li>
-                                                    <li>Merchant hotline: {{merchantPhoneNumber}}</li>
+                                                    <li>Merchant: {{name}}</li>
+                                                    <li>Merchant address: {{address}}</li>
+                                                    <li>Merchant hotline: {{phone}}</li>
                                                 </ul>
                                             </p>
                                             <p>Note: do not share this email with others to ensure the safety of your information</p>
                                             <p>Best regards!</p>
                                         </td>
+                                        {{else}}
+                                        <td>
+                                            <p>Xin chào {{email}},</p>
+                                            <p>Lịch hẹn chăm sóc sức khỏe của bạn đã được tạo!</p>
+                                            <p>Sau đây là chi tiết về lịch hẹn của bạn:
+                                                <ul>
+                                                    <li>Ngày đặt lịch: {{bookingDate}}</li>
+                                                    <li>Thời gian bắt đầu: {{startTime}}</li>
+                                                    <li>Cửa hàng: {{name}}</li>
+                                                    <li>Địa chỉ: {{address}}</li>
+                                                    <li>Hotline: {{phone}}</li>
+                                                </ul>
+                                            </p>
+                                            <p>Lưu ý: Không chia sẻ email này cho người khách để đảm bảo an toàn thông tin của bạn</p>
+                                            <p>Trân trọng!</p>
+                                        </td>
+                                        {{/if}}
                                     </tr>
                                 </table>
                             </td>

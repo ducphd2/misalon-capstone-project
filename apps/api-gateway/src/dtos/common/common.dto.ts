@@ -84,6 +84,11 @@ export enum ENotificationType {
 }
 
 export enum ELangType {
-  EN = 'en',
   VI = 'vi',
+  EN = 'en',
+}
+
+export enum ELangNumber {
+  VI = 0,
+  EN = 1,
 }

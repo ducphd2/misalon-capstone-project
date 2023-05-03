@@ -27,8 +27,14 @@ export class BookingService implements OnModuleInit {
   }
 
   async find(request: CommonProto.QueryRequest) {
-    const merchants = await this.bookingRepository.find(JSON.parse(request.where));
-    return merchants;
+    const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
+
+    const result = await this.bookingRepository.findAndPaginate({
+      ...request,
+      where: baseWhereQuery,
+    });
+
+    return result;
   }
 
   async findWithPaging(request: CommonProto.QueryRequest) {

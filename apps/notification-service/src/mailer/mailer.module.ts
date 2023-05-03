@@ -32,7 +32,7 @@ import { MailService } from './mailer.service';
           from: configService.get<string>('SMTP_FROM'),
         },
         template: {
-          dir: path.join(__dirname, 'templates'),
+          dir: 'apps/notification-service/src/mailer/templates',
           adapter: new HandlebarsAdapter(),
           options: {
             strict: false,
