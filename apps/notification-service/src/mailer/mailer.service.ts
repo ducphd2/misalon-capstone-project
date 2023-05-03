@@ -18,24 +18,22 @@ export class MailService {
     }
   }
 
-  async sendSuccessBookingUserEmail(bookingData: any, merchant: any, branch: any) {
-    const { customerEmail, customerName, startTime, endTime, bookingDate } = bookingData;
-    const { name, address, phone } = branch;
-    return this.sendEmailViaSMTP({
-      to: customerEmail,
-      subject: this.i18n.lang('lang.EMAIL.BOOKING.USER', {
-        lang: ELangType.EN,
-      }),
+  async sendSuccessBookingUserEmail(data: any) {
+    const { email, subject, bookingDate, startTime, name, address, phone, lang, note } = data;
+
+    await this.sendEmailViaSMTP({
+      to: email,
+      subject,
       template: 'user-success-booking',
       context: {
-        email: customerEmail,
-        fullName: customerName,
-        bookingDate: bookingDate,
-        startTime: startTime,
-        endTime: endTime,
-        merchantName: name,
-        merchantAddress: address,
-        merchantPhoneNumber: phone,
+        email,
+        bookingDate,
+        startTime,
+        name,
+        address,
+        phone,
+        lang,
+        note,
       },
     });
   }
@@ -61,25 +59,34 @@ export class MailService {
     });
   }
 
-  async sendSuccessBookingAdminBranchEmail(bookingData: any, merchant: any, branch: any) {
-    const { customerEmail, customerName, startTime, endTime, bookingDate, customerPhoneNumber, adminBranchEmail } =
-      bookingData;
-    const { name, address, phone } = branch;
-    return this.sendEmailViaSMTP({
+  async sendSuccessBookingAdminBranchEmail(data: any) {
+    const {
+      customerEmail,
+      customerName,
+      startTime,
+      bookingDate,
+      customerPhoneNumber,
+      adminBranchEmail,
+      name,
+      phone,
+      address,
+      subject,
+      lang,
+    } = data;
+    await this.sendEmailViaSMTP({
       to: adminBranchEmail,
-      subject: 'New customer booking appointment',
+      subject,
       template: 'admin-success-booking',
       context: {
-        customerPhoneNumber: customerPhoneNumber,
-        customerName: customerName,
-        customerEmail: customerEmail,
-        fullName: customerName,
-        bookingDate: bookingDate,
-        startTime: startTime,
-        endTime: endTime,
-        merchantName: name,
-        merchantAddress: address,
-        merchantPhoneNumber: phone,
+        customerPhoneNumber,
+        customerName,
+        customerEmail,
+        bookingDate,
+        startTime,
+        name,
+        address,
+        phone,
+        lang,
       },
     });
   }

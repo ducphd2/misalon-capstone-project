@@ -14,8 +14,8 @@ import { BookingService } from './booking.service';
 export class BookingController implements BookingProto.BookingServiceController {
   constructor(private readonly bookingService: BookingService) {}
 
-  find(request: QueryRequest): Promise<BookingProto.FindBookingOffsetPagination> {
-    throw new Error('Method not implemented.');
+  async find(request: QueryRequest): Promise<BookingProto.BookingPagination> {
+    return await this.bookingService.find(request);
   }
 
   findById(request: Id): Promise<BookingProto.NullableBooking> {

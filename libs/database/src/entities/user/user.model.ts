@@ -5,6 +5,8 @@ import { toUFT8NonSpecialCharacters } from '@libs/core';
 
 import { BaseModel } from '../base.model';
 
+import { ELangNumber } from '@/api-gateway/dtos';
+
 @Table({
   modelName: 'user',
   tableName: 'users',
@@ -115,6 +117,9 @@ export class UserModel extends BaseModel<UserModel> {
 
   @Column({ type: DataType.INTEGER })
   merchantId?: number;
+
+  @Column({ type: DataType.INTEGER })
+  lang?: ELangNumber = ELangNumber.VI;
 
   @Column({
     type: DataType.FLOAT,

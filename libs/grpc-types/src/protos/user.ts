@@ -8,6 +8,11 @@ import { CreateMerchantUserInput, MerchantUser } from "./merchant_user";
 
 export const protobufPackage = "ducph_user";
 
+export enum ELangNumber {
+  VI = 0,
+  EN = 1,
+}
+
 export interface User {
   /** default field */
   id: number;
@@ -57,6 +62,7 @@ export interface User {
   longitude?: number | undefined;
   isRetailCustomer?: boolean | undefined;
   merchantId?: number | undefined;
+  lang?: ELangNumber | undefined;
 }
 
 export interface CreateUserInput {
@@ -97,6 +103,7 @@ export interface CreateUserInput {
   longitude?: number | undefined;
   merchantId?: number | undefined;
   isRetailCustomer?: boolean | undefined;
+  lang?: ELangNumber | undefined;
 }
 
 export interface CreateUserRequest {
@@ -153,6 +160,7 @@ export interface UpdateUserData {
   relatedUserPhone?: string | undefined;
   branchId?: number | undefined;
   merchantId?: number | undefined;
+  lang?: ELangNumber | undefined;
 }
 
 export interface AddOperatorInput {

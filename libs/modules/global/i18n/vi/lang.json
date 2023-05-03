@@ -91,7 +91,8 @@
   },
   "EMAIL": {
     "BOOKING": {
-      "USER": "Tạo lịch hẹn thành công"
+      "USER": "Tạo lịch hẹn thành công",
+      "ADMIN": "Có lịch hẹn chăm sóc sức khỏe mới"
     }
   }
 }

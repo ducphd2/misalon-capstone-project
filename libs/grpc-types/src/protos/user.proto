@@ -8,6 +8,11 @@ import "merchant_user.proto";
 
 import "google/protobuf/struct.proto";
 
+enum ELangNumber {
+  VI = 0;
+  EN = 1;
+}
+
 service UserService {
   rpc find(commons.QueryRequest) returns (UserPagination) {}
   rpc create(CreateUserRequest) returns (FindOneUser) {}
@@ -83,6 +88,7 @@ message User {
   optional double longitude = 42;
   optional bool isRetailCustomer = 43;
   optional int32 merchantId = 44;
+  optional ELangNumber lang = 45;
 }
 
 message CreateUserInput {
@@ -123,6 +129,7 @@ message CreateUserInput {
   optional double longitude = 35;
   optional int32 merchantId = 36;
   optional bool isRetailCustomer = 37;
+  optional ELangNumber lang = 38;
 }
 
 message CreateUserRequest {
@@ -182,6 +189,7 @@ message UpdateUserData {
     string relatedUserPhone = 32;
     int32 branchId = 33;
     int32 merchantId = 34;
+    ELangNumber lang = 35;
   }
 }
 

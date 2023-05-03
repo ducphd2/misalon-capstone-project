@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, EBookingStatus, Id, QueryRequest } from "./commons";
+import { Count, EBookingStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "booking";
@@ -77,23 +77,20 @@ export interface UpdateBookingInput {
   data: UpdateBookingData | undefined;
 }
 
-export interface FindBookingOffsetPagination {
-  items: Booking[];
-  page?: number | undefined;
-  totalPage?: number | undefined;
-  total?: number | undefined;
-  limit?: number | undefined;
-}
-
 export interface NullableBooking {
   null?: NullValue | undefined;
   booking?: Booking | undefined;
 }
 
+export interface BookingPagination {
+  items: Booking[];
+  meta?: PageMeta | undefined;
+}
+
 export const BOOKING_PACKAGE_NAME = "booking";
 
 export interface BookingServiceClient {
-  find(request: QueryRequest): Observable<FindBookingOffsetPagination>;
+  find(request: QueryRequest): Observable<BookingPagination>;
 
   findById(request: Id): Observable<NullableBooking>;
 
@@ -109,9 +106,7 @@ export interface BookingServiceClient {
 }
 
 export interface BookingServiceController {
-  find(
-    request: QueryRequest,
-  ): Promise<FindBookingOffsetPagination> | Observable<FindBookingOffsetPagination> | FindBookingOffsetPagination;
+  find(request: QueryRequest): Promise<BookingPagination> | Observable<BookingPagination> | BookingPagination;
 
   findById(request: Id): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
 

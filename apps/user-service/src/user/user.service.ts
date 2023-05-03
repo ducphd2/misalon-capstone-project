@@ -2,9 +2,7 @@ import { UserModel } from '@libs/database/entities';
 import { UserRepository } from '@libs/database/repositories';
 import { CommonProto, UserProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
-import { FindOptions, Sequelize, WhereOptions } from 'sequelize';
 import { isEmpty } from 'lodash';
-import { query } from 'express';
 
 import { DeviceService } from '../device/device.service';
 
@@ -20,7 +18,7 @@ export class UserService {
   }
 
   async findById(id: number): Promise<UserModel> {
-    const result: UserModel = await this.userRepository.findById(id, {
+    const result = await this.userRepository.findById(id, {
       raw: true,
     });
 
