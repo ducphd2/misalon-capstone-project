@@ -1,6 +1,7 @@
 import { EServiceShowType, EServiceType } from '@libs/grpc-types/protos/service';
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
+import { MerchantModel } from '@libs/database/entities/merchant/merchant.model';
 
 import { BaseModel } from '../base.model';
 
@@ -13,6 +14,7 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   @Column({ type: DataType.INTEGER, allowNull: false })
   groupId?: number;
 
+  @ForeignKey(() => MerchantModel)
   @Column({ type: DataType.INTEGER })
   merchantId?: number;
 
@@ -57,6 +59,9 @@ export class ServiceModel extends BaseModel<ServiceModel> {
     allowNull: true,
   })
   search?: string;
+
+  @BelongsTo(() => MerchantModel, 'merchantId')
+  merchant?: MerchantModel;
 
   @BeforeCreate
   @BeforeUpdate

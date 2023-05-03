@@ -1,5 +1,6 @@
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
+import { MerchantModel } from '@libs/database/entities/merchant/merchant.model';
 
 import { BaseModel } from '../base.model';
 
@@ -9,7 +10,8 @@ import { BaseModel } from '../base.model';
   underscored: true,
 })
 export class GroupModel extends BaseModel<GroupModel> {
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @ForeignKey(() => MerchantModel)
+  @Column({ type: DataType.INTEGER })
   merchantId?: number;
 
   @Column({ type: DataType.TEXT })
@@ -32,6 +34,9 @@ export class GroupModel extends BaseModel<GroupModel> {
     allowNull: true,
   })
   search?: string;
+
+  @BelongsTo(() => MerchantModel)
+  merchant?: MerchantModel;
 
   @BeforeCreate
   @BeforeUpdate

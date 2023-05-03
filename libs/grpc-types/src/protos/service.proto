@@ -3,6 +3,7 @@ syntax = "proto3";
 package service;
 
 import "commons.proto";
+import "merchant_common.proto";
 
 import "google/protobuf/struct.proto";
 
@@ -78,6 +79,7 @@ message Service {
   optional EServiceType type = 20;
   optional EServiceShowType showType = 21;
   optional bool canPrintableInvoice = 22;
+  optional merchant_common.Merchant merchant = 23;
 }
 
 message NullableService {

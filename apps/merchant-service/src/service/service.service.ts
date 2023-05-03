@@ -1,4 +1,4 @@
-import { ServiceModel } from '@libs/database/entities';
+import { MerchantModel, ServiceModel } from '@libs/database/entities';
 import { ServiceRepository } from '@libs/database/repositories';
 import { BranchProto, CommonProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
@@ -33,10 +33,17 @@ export class ServicesService {
   async findWithPaging(request: CommonProto.QueryRequest): Promise<any> {
     const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
 
-    const result = await this.serviceRepository.findAndPaginate({
-      ...request,
-      where: baseWhereQuery,
-    });
+    const result = await this.serviceRepository.findAndPaginate(
+      {
+        ...request,
+        where: baseWhereQuery,
+      },
+      {
+        include: [MerchantModel],
+        raw: true,
+        nest: true,
+      },
+    );
 
     return result;
   }

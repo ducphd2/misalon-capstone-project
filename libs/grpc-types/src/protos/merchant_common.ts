@@ -1,9 +1,6 @@
 /* eslint-disable */
-import { PageMeta } from "./commons";
-import { NullValue } from "./google/protobuf/struct";
-import { Merchant } from "./merchant_common";
 
-export const protobufPackage = "service";
+export const protobufPackage = "merchant_common";
 
 export enum EServiceShowType {
   BOTH = 0,
@@ -17,36 +14,48 @@ export enum EServiceType {
   PRODUCT = 1,
 }
 
-export interface UpdateServiceData {
-  merchantId?: number | undefined;
-  sku?: string | undefined;
-  code?: string | undefined;
-  name?: string | undefined;
-  description?: string | undefined;
-  image?: string | undefined;
-}
-
-export interface UpdateServiceInput {
+export interface Merchant {
+  /** default field */
   id: number;
-  data: UpdateServiceData | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  deletedAt?: string | undefined;
+  createdBy?: string | undefined;
+  updatedBy?: string | undefined;
+  deletedBy?:
+    | string
+    | undefined;
+  /** reserved field */
+  name?: string | undefined;
+  phone?: string | undefined;
+  address?: string | undefined;
+  userId?: number | undefined;
+  cityCode?: number | undefined;
+  districtCode?: number | undefined;
+  wardCode?: number | undefined;
+  city?: string | undefined;
+  district?: string | undefined;
+  ward?: string | undefined;
 }
 
-export interface CreateServiceInput {
+export interface Group {
+  /** default field */
+  id: number;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+  deletedAt?: string | undefined;
+  createdBy?: string | undefined;
+  updatedBy?: string | undefined;
+  deletedBy?:
+    | string
+    | undefined;
+  /** reserved field */
   merchantId?: number | undefined;
-  groupId?: number | undefined;
-  price?: number | undefined;
-  initialPrice?: number | undefined;
-  capitalPrice?: number | undefined;
-  durationHour?: number | undefined;
-  durationMinute?: number | undefined;
   sku?: string | undefined;
   code?: string | undefined;
   name?: string | undefined;
   description?: string | undefined;
   image?: string | undefined;
-  type?: EServiceType | undefined;
-  showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: boolean | undefined;
 }
 
 export interface Service {
@@ -76,17 +85,6 @@ export interface Service {
   type?: EServiceType | undefined;
   showType?: EServiceShowType | undefined;
   canPrintableInvoice?: boolean | undefined;
-  merchant?: Merchant | undefined;
 }
 
-export interface NullableService {
-  null?: NullValue | undefined;
-  service?: Service | undefined;
-}
-
-export interface ServicePagination {
-  items: Service[];
-  meta?: PageMeta | undefined;
-}
-
-export const SERVICE_PACKAGE_NAME = "service";
+export const MERCHANT_COMMON_PACKAGE_NAME = "merchant_common";
