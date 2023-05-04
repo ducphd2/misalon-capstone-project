@@ -1,6 +1,6 @@
 import { NotificationModel, NotificationRepository } from '@libs/database';
 import { BookingClient, MerchantClient, UserClient } from '@libs/grpc-types';
-import { BullQueueProvider, LangModule, MessageComponent, SecretsModule } from '@libs/modules';
+import { BullQueueModule, BullQueueProvider, LangModule, MessageComponent, SecretsModule } from '@libs/modules';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -27,6 +27,9 @@ import { NotificationProcessor } from './notification.processor';
     }),
     BullModule.registerQueue({
       name: EBullQueue.GATEWAY_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: EBullQueue.BOOKING_QUEUE,
     }),
   ],
   controllers: [NotificationController],

@@ -14,6 +14,9 @@ import { BullQueueProvider } from './bull-producer.service';
     BullModule.registerQueue({
       name: EBullQueue.GATEWAY_QUEUE,
     }),
+    BullModule.registerQueue({
+      name: EBullQueue.BOOKING_QUEUE,
+    }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
