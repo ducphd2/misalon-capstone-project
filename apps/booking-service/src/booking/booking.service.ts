@@ -49,8 +49,8 @@ export class BookingService implements OnModuleInit {
   }
 
   async findById(id: number) {
-    const merchant = await this.bookingRepository.findById(id);
-    return merchant;
+    const booking = await this.bookingRepository.findById(id);
+    return { booking };
   }
 
   async findOne(dto: CommonProto.QueryRequest) {
@@ -60,6 +60,31 @@ export class BookingService implements OnModuleInit {
       ...dto,
       where,
       raw: true,
+    });
+
+    return result;
+  }
+
+  async delete(id: number): Promise<number> {
+    const count = await this.bookingRepository.delete({
+      where: { id },
+    });
+
+    return count;
+  }
+
+  async update(request: BookingProto.UpdateBookingInput) {
+    const result = await this.bookingRepository.update(request.data, {
+      where: {
+        id: request.id,
+      },
+    });
+    return result[0];
+  }
+
+  async count(query: CommonProto.QueryRequest): Promise<number> {
+    const result = await this.bookingRepository.count({
+      where: query.where ? JSON.parse(query.where) : null,
     });
 
     return result;

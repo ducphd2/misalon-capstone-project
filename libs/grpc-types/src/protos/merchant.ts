@@ -20,6 +20,8 @@ export interface UpdateMerchantData {
   city?: string | undefined;
   district?: string | undefined;
   ward?: string | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface UpdateMerchantInput {
@@ -38,6 +40,8 @@ export interface CreateInput {
   city?: string | undefined;
   district?: string | undefined;
   ward?: string | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface Merchant {
@@ -62,6 +66,8 @@ export interface Merchant {
   city?: string | undefined;
   district?: string | undefined;
   ward?: string | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface NullableMerchant {

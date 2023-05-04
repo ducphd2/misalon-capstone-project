@@ -22,11 +22,20 @@ enum EServiceType {
 message UpdateServiceData {
   oneof kind {
     int32 merchantId = 1;
-    string sku = 2;
-    string code = 3;
-    string name = 4;
-    string description = 5;
-    string image = 6;
+    int32 groupId = 2;
+    double price = 3;
+    double initialPrice = 4;
+    double capitalPrice = 5;
+    int32 durationHour = 6;
+    int32 durationMinute = 7;
+    string sku = 8;
+    string code = 9;
+    string name = 10;
+    string description = 11;
+    string image = 12;
+    EServiceType type = 13;
+    EServiceShowType showType = 14;
+    bool canPrintableInvoice = 15;
   }
 }
 
@@ -38,9 +47,9 @@ message UpdateServiceInput {
 message CreateServiceInput {
   optional int32 merchantId = 1;
   optional int32 groupId = 2;
-  optional float price = 3;
-  optional float initialPrice = 4;
-  optional float capitalPrice = 5;
+  optional double price = 3;
+  optional double initialPrice = 4;
+  optional double capitalPrice = 5;
   optional int32 durationHour = 6;
   optional int32 durationMinute = 7;
   optional string sku = 8;
@@ -66,9 +75,9 @@ message Service {
   // reserved field
   optional int32 merchantId = 8;
   optional int32 groupId = 9;
-  optional float price = 10;
-  optional float initialPrice = 11;
-  optional float capitalPrice = 12;
+  optional double price = 10;
+  optional double initialPrice = 11;
+  optional double capitalPrice = 12;
   optional int32 durationHour = 13;
   optional int32 durationMinute = 14;
   optional string sku = 15;

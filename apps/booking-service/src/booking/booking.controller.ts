@@ -3,7 +3,6 @@ import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
-import { Observable } from 'rxjs';
 
 import { BookingService } from './booking.service';
 
@@ -18,16 +17,18 @@ export class BookingController implements BookingProto.BookingServiceController 
     return await this.bookingService.find(request);
   }
 
-  findById(request: Id): Promise<BookingProto.NullableBooking> {
-    throw new Error('Method not implemented.');
+  async findById(request: Id): Promise<BookingProto.NullableBooking> {
+    return await this.bookingService.findById(request.id);
   }
 
-  findOne(request: QueryRequest): Promise<BookingProto.NullableBooking> {
-    throw new Error('Method not implemented.');
+  async findOne(request: QueryRequest): Promise<BookingProto.NullableBooking> {
+    const booking = await this.bookingService.findOne(request);
+    return { booking };
   }
 
-  count(request: QueryRequest): Count | Promise<Count> | Observable<Count> {
-    throw new Error('Method not implemented.');
+  async count(request: QueryRequest): Promise<Count> {
+    const count = await this.bookingService.count(request);
+    return { count };
   }
 
   async create(request: BookingProto.CreateBookingInput): Promise<BookingProto.Booking> {
@@ -36,11 +37,12 @@ export class BookingController implements BookingProto.BookingServiceController 
     return result;
   }
 
-  update(request: BookingProto.UpdateBookingInput): Promise<BookingProto.Booking> | Observable<BookingProto.Booking> {
-    throw new Error('Method not implemented.');
+  async update(request: BookingProto.UpdateBookingInput): Promise<BookingProto.Booking> {
+    return await this.bookingService.update(request);
   }
 
-  delete(request: Id): Count | Promise<Count> | Observable<Count> {
-    throw new Error('Method not implemented.');
+  async delete(request: Id): Promise<Count> {
+    const count = await this.bookingService.delete(request.id);
+    return { count };
   }
 }

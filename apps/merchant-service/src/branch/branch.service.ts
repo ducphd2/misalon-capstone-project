@@ -1,4 +1,3 @@
-import { LIMIT, PAGE } from '@libs/core/constants';
 import { BranchModel } from '@libs/database/entities';
 import { BranchRepository } from '@libs/database/repositories';
 import { BranchProto, CommonProto } from '@libs/grpc-types';

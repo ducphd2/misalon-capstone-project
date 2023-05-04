@@ -12,13 +12,9 @@ export class MerchantService {
   constructor(private readonly merchantRepository: MerchantRepository, private readonly branchService: BranchService) {}
 
   async create(dto: MerchantProto.CreateInput): Promise<CreateMerchantResponse> {
-    try {
-      const merchant = await this.merchantRepository.create(dto);
-      const branch = await this.branchService.create({ ...dto, merchantId: merchant.id });
-      return { merchant, branch };
-    } catch (error) {
-      console.log(error);
-    }
+    const merchant = await this.merchantRepository.create(dto);
+    const branch = await this.branchService.create({ ...dto, merchantId: merchant.id });
+    return { merchant, branch };
   }
 
   async find(request: CommonProto.QueryRequest): Promise<MerchantModel[]> {
