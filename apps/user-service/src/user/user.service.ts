@@ -38,7 +38,11 @@ export class UserService {
   }
 
   async count(query: CommonProto.QueryRequest): Promise<number> {
-    return;
+    const result = await this.userRepository.count({
+      where: query.where ? JSON.parse(query.where) : null,
+    });
+
+    return result;
   }
 
   async update(request: UserProto.UpdateUserInput): Promise<UserModel> {

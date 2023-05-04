@@ -55,6 +55,8 @@ message UpdateMerchantData {
     string city = 8;
     string district = 9;
     string ward = 10;
+    double latitude = 11;
+    double longitude = 12;
   }
 }
 
@@ -74,6 +76,8 @@ message CreateInput {
   optional string city = 8;
   optional string district = 9;
   optional string ward = 10;
+  optional double latitude = 11;
+  optional double longitude = 12;
 }
 
 message Merchant {
@@ -97,6 +101,8 @@ message Merchant {
   optional string city = 15;
   optional string district = 16;
   optional string ward = 17;
+  optional double latitude = 18;
+  optional double longitude = 19;
 }
 
 message NullableMerchant {
