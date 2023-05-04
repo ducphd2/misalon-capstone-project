@@ -55,7 +55,7 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   }
 
   @SubscribeMessage(EEventMessage.JOIN_ROOM)
-  async handleJoinRoom(@ConnectedSocket() client: Socket, @MessageBody('userId') userId: string) {
+  async handleJoinRoom(@ConnectedSocket() client: Socket, userId: any) {
     client.join(userId);
   }
 
