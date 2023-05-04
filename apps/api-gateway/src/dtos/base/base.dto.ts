@@ -4,12 +4,12 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class BaseQueryDto {
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => (parseInt(value) > 0 ? parseInt(value) : PAGE))
   @IsNumber()
   page?: number = PAGE;
 
   @IsOptional()
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => (parseInt(value) > 0 ? parseInt(value) : LIMIT))
   @IsNumber()
   limit?: number = LIMIT;
 
