@@ -10,4 +10,6 @@ export abstract class AbstractSecretsService {
   bookingServiceDatabase: IPostgresEnv;
 
   notificationServiceDatabase: IPostgresEnv;
+
+  paymentServiceDatabase: IPostgresEnv;
 }

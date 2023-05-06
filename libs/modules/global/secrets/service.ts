@@ -44,4 +44,12 @@ export class SecretsService extends ConfigService implements AbstractSecretsServ
     password: this.get<string>('NOTIFICATION_DB_PASSWORD'),
     database: this.get<string>('NOTIFICATION_DB_DATABASE'),
   };
+
+  paymentServiceDatabase = {
+    host: this.get<string>('PAYMENT_DB_HOST'),
+    port: this.get<number>('PAYMENT_DB_PORT'),
+    username: this.get<string>('PAYMENT_DB_USERNAME'),
+    password: this.get<string>('PAYMENT_DB_PASSWORD'),
+    database: this.get<string>('PAYMENT_DB_DATABASE'),
+  };
 }

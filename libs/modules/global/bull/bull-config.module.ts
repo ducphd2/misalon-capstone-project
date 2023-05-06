@@ -21,10 +21,10 @@ import { BullQueueProvider } from './bull-producer.service';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         redis: {
-          host: configService.get<string>('REDIS_HOST'),
-          username: configService.get<string>('REDIS_USERNAME'),
+          host: configService.get<string>('REDIS_HOST') ?? null,
+          username: configService.get<string>('REDIS_USERNAME') ?? null,
           port: configService.get<number>('REDIS_PORT'),
-          password: configService.get<string>('REDIS_PASSWORD'),
+          password: configService.get<string>('REDIS_PASSWORD') ?? null,
           db: configService.get<number>('REDIS_DB') ?? 0,
         },
         defaultJobOptions: {

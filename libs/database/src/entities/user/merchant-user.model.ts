@@ -15,6 +15,9 @@ export class MerchantUserModel extends BaseModel<MerchantUserModel> {
   @Column({ type: DataType.INTEGER })
   status?: EUserStatus;
 
+  @Column({ type: DataType.DOUBLE })
+  price?: number;
+
   @Column({ type: DataType.INTEGER })
   userId: number;
 

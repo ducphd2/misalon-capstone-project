@@ -1,4 +1,12 @@
-import { BookingConfig, MerchantConfig, NotificationConfig, UserConfig, UserProto } from '@libs/grpc-types';
+import {
+  BookingConfig,
+  MerchantConfig,
+  NotificationConfig,
+  PaymentConfig,
+  PaymentProto,
+  UserConfig,
+  UserProto,
+} from '@libs/grpc-types';
 import { BOOKING_PACKAGE_NAME } from '@libs/grpc-types/protos/booking';
 import { MERCHANT_PACKAGE_NAME } from '@libs/grpc-types/protos/merchant';
 import { NOTIFICATION_PACKAGE_NAME } from '@libs/grpc-types/protos/notification';
@@ -10,7 +18,7 @@ export const UserClient: ClientProviderOptions = {
   options: {
     package: UserProto.DUCPH_USER_PACKAGE_NAME,
     protoPath: UserConfig.path,
-    url: `${UserConfig.localHostname}:${UserConfig.port}`,
+    url: `${UserConfig.host}:${UserConfig.port}`,
     loader: UserConfig.loader,
   },
 };
@@ -21,7 +29,7 @@ export const MerchantClient: ClientProviderOptions = {
   options: {
     package: MERCHANT_PACKAGE_NAME,
     protoPath: MerchantConfig.path,
-    url: `${MerchantConfig.localHostname}:${MerchantConfig.port}`,
+    url: `${MerchantConfig.host}:${MerchantConfig.port}`,
     loader: MerchantConfig.loader,
   },
 };
@@ -32,7 +40,7 @@ export const BookingClient: ClientProviderOptions = {
   options: {
     package: BOOKING_PACKAGE_NAME,
     protoPath: BookingConfig.path,
-    url: `${BookingConfig.localHostname}:${BookingConfig.port}`,
+    url: `${BookingConfig.host}:${BookingConfig.port}`,
     loader: BookingConfig.loader,
   },
 };
@@ -43,7 +51,18 @@ export const NotificationClient: ClientProviderOptions = {
   options: {
     package: NOTIFICATION_PACKAGE_NAME,
     protoPath: NotificationConfig.path,
-    url: `${NotificationConfig.localHostname}:${NotificationConfig.port}`,
+    url: `${NotificationConfig.host}:${NotificationConfig.port}`,
     loader: NotificationConfig.loader,
+  },
+};
+
+export const PaymentClient: ClientProviderOptions = {
+  name: PaymentProto.PAYMENT_PACKAGE_NAME,
+  transport: Transport.GRPC,
+  options: {
+    package: PaymentProto.PAYMENT_PACKAGE_NAME,
+    protoPath: PaymentConfig.path,
+    url: `${PaymentConfig.host}:${PaymentConfig.port}`,
+    loader: PaymentConfig.loader,
   },
 };
