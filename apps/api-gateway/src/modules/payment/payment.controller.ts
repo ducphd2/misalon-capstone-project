@@ -1,5 +1,5 @@
 import { UserModel } from '@libs/database';
-import { Body, Controller, Delete, Get, Ip, Logger, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Ip, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
 
 import { PaymentService } from './payment.service';
 
@@ -18,6 +18,12 @@ export class PaymentController {
     const result = await this.paymentService.create(user, input, ip);
 
     return result;
+  }
+
+  @Get('callback')
+  @UseGuards(JwtAuthGuard)
+  async callback(@Query() query: any) {
+    return await this.paymentService.callback(JSON.stringify(query));
   }
 
   // @Patch(':id')

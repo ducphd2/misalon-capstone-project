@@ -4,7 +4,7 @@ import { EBullEvent, EVnPayCommand } from '@libs/core';
 import { PaymentRepository } from '@libs/database';
 import { CommonProto, NotificationProto, PaymentProto } from '@libs/grpc-types';
 import { EBookingStatus } from '@libs/grpc-types/protos/commons';
-import { EPaymentType } from '@libs/grpc-types/protos/payment';
+import { EPaymentStatus, EPaymentType } from '@libs/grpc-types/protos/payment';
 import { IVnPayParams } from '@libs/interfaces';
 import { BullQueueProvider } from '@libs/modules';
 import { SecretsService } from '@libs/modules/global/secrets/service';
@@ -38,7 +38,7 @@ export class PaymentService implements OnModuleInit {
     if (dto.type === EPaymentType.CASH) {
       payment = await this.paymentRepository.create(dto);
     } else {
-      payment = await this.paymentRepository.create(dto);
+      payment = await this.paymentRepository.create({ ...dto, status: EPaymentStatus.PENDING });
 
       vnpUrl = this.makeVnPayUrl(dto, payment);
     }
@@ -163,14 +163,53 @@ export class PaymentService implements OnModuleInit {
 
     const signData = qs.stringify(vnPayParams);
 
-    const hmac = createHmac('sha512', this.configService.vnpSecretKey);
-
-    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+    const signed = this.makeSignedHash(this.configService.vnpSecretKey, signData);
 
     vnPayParams.vnp_SecureHash = signed;
 
     const vnpUrl = this.configService.vnpUrl + '?' + qs.stringify(vnPayParams);
 
     return vnpUrl;
+  }
+
+  private makeSignedHash(secret: string, signData: string) {
+    const hmac = createHmac('sha512', secret);
+
+    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+    return signed;
+  }
+
+  async callback(query: IVnPayParams) {
+    if (query.vnp_TransactionStatus === '00') {
+      const result = await this.paymentRepository.update(
+        {
+          status: EPaymentStatus.FINISHED,
+          vnpBankCode: query?.vnp_BankCode,
+          vnpBankTranNo: query?.vnp_BankTranNo,
+          vnpCardType: query?.vnp_CardType,
+          vnpPayDate: query?.vnp_PayDate,
+          vnpOrderInfo: query?.vnp_OrderInfo,
+          vnpTransactionNo: query?.vnp_TransactionNo,
+        },
+        {
+          where: {
+            code: query.vnp_TxnRef,
+          },
+        },
+      );
+      return result[0];
+    } else {
+      const result = await this.paymentRepository.update(
+        {
+          status: EPaymentStatus.FAILED,
+        },
+        {
+          where: {
+            code: query.vnp_TxnRef,
+          },
+        },
+      );
+      return result[0];
+    }
   }
 }

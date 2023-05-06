@@ -9,7 +9,7 @@ export const protobufPackage = "payment";
 export enum EPaymentStatus {
   PENDING = 0,
   FINISHED = 1,
-  ERROR = 2,
+  FAILED = 2,
 }
 
 export enum EPaymentType {
@@ -78,6 +78,10 @@ export interface PaymentPagination {
   meta?: PageMeta | undefined;
 }
 
+export interface CallbackQuery {
+  query: string;
+}
+
 export const PAYMENT_PACKAGE_NAME = "payment";
 
 export interface PaymentServiceClient {
@@ -90,6 +94,8 @@ export interface PaymentServiceClient {
   count(request: QueryRequest): Observable<Count>;
 
   create(request: CreatePaymentInput): Observable<Payment>;
+
+  callback(request: CallbackQuery): Observable<Payment>;
 
   update(request: UpdatePaymentInput): Observable<Payment>;
 
@@ -107,6 +113,8 @@ export interface PaymentServiceController {
 
   create(request: CreatePaymentInput): Promise<Payment> | Observable<Payment> | Payment;
 
+  callback(request: CallbackQuery): Promise<Payment> | Observable<Payment> | Payment;
+
   update(request: UpdatePaymentInput): Promise<Payment> | Observable<Payment> | Payment;
 
   delete(request: Id): Promise<Count> | Observable<Count> | Count;
@@ -114,7 +122,7 @@ export interface PaymentServiceController {
 
 export function PaymentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["find", "findById", "findOne", "count", "create", "update", "delete"];
+    const grpcMethods: string[] = ["find", "findById", "findOne", "count", "create", "callback", "update", "delete"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentService", method)(constructor.prototype[method], method, descriptor);
