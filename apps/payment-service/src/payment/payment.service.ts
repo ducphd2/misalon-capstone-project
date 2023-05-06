@@ -1,9 +1,18 @@
+import { createHmac } from 'node:crypto';
+
+import { EBullEvent, EVnPayCommand } from '@libs/core';
 import { PaymentRepository } from '@libs/database';
-import { BookingProto, CommonProto, NotificationProto } from '@libs/grpc-types';
+import { CommonProto, NotificationProto, PaymentProto } from '@libs/grpc-types';
+import { EBookingStatus } from '@libs/grpc-types/protos/commons';
+import { EPaymentType } from '@libs/grpc-types/protos/payment';
+import { IVnPayParams } from '@libs/interfaces';
+import { BullQueueProvider } from '@libs/modules';
+import { SecretsService } from '@libs/modules/global/secrets/service';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty } from 'lodash';
-import { firstValueFrom } from 'rxjs';
+import * as moment from 'moment';
+import * as qs from 'qs';
 
 @Injectable()
 export class PaymentService implements OnModuleInit {
@@ -11,6 +20,8 @@ export class PaymentService implements OnModuleInit {
 
   constructor(
     private readonly paymentRepository: PaymentRepository,
+    private readonly bullQueue: BullQueueProvider,
+    private readonly configService: SecretsService,
     @Inject(NotificationProto.NOTIFICATION_PACKAGE_NAME) private client: ClientGrpc,
   ) {}
 
@@ -20,10 +31,27 @@ export class PaymentService implements OnModuleInit {
     );
   }
 
-  async create(dto: BookingProto.CreateBookingInput) {
-    const booking = await this.paymentRepository.create(dto);
-    await firstValueFrom(this.notificationService.createBookingNotification({ ...booking, ...dto }));
-    return booking;
+  async create(dto: PaymentProto.CreatePaymentInput) {
+    let payment = null;
+    let vnpUrl: string = null;
+
+    if (dto.type === EPaymentType.CASH) {
+      payment = await this.paymentRepository.create(dto);
+    } else {
+      payment = await this.paymentRepository.create(dto);
+
+      vnpUrl = this.makeVnPayUrl(dto, payment);
+    }
+
+    await this.bullQueue.addBookingEvent(EBullEvent.MAKE_PAYMENT_BOOKING, {
+      status: EBookingStatus.BOOKING_FINISHED,
+      id: dto.bookingId,
+    });
+
+    return {
+      ...payment,
+      vnpUrl,
+    };
   }
 
   async find(request: CommonProto.QueryRequest) {
@@ -49,8 +77,8 @@ export class PaymentService implements OnModuleInit {
   }
 
   async findById(id: number) {
-    const booking = await this.paymentRepository.findById(id);
-    return { booking };
+    const payment = await this.paymentRepository.findById(id);
+    return { payment };
   }
 
   async findOne(dto: CommonProto.QueryRequest) {
@@ -73,7 +101,7 @@ export class PaymentService implements OnModuleInit {
     return count;
   }
 
-  async update(request: BookingProto.UpdateBookingInput) {
+  async update(request: PaymentProto.UpdatePaymentInput) {
     const result = await this.paymentRepository.update(request.data, {
       where: {
         id: request.id,
@@ -88,5 +116,61 @@ export class PaymentService implements OnModuleInit {
     });
 
     return result;
+  }
+
+  private sortObject(obj) {
+    const sorted: any = {};
+
+    const str: any = [];
+
+    let key;
+
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        str.push(encodeURIComponent(key));
+      }
+    }
+
+    str.sort();
+
+    for (key = 0; key < str.length; key++) {
+      sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, '+');
+    }
+
+    return sorted;
+  }
+
+  private makeVnPayUrl(dto: any, payment: any): string {
+    const date = new Date();
+    const createDate = moment(date).format('yyyyMMDDHHmmss');
+    let vnPayParams: IVnPayParams = {} as IVnPayParams;
+
+    vnPayParams.vnp_Version = this.configService.vnpVersion;
+    vnPayParams.vnp_TmnCode = this.configService.vnpTmnCode;
+    vnPayParams.vnp_Locale = this.configService.vnpLocale;
+    vnPayParams.vnp_CurrCode = this.configService.vnpCurrCode;
+    vnPayParams.vnp_ReturnUrl = this.configService.vnpReturnUrl;
+
+    vnPayParams.vnp_IpAddr = dto.ip;
+    vnPayParams.vnp_Command = EVnPayCommand.PAY;
+    vnPayParams.vnp_OrderInfo = `Thanh toan hoa don, so tien: ${dto.totalPrice}`;
+    vnPayParams.vnp_OrderType = EVnPayCommand.PAY;
+    vnPayParams.vnp_Amount = dto.totalPrice * 100;
+    vnPayParams.vnp_CreateDate = createDate;
+    vnPayParams.vnp_TxnRef = payment.code;
+
+    vnPayParams = this.sortObject(vnPayParams);
+
+    const signData = qs.stringify(vnPayParams);
+
+    const hmac = createHmac('sha512', this.configService.vnpSecretKey);
+
+    const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest('hex');
+
+    vnPayParams.vnp_SecureHash = signed;
+
+    const vnpUrl = this.configService.vnpUrl + '?' + qs.stringify(vnPayParams);
+
+    return vnpUrl;
   }
 }

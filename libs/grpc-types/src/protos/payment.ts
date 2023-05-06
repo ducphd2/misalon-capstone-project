@@ -1,10 +1,21 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, EBookingStatus, Id, PageMeta, QueryRequest } from "./commons";
+import { Count, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "payment";
+
+export enum EPaymentStatus {
+  PENDING = 0,
+  FINISHED = 1,
+  ERROR = 2,
+}
+
+export enum EPaymentType {
+  CASH = 0,
+  TRANSFER = 1,
+}
 
 export interface Payment {
   /** default field */
@@ -18,58 +29,38 @@ export interface Payment {
     | string
     | undefined;
   /** reserved field */
-  status?: EBookingStatus | undefined;
+  status?: EPaymentStatus | undefined;
+  type?: EPaymentType | undefined;
   userId?: number | undefined;
   serviceId?: number | undefined;
-  startTime?: string | undefined;
-  endTime?: string | undefined;
-  duration?: number | undefined;
-  note?: string | undefined;
+  bookingId?: number | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
-  isCustomerCancel?: boolean | undefined;
-  cancelReason?: string | undefined;
-  bookingDate?: string | undefined;
-  isAdminUpdate?: boolean | undefined;
-  adminUpdateId?: number | undefined;
-  serviceName?: string | undefined;
-  customerName?: string | undefined;
-  customerEmail?: string | undefined;
-  customerAddress?: string | undefined;
-  durationHour?: number | undefined;
-  durationMinute?: number | undefined;
+  totalPrice?: number | undefined;
+  vnpUrl?: string | undefined;
 }
 
 export interface CreatePaymentInput {
-  status?: EBookingStatus | undefined;
+  type?: EPaymentType | undefined;
   userId?: number | undefined;
   serviceId?: number | undefined;
-  startTime?: string | undefined;
-  endTime?: string | undefined;
-  adminBranchEmail?: string | undefined;
-  customerEmail?: string | undefined;
-  customerName?: string | undefined;
-  bookingDate?: string | undefined;
-  note?: string | undefined;
+  bookingId?: number | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
-  serviceName?: string | undefined;
+  totalPrice?: number | undefined;
+  ip?: string | undefined;
 }
 
 export interface UpdatePaymentData {
-  status?: EBookingStatus | undefined;
+  status?: EPaymentType | undefined;
+  type?: EPaymentType | undefined;
   userId?: number | undefined;
   serviceId?: number | undefined;
-  startTime?: string | undefined;
-  endTime?: string | undefined;
-  adminBranchEmail?: string | undefined;
-  customerEmail?: string | undefined;
-  customerName?: string | undefined;
-  bookingDate?: string | undefined;
-  note?: string | undefined;
+  bookingId?: number | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
-  serviceName?: string | undefined;
+  totalPrice?: number | undefined;
+  ip?: string | undefined;
 }
 
 export interface UpdatePaymentInput {
@@ -79,7 +70,7 @@ export interface UpdatePaymentInput {
 
 export interface NullablePayment {
   null?: NullValue | undefined;
-  booking?: Payment | undefined;
+  payment?: Payment | undefined;
 }
 
 export interface PaymentPagination {

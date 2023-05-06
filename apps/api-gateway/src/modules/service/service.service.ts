@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { MessageComponent } from '@libs/modules';
 
-import { MessageComponent } from '@/api-gateway/core';
 import { CreateServiceInput, PartialUpdateService } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 

@@ -94,5 +94,22 @@
       "USER": "Successfully booked a health appointment",
       "ADMIN": "New customer's health appointment"
     }
+  },
+  "PAYMENT": {
+    "CREATE": {
+      "SUCCESS": "Make payment successfully",
+      "FAIL": "Make payment fail"
+    },
+    "READ": {
+      "NOT_EXIST": "This payment does not exist."
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated payment successfully",
+      "FAIL": "Updated payment fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted payment successfully",
+      "FAIL": "Deleted payment fail"
+    }
   }
 }

@@ -1,7 +1,7 @@
-import { toUFT8NonSpecialCharacters } from '@libs/core';
 import { BaseModel } from '@libs/database/entities/base.model';
-import { EBookingStatus } from '@libs/grpc-types/protos/commons';
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { EPaymentStatus, EPaymentType } from '@libs/grpc-types/protos/payment';
+import { BeforeCreate, Column, DataType, Table } from 'sequelize-typescript';
+import { v4 as uuidv4 } from 'uuid';
 
 @Table({
   modelName: 'payment',
@@ -9,11 +9,14 @@ import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-t
   underscored: true,
 })
 export class PaymentModel extends BaseModel<PaymentModel> {
-  @Column({ type: DataType.INTEGER })
-  status?: EBookingStatus;
+  @Column({ type: DataType.UUID })
+  code?: string;
 
-  @Column({ type: DataType.TEXT })
-  serviceName?: string;
+  @Column({ type: DataType.INTEGER })
+  status?: EPaymentStatus;
+
+  @Column({ type: DataType.INTEGER })
+  type?: EPaymentType;
 
   @Column({ type: DataType.INTEGER })
   serviceId?: number;
@@ -21,64 +24,20 @@ export class PaymentModel extends BaseModel<PaymentModel> {
   @Column({ type: DataType.INTEGER })
   userId?: number;
 
-  @Column({ type: DataType.TEXT })
-  userEmail?: number;
-
-  @Column({ type: DataType.TEXT })
-  userPhoneNumber?: number;
-
   @Column({ type: DataType.INTEGER })
   merchantId?: number;
 
   @Column({ type: DataType.INTEGER })
   branchId?: number;
 
-  @Column({ type: DataType.TEXT })
-  startTime?: string;
-
-  @Column({ type: DataType.TEXT })
-  endTime?: string;
-
-  @Column({ type: DataType.TEXT })
-  note?: string;
-
-  @Column({ type: DataType.TEXT })
-  cancelReason?: string;
-
-  @Column({ type: DataType.TEXT })
-  bookingDate?: string;
-
   @Column({ type: DataType.INTEGER })
-  durationHour?: number;
+  bookingId?: number;
 
-  @Column({ type: DataType.INTEGER })
-  durationMinute?: number;
-
-  @Column({ type: DataType.INTEGER })
-  duration?: number;
-
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  search?: string;
+  @Column({ type: DataType.DOUBLE })
+  totalPrice?: number;
 
   @BeforeCreate
-  @BeforeUpdate
-  static async updateSearch(model: PaymentModel) {
-    const columnsToConcatenate = [
-      'status',
-      'cancelReason',
-      'serviceName',
-      'startTime',
-      'endTime',
-      'note',
-      'bookingDate',
-    ];
-    const concatenatedValues = columnsToConcatenate
-      .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
-      .join(' ');
-
-    model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
+  static async insertRefCode(model: PaymentModel) {
+    model.code = uuidv4();
   }
 }

@@ -11,38 +11,38 @@ import { PaymentService } from './payment.service';
 @Controller()
 @PaymentProto.PaymentServiceControllerMethods()
 export class PaymentController implements PaymentProto.PaymentServiceController {
-  constructor(private readonly bookingService: PaymentService) {}
+  constructor(private readonly paymentService: PaymentService) {}
 
   async find(request: QueryRequest): Promise<PaymentProto.PaymentPagination> {
-    return await this.bookingService.find(request);
+    return await this.paymentService.find(request);
   }
 
   async findById(request: Id): Promise<PaymentProto.NullablePayment> {
-    return await this.bookingService.findById(request.id);
+    return await this.paymentService.findById(request.id);
   }
 
   async findOne(request: QueryRequest): Promise<PaymentProto.NullablePayment> {
-    const booking = await this.bookingService.findOne(request);
-    return { booking };
+    const payment = await this.paymentService.findOne(request);
+    return { payment };
   }
 
   async count(request: QueryRequest): Promise<Count> {
-    const count = await this.bookingService.count(request);
+    const count = await this.paymentService.count(request);
     return { count };
   }
 
   async create(request: PaymentProto.CreatePaymentInput): Promise<PaymentProto.Payment> {
-    const result = await this.bookingService.create(request);
+    const result = await this.paymentService.create(request);
 
     return result;
   }
 
   async update(request: PaymentProto.UpdatePaymentInput): Promise<PaymentProto.Payment> {
-    return await this.bookingService.update(request);
+    return await this.paymentService.update(request);
   }
 
   async delete(request: Id): Promise<Count> {
-    const count = await this.bookingService.delete(request.id);
+    const count = await this.paymentService.delete(request.id);
     return { count };
   }
 }

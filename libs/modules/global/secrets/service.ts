@@ -52,4 +52,13 @@ export class SecretsService extends ConfigService implements AbstractSecretsServ
     password: this.get<string>('PAYMENT_DB_PASSWORD'),
     database: this.get<string>('PAYMENT_DB_DATABASE'),
   };
+
+  // VNPay
+  vnpVersion = this.get<string>('VNP_VERSION');
+  vnpTmnCode = this.get<string>('VNP_TMN_CODE');
+  vnpLocale = this.get<string>('VNP_LOCALE');
+  vnpCurrCode = this.get<string>('VNP_CURR_CODE');
+  vnpReturnUrl = this.get<string>('VNP_RETURN_URL');
+  vnpSecretKey = this.get<string>('VNP_HASH_SECRET');
+  vnpUrl = this.get<string>('VNP_URL');
 }
