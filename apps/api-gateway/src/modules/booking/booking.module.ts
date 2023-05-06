@@ -1,10 +1,10 @@
 import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
+import { MessageComponent } from '@libs/modules';
 
 import { BookingController } from './booking.controller';
 import { BookingService } from './booking.service';
 
-import { MessageComponent } from '@/api-gateway/core';
 import { BookingCommonModule } from '@/api-gateway/modules/booking-common/booking-common.module';
 
 @Module({

@@ -3,8 +3,8 @@ import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { Injectable, Logger } from '@nestjs/common';
 import { isEmpty, merge } from 'lodash';
+import { MessageComponent } from '@libs/modules';
 
-import { MessageComponent } from '@/api-gateway/core';
 import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/dtos';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 

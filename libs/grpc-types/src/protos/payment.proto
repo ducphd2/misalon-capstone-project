@@ -5,6 +5,17 @@ package payment;
 import "commons.proto";
 import "google/protobuf/struct.proto";
 
+enum EPaymentStatus {
+  PENDING = 0;
+  FINISHED = 1;
+  ERROR = 2;
+}
+
+enum EPaymentType {
+  CASH = 0;
+  TRANSFER = 1;
+}
+
 service PaymentService {
   rpc find(commons.QueryRequest) returns (PaymentPagination) {}
   rpc findById(commons.Id) returns (NullablePayment) {}
@@ -26,59 +37,39 @@ message Payment {
   optional string deletedBy = 7;
 
   // reserved field
-  optional commons.EBookingStatus status = 8;
-  optional int32 userId = 9;
-  optional int32 serviceId = 10;
-  optional string startTime = 11;
-  optional string endTime = 12;
-  optional int32 duration = 13;
-  optional string note = 14;
-  optional int32 merchantId = 15;
-  optional int32 branchId = 16;
-  optional bool isCustomerCancel = 17;
-  optional string cancelReason = 18;
-  optional string bookingDate = 19;
-  optional bool isAdminUpdate = 20;
-  optional int32 adminUpdateId = 21;
-  optional string serviceName = 22;
-  optional string customerName = 23;
-  optional string customerEmail = 24;
-  optional string customerAddress = 25;
-  optional int32 durationHour = 26;
-  optional int32 durationMinute = 27;
+  optional EPaymentStatus status = 8;
+  optional EPaymentType type = 9;
+  optional int32 userId = 10;
+  optional int32 serviceId = 11;
+  optional int32 bookingId = 12;
+  optional int32 merchantId = 13;
+  optional int32 branchId = 14;
+  optional double totalPrice = 15;
+  optional string vnpUrl = 16;
 }
 
 message CreatePaymentInput {
-  optional commons.EBookingStatus status = 1;
+  optional EPaymentType type = 1;
   optional int32 userId = 2;
   optional int32 serviceId = 3;
-  optional string startTime = 4;
-  optional string endTime = 5;
-  optional string adminBranchEmail = 6;
-  optional string customerEmail = 7;
-  optional string customerName = 8;
-  optional string bookingDate = 9;
-  optional string note = 10;
-  optional int32 merchantId = 11;
-  optional int32 branchId = 12;
-  optional string serviceName = 13;
+  optional int32 bookingId = 4;
+  optional int32 merchantId = 5;
+  optional int32 branchId = 6;
+  optional double totalPrice = 7;
+  optional string ip = 8;
 }
 
 message UpdatePaymentData {
   oneof kind {
-    commons.EBookingStatus status = 1;
-    int32 userId = 2;
-    int32 serviceId = 3;
-    string startTime = 4;
-    string endTime = 5;
-    string adminBranchEmail = 6;
-    string customerEmail = 7;
-    string customerName = 8;
-    string bookingDate = 9;
-    string note = 10;
-    int32 merchantId = 11;
-    int32 branchId = 12;
-    string serviceName = 13;
+    EPaymentType status = 1;
+    EPaymentType type = 2;
+    int32 userId = 3;
+    int32 serviceId = 4;
+    int32 bookingId = 5;
+    int32 merchantId = 6;
+    int32 branchId = 7;
+    double totalPrice = 8;
+    string ip = 9;
   }
 }
 
@@ -90,7 +81,7 @@ message UpdatePaymentInput {
 message NullablePayment {
   oneof kind {
     google.protobuf.NullValue null = 1;
-    Payment booking = 2;
+    Payment payment = 2;
   }
 }
 

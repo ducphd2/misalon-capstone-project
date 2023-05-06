@@ -1,17 +1,17 @@
+import { EBullQueue } from '@libs/core';
 import { NotificationModel, NotificationRepository } from '@libs/database';
 import { BookingClient, MerchantClient, UserClient } from '@libs/grpc-types';
-import { BullQueueModule, BullQueueProvider, LangModule, MessageComponent, SecretsModule } from '@libs/modules';
+import { BullQueueProvider, LangModule, MessageComponent, SecretsModule } from '@libs/modules';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BullModule } from '@nestjs/bull';
-import { EBullQueue } from '@libs/core';
 
 import { MailModule } from '../mailer/mailer.module';
 
 import { NotificationController } from './notification.controller';
-import { NotificationService } from './notification.service';
 import { NotificationProcessor } from './notification.processor';
+import { NotificationService } from './notification.service';
 
 @Module({
   imports: [

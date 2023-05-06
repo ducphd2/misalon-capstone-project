@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { MessageComponent } from '@libs/modules';
 
 import { MerchantCommonService } from '../merchant-common/merchant-common.service';
 
-import { MessageComponent } from '@/api-gateway/core';
 import { CreateGroupInput, PartialUpdateGroup } from '@/api-gateway/dtos';
 
 @Injectable()

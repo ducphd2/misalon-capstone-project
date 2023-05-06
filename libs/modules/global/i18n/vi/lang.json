@@ -94,5 +94,22 @@
       "USER": "Tạo lịch hẹn thành công",
       "ADMIN": "Có lịch hẹn chăm sóc sức khỏe mới"
     }
+  },
+  "PAYMENT": {
+    "CREATE": {
+      "SUCCESS": "Thanh toán thành công",
+      "FAIL": "Thanh toán thất bại"
+    },
+    "READ": {
+      "NOT_EXIST": "Thanh toán này không tồn tại."
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated payment successfully",
+      "FAIL": "Updated payment fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted payment successfully",
+      "FAIL": "Deleted payment fail"
+    }
   }
 }
