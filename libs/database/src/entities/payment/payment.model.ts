@@ -36,6 +36,24 @@ export class PaymentModel extends BaseModel<PaymentModel> {
   @Column({ type: DataType.DOUBLE })
   totalPrice?: number;
 
+  @Column({ type: DataType.TEXT })
+  vnpBankCode?: string;
+
+  @Column({ type: DataType.TEXT })
+  vnpBankTranNo?: string;
+
+  @Column({ type: DataType.TEXT })
+  vnpCardType?: string;
+
+  @Column({ type: DataType.TEXT })
+  vnpPayDate?: string;
+
+  @Column({ type: DataType.TEXT })
+  vnpOrderInfo?: string;
+
+  @Column({ type: DataType.TEXT })
+  vnpTransactionNo?: string;
+
   @BeforeCreate
   static async insertRefCode(model: PaymentModel) {
     model.code = uuidv4();

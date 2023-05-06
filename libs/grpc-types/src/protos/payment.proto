@@ -8,7 +8,7 @@ import "google/protobuf/struct.proto";
 enum EPaymentStatus {
   PENDING = 0;
   FINISHED = 1;
-  ERROR = 2;
+  FAILED = 2;
 }
 
 enum EPaymentType {
@@ -22,6 +22,7 @@ service PaymentService {
   rpc findOne(commons.QueryRequest) returns (NullablePayment) {}
   rpc count(commons.QueryRequest) returns (commons.Count) {}
   rpc create(CreatePaymentInput) returns (Payment) {}
+  rpc callback(CallbackQuery) returns (Payment) {}
   rpc update(UpdatePaymentInput) returns (Payment) {}
   rpc delete (commons.Id) returns (commons.Count) {}
 }
@@ -88,4 +89,8 @@ message NullablePayment {
 message PaymentPagination {
   repeated Payment items = 1;
   optional commons.PageMeta meta = 2;
+}
+
+message CallbackQuery {
+  string query = 1;
 }

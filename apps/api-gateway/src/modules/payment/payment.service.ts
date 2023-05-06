@@ -63,4 +63,12 @@ export class PaymentService {
       payment,
     };
   }
+
+  async callback(query: any) {
+    const payment = await this.paymentService.callback(query);
+
+    return {
+      payment,
+    };
+  }
 }
