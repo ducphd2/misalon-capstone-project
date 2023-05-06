@@ -1,12 +1,8 @@
-version: '3.9'
-volumes:
-  dbbackups:
-  postgis-data:
-
+version: "3.9"
 
 services:
-
   db:
+    container_name: postgres-do-an
     image: kartoza/postgis:15-3.3
     volumes:
       - postgis-data:/var/lib/postgresql
@@ -16,7 +12,6 @@ services:
       - POSTGRES_DB=gis,user-service,merchant-service,booking-service,notification-service
       - POSTGRES_USER=admin
       - POSTGRES_PASS=admin
-      - ALLOW_IP_RANGE=0.0.0.0/0
       # Add extensions you need to be enabled by default in the DB. Default are the five specified below
       - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
       - RUN_AS_ROOT=true
@@ -25,3 +20,19 @@ services:
     restart: on-failure
     healthcheck:
       test: "PGPASSWORD=docker pg_isready -h 127.0.0.1 -U docker -d gis"
+
+  redis:
+    container_name: redis-do-an
+    image: redis:alpine
+    hostname: redis
+    restart: on-failure
+    ports:
+      - "6380:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - redis-do-an-data:/data
+
+volumes:
+  dbbackups:
+  postgis-data:
+  redis-do-an-data:

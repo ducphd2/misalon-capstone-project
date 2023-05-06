@@ -9,3 +9,6 @@ export * from './booking';
 
 // merchant service
 export * from './notification';
+
+// payment service
+export * from './payment';

@@ -9,3 +9,6 @@ export * from './booking';
 
 // notification repository
 export * from './notification';
+
+// notification repository
+export * from './payment';
