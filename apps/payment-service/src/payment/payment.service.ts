@@ -57,7 +57,7 @@ export class PaymentService implements OnModuleInit {
   async find(request: CommonProto.QueryRequest) {
     const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
 
-    const result = await this.paymentRepository.findAndPaginate({
+    const result = await this.paymentRepository.find({
       ...request,
       where: baseWhereQuery,
     });

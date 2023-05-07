@@ -18,6 +18,7 @@ enum EPaymentType {
 
 service PaymentService {
   rpc find(commons.QueryRequest) returns (PaymentPagination) {}
+  rpc findAll(commons.QueryRequest) returns (Payments) {}
   rpc findById(commons.Id) returns (NullablePayment) {}
   rpc findOne(commons.QueryRequest) returns (NullablePayment) {}
   rpc count(commons.QueryRequest) returns (commons.Count) {}
@@ -93,4 +94,8 @@ message PaymentPagination {
 
 message CallbackQuery {
   string query = 1;
+}
+
+message Payments {
+  repeated Payment items = 1;
 }

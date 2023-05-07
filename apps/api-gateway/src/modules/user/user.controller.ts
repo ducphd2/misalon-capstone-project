@@ -212,7 +212,7 @@ export class UserController {
     return result;
   }
 
-  @Get('bookings')
+  @Get()
   @UseGuards(JwtAuthGuard)
   async findOwnBookings(@User() user: UserModel, @Query() query: PaginateUserDto) {
     const where = {

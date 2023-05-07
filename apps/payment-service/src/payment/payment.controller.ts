@@ -13,8 +13,13 @@ import { PaymentService } from './payment.service';
 export class PaymentController implements PaymentProto.PaymentServiceController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  async findAll(request: QueryRequest): Promise<PaymentProto.Payments> {
+    const items = await this.paymentService.find(request);
+    return { items };
+  }
+
   async find(request: QueryRequest): Promise<PaymentProto.PaymentPagination> {
-    return await this.paymentService.find(request);
+    return await this.paymentService.findWithPaging(request);
   }
 
   async findById(request: Id): Promise<PaymentProto.NullablePayment> {

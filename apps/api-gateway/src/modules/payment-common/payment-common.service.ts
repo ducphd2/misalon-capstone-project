@@ -31,6 +31,10 @@ export class PaymentCommonService implements OnModuleInit {
     return await firstValueFrom(this.paymentService.find(query));
   }
 
+  async findAll(query: QueryRequest) {
+    return await firstValueFrom(this.paymentService.findAll(query));
+  }
+
   async update(id: number, data: PaymentProto.UpdatePaymentData) {
     return await firstValueFrom(this.paymentService.update({ id, data }));
   }
