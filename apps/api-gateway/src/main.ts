@@ -13,11 +13,7 @@ async function bootstrap() {
 
   const configService = app.get<ConfigService>(ConfigService);
 
-  app.enableCors({
-    origin: true,
-    credentials: true,
-    optionsSuccessStatus: 200,
-  });
+  app.enableCors();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new TransformInterceptor());
