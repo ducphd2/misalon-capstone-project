@@ -20,6 +20,7 @@ import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { Observable } from 'rxjs';
+import { NullableItem, ItemPagination, CreateInput, Feedback, UpdateInput } from '@libs/grpc-types/protos/feedback';
 
 import { BranchService } from '../branch/branch.service';
 import { GroupService } from '../group/group.service';
@@ -172,5 +173,29 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   async deleteService(request: Id): Promise<Count> {
     const count = await this.servicesService.delete(request.id);
     return { count };
+  }
+
+  async feedback(request: QueryRequest): Promise<NullableItem> {
+    throw new Error('Method not implemented.');
+  }
+
+  async feedbacks(request: QueryRequest): Promise<ItemPagination> {
+    throw new Error('Method not implemented.');
+  }
+
+  async findFeedbackById(request: Id): Promise<NullableItem> {
+    throw new Error('Method not implemented.');
+  }
+
+  async createFeedback(request: CreateInput): Promise<Feedback> {
+    throw new Error('Method not implemented.');
+  }
+
+  async updateFeedback(request: UpdateInput): Promise<Feedback> {
+    throw new Error('Method not implemented.');
+  }
+
+  async deleteFeedback(request: Id): Promise<Count> {
+    throw new Error('Method not implemented.');
   }
 }

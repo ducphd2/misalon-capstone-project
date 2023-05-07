@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package feedback;
+
+import "commons.proto";
+
+import "google/protobuf/struct.proto";
+
+message UpdateData {
+  oneof kind {
+    int32 merchantId = 1;
+    int32 groupId = 2;
+    int32 serviceId = 3;
+    int32 bookingId = 4;
+    int32 rating = 5;
+    int32 userId = 6;
+    string content = 7;
+  }
+}
+
+message UpdateInput {
+  int32 id = 1;
+  UpdateData data = 2;
+}
+
+message CreateInput {
+  optional int32 merchantId = 1;
+  optional int32 groupId = 2;
+  optional int32 serviceId = 3;
+  optional int32 bookingId = 4;
+  optional int32 rating = 5;
+  optional int32 userId = 6;
+  optional string content = 7;
+}
+
+message Feedback {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional int32 merchantId = 8;
+  optional int32 groupId = 9;
+  optional int32 serviceId = 10;
+  optional int32 bookingId = 11;
+  optional int32 rating = 12;
+  optional int32 userId = 13;
+  optional string content = 14;
+}
+
+message NullableItem {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    Feedback feedback = 2;
+  }
+}
+
+message ItemPagination {
+  repeated Feedback items = 1;
+  optional commons.PageMeta meta = 2;
+}

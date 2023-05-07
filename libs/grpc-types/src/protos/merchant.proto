@@ -6,6 +6,7 @@ import "commons.proto";
 import "branch.proto";
 import "group.proto";
 import "service.proto";
+import "feedback.proto";
 
 import "google/protobuf/struct.proto";
 
@@ -41,6 +42,14 @@ service MerchantService {
   rpc createService(service.CreateServiceInput) returns (service.Service) {}
   rpc updateService(service.UpdateServiceInput) returns (service.Service) {}
   rpc deleteService(commons.Id) returns (commons.Count) {}
+
+  // feedback
+  rpc feedback(commons.QueryRequest) returns (feedback.NullableItem) {}
+  rpc feedbacks(commons.QueryRequest) returns (feedback.ItemPagination) {}
+  rpc findFeedbackById(commons.Id) returns (feedback.NullableItem) {}
+  rpc createFeedback(feedback.CreateInput) returns (feedback.Feedback) {}
+  rpc updateFeedback(feedback.UpdateInput) returns (feedback.Feedback) {}
+  rpc deleteFeedback(commons.Id) returns (commons.Count) {}
 }
 
 message UpdateMerchantData {
