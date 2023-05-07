@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleFactoryOptions, MongooseModuleOptions } from '@nestjs/mongoose';
 
+import { MessageController } from '@/api-gateway/modules/messages/message.controller';
 import { MessagesService } from './message.service';
 import { Message, MessageSchema } from './schemas/messages.schema';
 
@@ -18,6 +19,7 @@ import { Message, MessageSchema } from './schemas/messages.schema';
       inject: [ConfigService],
     }),
   ],
+  controllers: [MessageController],
   providers: [MessagesService],
   exports: [MessagesService],
 })

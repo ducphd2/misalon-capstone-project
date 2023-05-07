@@ -36,7 +36,7 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   @SubscribeMessage(EEventMessage.RECENT_MESSAGES)
   async handleRecentMessages(socket: Socket, payload: { userId: string; limit: number; page: number }) {
-    const messages = await this.messagesService.getRecentMessages(payload.userId, payload.limit, payload.page);
+    const messages = await this.messagesService.getRecentMessages(payload.userId, payload.page, payload.limit);
     this.server.to(socket.id).emit(EEventMessage.RECENT_MESSAGES, messages);
   }
 
