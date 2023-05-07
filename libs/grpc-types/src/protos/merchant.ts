@@ -3,6 +3,7 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Branch, Branches, BranchPagination, CreateBranchInput, NullableBranch, UpdateBranchInput } from "./branch";
 import { Count, Id, PageMeta, QueryRequest } from "./commons";
+import { CreateInput as CreateInput1, Feedback, ItemPagination, NullableItem, UpdateInput } from "./feedback";
 import { NullValue } from "./google/protobuf/struct";
 import { CreateGroupInput, Group, GroupPagination, NullableGroup, UpdateGroupInput } from "./group";
 import { CreateServiceInput, NullableService, Service, ServicePagination, UpdateServiceInput } from "./service";
@@ -147,6 +148,20 @@ export interface MerchantServiceClient {
   updateService(request: UpdateServiceInput): Observable<Service>;
 
   deleteService(request: Id): Observable<Count>;
+
+  /** feedback */
+
+  feedback(request: QueryRequest): Observable<NullableItem>;
+
+  feedbacks(request: QueryRequest): Observable<ItemPagination>;
+
+  findFeedbackById(request: Id): Observable<NullableItem>;
+
+  createFeedback(request: CreateInput1): Observable<Feedback>;
+
+  updateFeedback(request: UpdateInput): Observable<Feedback>;
+
+  deleteFeedback(request: Id): Observable<Count>;
 }
 
 export interface MerchantServiceController {
@@ -207,6 +222,20 @@ export interface MerchantServiceController {
   updateService(request: UpdateServiceInput): Promise<Service> | Observable<Service> | Service;
 
   deleteService(request: Id): Promise<Count> | Observable<Count> | Count;
+
+  /** feedback */
+
+  feedback(request: QueryRequest): Promise<NullableItem> | Observable<NullableItem> | NullableItem;
+
+  feedbacks(request: QueryRequest): Promise<ItemPagination> | Observable<ItemPagination> | ItemPagination;
+
+  findFeedbackById(request: Id): Promise<NullableItem> | Observable<NullableItem> | NullableItem;
+
+  createFeedback(request: CreateInput1): Promise<Feedback> | Observable<Feedback> | Feedback;
+
+  updateFeedback(request: UpdateInput): Promise<Feedback> | Observable<Feedback> | Feedback;
+
+  deleteFeedback(request: Id): Promise<Count> | Observable<Count> | Count;
 }
 
 export function MerchantServiceControllerMethods() {
@@ -237,6 +266,12 @@ export function MerchantServiceControllerMethods() {
       "createService",
       "updateService",
       "deleteService",
+      "feedback",
+      "feedbacks",
+      "findFeedbackById",
+      "createFeedback",
+      "updateFeedback",
+      "deleteFeedback",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -7,6 +7,8 @@ import * as DeviceProto from './protos/device';
 import * as MerchantUserProto from './protos/merchant_user';
 import * as NotificationProto from './protos/notification';
 import * as PaymentProto from './protos/payment';
+import * as ServiceProto from './protos/service';
+import * as FeedbackProto from './protos/feedback';
 
 export * from './config';
 
@@ -23,6 +25,8 @@ export {
   MerchantUserProto,
   NotificationProto,
   PaymentProto,
+  ServiceProto,
+  FeedbackProto,
 };
 
 export const GrpcMetadataErrorKey = 'custom-grpc-error';

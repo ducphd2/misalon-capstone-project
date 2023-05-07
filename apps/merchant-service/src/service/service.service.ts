@@ -1,6 +1,6 @@
 import { MerchantModel, ServiceModel } from '@libs/database/entities';
 import { ServiceRepository } from '@libs/database/repositories';
-import { BranchProto, CommonProto } from '@libs/grpc-types';
+import { CommonProto, ServiceProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import { FindOptions } from 'sequelize';
@@ -9,7 +9,7 @@ import { FindOptions } from 'sequelize';
 export class ServicesService {
   constructor(private readonly serviceRepository: ServiceRepository) {}
 
-  async create(dto: BranchProto.CreateBranchInput): Promise<ServiceModel> {
+  async create(dto: ServiceProto.CreateServiceInput): Promise<ServiceModel> {
     const service = await this.serviceRepository.create(dto);
 
     return service;
@@ -48,7 +48,7 @@ export class ServicesService {
     return result;
   }
 
-  async update(request: BranchProto.UpdateBranchInput): Promise<ServiceModel> {
+  async update(request: ServiceProto.UpdateServiceInput): Promise<ServiceModel> {
     const result = await this.serviceRepository.update(request.data, {
       where: {
         id: request.id,

@@ -7,12 +7,20 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
 import { BranchModule } from '../branch/branch.module';
 import { GroupModule } from '../group/group.module';
 import { ServicesModule } from '../service/service.module';
+import { FeedbackModule } from '../feedback/feedback.module';
 
 import { MerchantController } from './merchant.controller';
 import { MerchantService } from './merchant.service';
 
 @Module({
-  imports: [SecretsModule, SequelizeModule.forFeature([MerchantModel]), BranchModule, GroupModule, ServicesModule],
+  imports: [
+    SecretsModule,
+    SequelizeModule.forFeature([MerchantModel]),
+    BranchModule,
+    GroupModule,
+    ServicesModule,
+    FeedbackModule,
+  ],
   controllers: [MerchantController],
   providers: [MerchantService, MerchantRepository],
 })
