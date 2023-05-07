@@ -22,7 +22,7 @@
     "pm2-build": "./scripts/build.sh",
     "local:start": "./scripts/pm2-start.sh",
     "pm2-start": "yarn && yarn prebuild && yarn pm2-remove && yarn pm2-build && yarn local:start",
-    "start-pm2": "./scripts/start.sh",
+    "start": "./scripts/start.sh",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
