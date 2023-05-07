@@ -82,10 +82,16 @@ export interface CallbackQuery {
   query: string;
 }
 
+export interface Payments {
+  items: Payment[];
+}
+
 export const PAYMENT_PACKAGE_NAME = "payment";
 
 export interface PaymentServiceClient {
   find(request: QueryRequest): Observable<PaymentPagination>;
+
+  findAll(request: QueryRequest): Observable<Payments>;
 
   findById(request: Id): Observable<NullablePayment>;
 
@@ -105,6 +111,8 @@ export interface PaymentServiceClient {
 export interface PaymentServiceController {
   find(request: QueryRequest): Promise<PaymentPagination> | Observable<PaymentPagination> | PaymentPagination;
 
+  findAll(request: QueryRequest): Promise<Payments> | Observable<Payments> | Payments;
+
   findById(request: Id): Promise<NullablePayment> | Observable<NullablePayment> | NullablePayment;
 
   findOne(request: QueryRequest): Promise<NullablePayment> | Observable<NullablePayment> | NullablePayment;
@@ -122,7 +130,17 @@ export interface PaymentServiceController {
 
 export function PaymentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["find", "findById", "findOne", "count", "create", "callback", "update", "delete"];
+    const grpcMethods: string[] = [
+      "find",
+      "findAll",
+      "findById",
+      "findOne",
+      "count",
+      "create",
+      "callback",
+      "update",
+      "delete",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentService", method)(constructor.prototype[method], method, descriptor);
