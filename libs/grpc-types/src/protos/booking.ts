@@ -3,6 +3,7 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Count, EBookingStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
+import { User } from "./user_common";
 
 export const protobufPackage = "booking";
 
@@ -38,6 +39,7 @@ export interface Booking {
   customerAddress?: string | undefined;
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
+  user?: User | undefined;
 }
 
 export interface CreateBookingInput {
@@ -87,10 +89,16 @@ export interface BookingPagination {
   meta?: PageMeta | undefined;
 }
 
+export interface Bookings {
+  items: Booking[];
+}
+
 export const BOOKING_PACKAGE_NAME = "booking";
 
 export interface BookingServiceClient {
   find(request: QueryRequest): Observable<BookingPagination>;
+
+  findAll(request: QueryRequest): Observable<Bookings>;
 
   findById(request: Id): Observable<NullableBooking>;
 
@@ -108,6 +116,8 @@ export interface BookingServiceClient {
 export interface BookingServiceController {
   find(request: QueryRequest): Promise<BookingPagination> | Observable<BookingPagination> | BookingPagination;
 
+  findAll(request: QueryRequest): Promise<Bookings> | Observable<Bookings> | Bookings;
+
   findById(request: Id): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
 
   findOne(request: QueryRequest): Promise<NullableBooking> | Observable<NullableBooking> | NullableBooking;
@@ -123,7 +133,7 @@ export interface BookingServiceController {
 
 export function BookingServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["find", "findById", "findOne", "count", "create", "update", "delete"];
+    const grpcMethods: string[] = ["find", "findAll", "findById", "findOne", "count", "create", "update", "delete"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("BookingService", method)(constructor.prototype[method], method, descriptor);

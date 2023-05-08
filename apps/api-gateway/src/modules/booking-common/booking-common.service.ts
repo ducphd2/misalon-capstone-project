@@ -31,7 +31,11 @@ export class BookingCommonService implements OnModuleInit {
     return await firstValueFrom(this.bookingService.findById(id));
   }
 
-  async find(query: QueryRequest) {
+  async findAll(query: QueryRequest) {
+    return await firstValueFrom(this.bookingService.findAll(query));
+  }
+
+  async findAndPaginate(query: QueryRequest) {
     return await firstValueFrom(this.bookingService.find(query));
   }
 
@@ -60,7 +64,7 @@ export class BookingCommonService implements OnModuleInit {
       });
     }
 
-    const result = await this.find({
+    const result = await this.findAndPaginate({
       ...query,
       where: where ? JSON.stringify(where) : null,
     });

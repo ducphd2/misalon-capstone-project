@@ -1,5 +1,5 @@
 import { BookingModel, BookingRepository } from '@libs/database';
-import { NotificationClient } from '@libs/grpc-types';
+import { NotificationClient, UserClient } from '@libs/grpc-types';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -15,7 +15,7 @@ import { BookingProcessor } from './booking.processor';
   imports: [
     SecretsModule,
     SequelizeModule.forFeature([BookingModel]),
-    ClientsModule.register([NotificationClient]),
+    ClientsModule.register([NotificationClient, UserClient]),
     BullModule.registerQueue({
       name: EBullQueue.BOOKING_QUEUE,
     }),
