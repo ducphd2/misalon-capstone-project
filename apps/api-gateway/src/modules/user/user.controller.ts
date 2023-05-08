@@ -227,7 +227,7 @@ export class UserController {
       });
     }
 
-    const result = await this.bookingService.find({
+    const result = await this.bookingService.findAndPaginate({
       ...query,
       where: JSON.stringify(where),
     });
@@ -250,7 +250,7 @@ export class UserController {
       });
     }
 
-    const result = await this.bookingService.find({
+    const result = await this.bookingService.findAndPaginate({
       ...query,
       where: JSON.stringify(where),
     });

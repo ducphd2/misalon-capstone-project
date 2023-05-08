@@ -12,6 +12,10 @@ import { BookingService } from './booking.service';
 @BookingProto.BookingServiceControllerMethods()
 export class BookingController implements BookingProto.BookingServiceController {
   constructor(private readonly bookingService: BookingService) {}
+  async findAll(request: QueryRequest): Promise<BookingProto.Bookings> {
+    const items = await this.bookingService.findAll(request);
+    return { items };
+  }
 
   async find(request: QueryRequest): Promise<BookingProto.BookingPagination> {
     return await this.bookingService.find(request);

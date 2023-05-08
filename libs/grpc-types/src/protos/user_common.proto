@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package user_common;
+
+import "commons.proto";
+
+enum ELangNumber {
+  VI = 0;
+  EN = 1;
+}
+
+enum EDeviceOs {
+  ANDROID = 0;
+  IOS = 1;
+}
+
+message Device {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional EDeviceOs os = 8;
+  optional string deviceId = 9;
+  optional string token = 10;
+  optional int32 userId = 11;
+}
+
+message User {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional string email = 8;
+  optional string password = 9;
+  optional commons.EUserStatus status = 10;
+  optional string fullName = 11;
+  optional string contact = 12;
+  optional string phoneNumber = 13;
+  optional int32 dobDay = 14;
+  optional int32 dobMonth = 15;
+  optional int32 dobYear = 16;
+  optional commons.EUserRole role = 17;
+  optional commons.EUserGender gender = 18;
+  optional string occupation = 19;
+  optional string avatar = 20;
+  optional string address = 21;
+  optional int32 cityCode = 22;
+  optional int32 districtCode = 23;
+  optional int32 wardCode = 24;
+  optional string referrer = 25;
+  optional string referrerCode = 26;
+  optional commons.ECustomerLevel level = 27;
+  optional string customerCode = 28;
+  optional string facebook = 29;
+  optional string zaloPhone = 30;
+  optional int32 height = 31;
+  optional int32 weight = 32;
+  optional string memberCardNo = 33;
+  optional string company = 34;
+  optional string taxNo = 35;
+  optional string note = 36;
+  optional string relatedUser = 37;
+  optional string relatedUserRole = 38;
+  optional string relatedUserPhone = 39;
+  optional int32 branchId = 40;
+  optional double latitude = 41;
+  optional double longitude = 42;
+  optional bool isRetailCustomer = 43;
+  optional int32 merchantId = 44;
+  optional ELangNumber lang = 45;
+}

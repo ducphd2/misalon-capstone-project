@@ -4,9 +4,11 @@ package booking;
 
 import "commons.proto";
 import "google/protobuf/struct.proto";
+import "user_common.proto";
 
 service BookingService {
   rpc find(commons.QueryRequest) returns (BookingPagination) {}
+  rpc findAll(commons.QueryRequest) returns (Bookings) {}
   rpc findById(commons.Id) returns (NullableBooking) {}
   rpc findOne(commons.QueryRequest) returns (NullableBooking) {}
   rpc count(commons.QueryRequest) returns (commons.Count) {}
@@ -46,6 +48,7 @@ message Booking {
   optional string customerAddress = 25;
   optional int32 durationHour = 26;
   optional int32 durationMinute = 27;
+  optional user_common.User user = 28;
 }
 
 message CreateBookingInput {
@@ -97,4 +100,8 @@ message NullableBooking {
 message BookingPagination {
   repeated Booking items = 1;
   optional commons.PageMeta meta = 2;
+}
+
+message Bookings {
+  repeated Booking items = 1;
 }
