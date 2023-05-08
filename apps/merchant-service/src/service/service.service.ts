@@ -68,4 +68,12 @@ export class ServicesService {
   async delete(id: number): Promise<number> {
     return await this.serviceRepository.delete({ where: { id } });
   }
+
+  async count(request: CommonProto.QueryRequest): Promise<number> {
+    const count = await this.serviceRepository.count({
+      where: JSON.parse(request.where),
+    });
+
+    return count;
+  }
 }

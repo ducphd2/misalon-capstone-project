@@ -1,4 +1,4 @@
-import { MerchantProto } from '@libs/grpc-types';
+import { BookingProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import {
   Branch,
   BranchPagination,
@@ -8,6 +8,7 @@ import {
   UpdateBranchInput,
 } from '@libs/grpc-types/protos/branch';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { CreateInput, Feedback, ItemPagination, NullableItem, UpdateInput } from '@libs/grpc-types/protos/feedback';
 import {
   CreateGroupInput,
   Group,
@@ -17,30 +18,76 @@ import {
 } from '@libs/grpc-types/protos/group';
 import { CreateServiceInput, NullableService, Service, UpdateServiceInput } from '@libs/grpc-types/protos/service';
 import { GrpcLogInterceptor } from '@libs/interceptors';
-import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
+import { Controller, Inject, OnModuleInit, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { Observable } from 'rxjs';
-import { NullableItem, ItemPagination, CreateInput, Feedback, UpdateInput } from '@libs/grpc-types/protos/feedback';
+import { UserServiceClient } from '@libs/grpc-types/protos/user';
+import { BookingServiceClient } from '@libs/grpc-types/protos/booking';
+import { ClientGrpc } from '@nestjs/microservices';
 
 import { BranchService } from '../branch/branch.service';
+import { FeedbackService } from '../feedback/feedback.service';
 import { GroupService } from '../group/group.service';
 import { ServicesService } from '../service/service.service';
-import { FeedbackService } from '../feedback/feedback.service';
 
 import { MerchantService } from './merchant.service';
+
+import { EUserRole } from '@/api-gateway/dtos';
 
 @UseFilters(GrpcAllExceptionsFilter)
 @UseInterceptors(GrpcLogInterceptor)
 @Controller()
 @MerchantProto.MerchantServiceControllerMethods()
-export class MerchantController implements MerchantProto.MerchantServiceController {
+export class MerchantController implements MerchantProto.MerchantServiceController, OnModuleInit {
+  private userService: UserServiceClient;
+  private bookingService: BookingServiceClient;
+
   constructor(
     private readonly merchantService: MerchantService,
     private readonly branchService: BranchService,
     private readonly groupService: GroupService,
     private readonly servicesService: ServicesService,
     private readonly feedbackService: FeedbackService,
+    @Inject(UserProto.DUCPH_USER_PACKAGE_NAME) private userClient: ClientGrpc,
+    @Inject(BookingProto.BOOKING_PACKAGE_NAME) private bookingClient: ClientGrpc,
   ) {}
+
+  onModuleInit() {
+    this.userService = this.userClient.getService<UserServiceClient>(UserProto.USER_SERVICE_NAME);
+    this.bookingService = this.bookingClient.getService<BookingServiceClient>(BookingProto.BOOKING_SERVICE_NAME);
+  }
+
+  async overviewStatistic(request: QueryRequest): Promise<MerchantProto.OverviewStatistic> {
+    const whereRequest = JSON.parse(request.where);
+
+    const [branch, group, service] = await Promise.all([
+      this.branchService.count(request),
+      this.groupService.count(request),
+      this.servicesService.count(request),
+    ]);
+
+    const booking = await this.bookingService.count(request).toPromise();
+    const { count } = await this.userService
+      .count({
+        ...request,
+        where: JSON.stringify({
+          ...whereRequest,
+          role: {
+            _not: EUserRole.USER,
+          },
+        }),
+      })
+      .toPromise();
+
+    return {
+      branch,
+      group,
+      service,
+      operator: count,
+      customer: booking.count,
+      booking: booking.count,
+    };
+  }
 
   async groups(request: QueryRequest): Promise<GroupPagination> {
     const result = await this.groupService.findWithPaging(request);

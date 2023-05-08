@@ -50,6 +50,9 @@ service MerchantService {
   rpc createFeedback(feedback.CreateInput) returns (feedback.Feedback) {}
   rpc updateFeedback(feedback.UpdateInput) returns (feedback.Feedback) {}
   rpc deleteFeedback(commons.Id) returns (commons.Count) {}
+
+  // feedback
+  rpc overviewStatistic(commons.QueryRequest) returns (OverviewStatistic) {}
 }
 
 message UpdateMerchantData {
@@ -133,4 +136,13 @@ message Merchants {
 message MerchantPagination {
   repeated Merchant items = 1;
   optional commons.PageMeta meta = 2;
+}
+
+message OverviewStatistic {
+  optional int32 customer = 1;
+  optional int32 booking = 2;
+  optional int32 branch = 3;
+  optional int32 group = 4;
+  optional int32 service = 5;
+  optional int32 operator = 6;
 }

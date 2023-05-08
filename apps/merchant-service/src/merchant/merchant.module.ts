@@ -3,6 +3,8 @@ import { MerchantRepository } from '@libs/database/repositories';
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
+import { ClientsModule } from '@nestjs/microservices';
+import { BookingClient, UserClient } from '@libs/grpc-types';
 
 import { BranchModule } from '../branch/branch.module';
 import { GroupModule } from '../group/group.module';
@@ -20,6 +22,7 @@ import { MerchantService } from './merchant.service';
     GroupModule,
     ServicesModule,
     FeedbackModule,
+    ClientsModule.register([BookingClient, UserClient]),
   ],
   controllers: [MerchantController],
   providers: [MerchantService, MerchantRepository],

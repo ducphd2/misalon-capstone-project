@@ -10,6 +10,12 @@ export class StatisticsController {
 
   constructor(private readonly statisticsService: StatisticsService) {}
 
+  @Get('overview')
+  @UseGuards(JwtAuthGuard)
+  async getOverviewStatistic(@Query('merchantId', ParseIntPipe) merchantId: number) {
+    return await this.statisticsService.getOverviewStatistic(merchantId);
+  }
+
   @Get('revenue-date')
   @UseGuards(JwtAuthGuard)
   async getTotalRevenueInYear(@Query('date') date: string, @Query('merchantId', ParseIntPipe) merchantId: number) {

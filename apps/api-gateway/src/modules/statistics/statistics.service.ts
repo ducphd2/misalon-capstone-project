@@ -4,12 +4,27 @@ import * as moment from 'moment';
 import { EPaymentType } from '@libs/grpc-types/protos/payment';
 
 import { PaymentCommonService } from '../payment-common/payment-common.service';
+import { MerchantCommonService } from '../merchant-common/merchant-common.service';
 
 @Injectable()
 export class StatisticsService {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly paymentService: PaymentCommonService, private readonly i18n: MessageComponent) {}
+  constructor(
+    private readonly paymentService: PaymentCommonService,
+    private readonly merchantService: MerchantCommonService,
+    private readonly i18n: MessageComponent,
+  ) {}
+
+  async getOverviewStatistic(merchantId: number) {
+    const statistic = await this.merchantService.overviewStatistic({
+      where: JSON.stringify({
+        merchantId,
+      }),
+    });
+
+    return { statistic };
+  }
 
   async getTotalRevenueInDay(merchantId: number, date?: string) {
     if (!date) date = moment().format('YYYY-MM-DD');

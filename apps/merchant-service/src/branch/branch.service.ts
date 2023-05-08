@@ -67,4 +67,12 @@ export class BranchService {
 
     return result;
   }
+
+  async count(request: CommonProto.QueryRequest): Promise<number> {
+    const count = await this.branchRepository.count({
+      where: JSON.parse(request.where),
+    });
+
+    return count;
+  }
 }
