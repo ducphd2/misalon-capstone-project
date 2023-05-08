@@ -4,6 +4,11 @@ import { NullValue } from "./google/protobuf/struct";
 
 export const protobufPackage = "feedback";
 
+export enum EFeedbackType {
+  SERVICE = 0,
+  BOOKING = 1,
+}
+
 export interface UpdateData {
   merchantId?: number | undefined;
   groupId?: number | undefined;
@@ -27,6 +32,7 @@ export interface CreateInput {
   rating?: number | undefined;
   userId?: number | undefined;
   content?: string | undefined;
+  type?: EFeedbackType | undefined;
 }
 
 export interface Feedback {

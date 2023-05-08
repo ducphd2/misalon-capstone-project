@@ -111,5 +111,22 @@
       "SUCCESS": "Deleted payment successfully",
       "FAIL": "Deleted payment fail"
     }
+  },
+  "FEEDBACK": {
+    "CREATE": {
+      "SUCCESS": "Create a feedback successfully",
+      "FAIL": "Create a feedback fail"
+    },
+    "READ": {
+      "NOT_EXIST": "This feedback does not exist."
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated feedback successfully",
+      "FAIL": "Updated feedback fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted feedback successfully",
+      "FAIL": "Deleted feedback fail"
+    }
   }
 }

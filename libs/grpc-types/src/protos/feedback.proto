@@ -6,6 +6,11 @@ import "commons.proto";
 
 import "google/protobuf/struct.proto";
 
+enum EFeedbackType {
+  SERVICE = 0;
+  BOOKING = 1;
+}
+
 message UpdateData {
   oneof kind {
     int32 merchantId = 1;
@@ -31,6 +36,7 @@ message CreateInput {
   optional int32 rating = 5;
   optional int32 userId = 6;
   optional string content = 7;
+  optional EFeedbackType type = 8;
 }
 
 message Feedback {

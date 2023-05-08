@@ -10,15 +10,15 @@ export class FeedbackService {
   constructor(private readonly feedbackRepository: FeedbackRepository) {}
 
   async create(dto: FeedbackProto.CreateInput): Promise<FeedbackModel> {
-    const service = await this.feedbackRepository.create(dto);
+    const result = await this.feedbackRepository.create(dto);
 
-    return service;
+    return result;
   }
 
   async find(request: CommonProto.QueryRequest): Promise<FeedbackModel[]> {
-    const services = await this.feedbackRepository.find(JSON.parse(request.where));
+    const result = await this.feedbackRepository.find(JSON.parse(request.where));
 
-    return services;
+    return result;
   }
 
   async findOne(query: FindOptions): Promise<FeedbackModel> {

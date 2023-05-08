@@ -15,6 +15,7 @@ import { ServiceModule } from '@/api-gateway/modules/service/service.module';
 import { UploadModule } from '@/api-gateway/modules/upload/upload.module';
 import { MessagesModule } from '@/api-gateway/modules/messages/messages.module';
 import { StatisticsModule } from '@/api-gateway/modules/statistics/statistics.module';
+import { FeedbackModule } from '@/api-gateway/modules/feedback/feedback.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StatisticsModule } from '@/api-gateway/modules/statistics/statistics.mo
     PaymentModule,
     MessagesModule,
     StatisticsModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}
