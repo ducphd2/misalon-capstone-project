@@ -61,4 +61,12 @@ export class GroupService {
   async delete(id: number): Promise<number> {
     return await this.groupRepository.delete({ where: { id } });
   }
+
+  async count(request: CommonProto.QueryRequest): Promise<number> {
+    const count = await this.groupRepository.count({
+      where: JSON.parse(request.where),
+    });
+
+    return count;
+  }
 }

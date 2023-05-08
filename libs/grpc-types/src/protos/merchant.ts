@@ -90,6 +90,15 @@ export interface MerchantPagination {
   meta?: PageMeta | undefined;
 }
 
+export interface OverviewStatistic {
+  customer?: number | undefined;
+  booking?: number | undefined;
+  branch?: number | undefined;
+  group?: number | undefined;
+  service?: number | undefined;
+  operator?: number | undefined;
+}
+
 export const MERCHANT_PACKAGE_NAME = "merchant";
 
 export interface MerchantServiceClient {
@@ -162,6 +171,10 @@ export interface MerchantServiceClient {
   updateFeedback(request: UpdateInput): Observable<Feedback>;
 
   deleteFeedback(request: Id): Observable<Count>;
+
+  /** feedback */
+
+  overviewStatistic(request: QueryRequest): Observable<OverviewStatistic>;
 }
 
 export interface MerchantServiceController {
@@ -236,6 +249,12 @@ export interface MerchantServiceController {
   updateFeedback(request: UpdateInput): Promise<Feedback> | Observable<Feedback> | Feedback;
 
   deleteFeedback(request: Id): Promise<Count> | Observable<Count> | Count;
+
+  /** feedback */
+
+  overviewStatistic(
+    request: QueryRequest,
+  ): Promise<OverviewStatistic> | Observable<OverviewStatistic> | OverviewStatistic;
 }
 
 export function MerchantServiceControllerMethods() {
@@ -272,6 +291,7 @@ export function MerchantServiceControllerMethods() {
       "createFeedback",
       "updateFeedback",
       "deleteFeedback",
+      "overviewStatistic",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

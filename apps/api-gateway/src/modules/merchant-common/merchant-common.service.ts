@@ -20,7 +20,7 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
 import { firstValueFrom } from 'rxjs';
-import { FeedbackProto } from '@libs/grpc-types';
+import { FeedbackProto, MerchantProto } from '@libs/grpc-types';
 
 import { BaseQueryDto, CreateGroupInput } from '@/api-gateway/dtos';
 import { Branch, CreateServiceInput, Group, Merchant, Service } from '@/api-gateway/types';
@@ -212,5 +212,9 @@ export class MerchantCommonService implements OnModuleInit {
 
   async findFeedback(query: QueryRequest): Promise<FeedbackProto.ItemPagination> {
     return await firstValueFrom(this.merchantService.feedbacks(query));
+  }
+
+  async overviewStatistic(query: QueryRequest): Promise<MerchantProto.OverviewStatistic> {
+    return await firstValueFrom(this.merchantService.overviewStatistic(query));
   }
 }
