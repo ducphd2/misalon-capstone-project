@@ -25,6 +25,7 @@ import { NullableItem, ItemPagination, CreateInput, Feedback, UpdateInput } from
 import { BranchService } from '../branch/branch.service';
 import { GroupService } from '../group/group.service';
 import { ServicesService } from '../service/service.service';
+import { FeedbackService } from '../feedback/feedback.service';
 
 import { MerchantService } from './merchant.service';
 
@@ -38,6 +39,7 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     private readonly branchService: BranchService,
     private readonly groupService: GroupService,
     private readonly servicesService: ServicesService,
+    private readonly feedbackService: FeedbackService,
   ) {}
 
   async groups(request: QueryRequest): Promise<GroupPagination> {
@@ -176,26 +178,39 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   }
 
   async feedback(request: QueryRequest): Promise<NullableItem> {
-    throw new Error('Method not implemented.');
+    const feedback = await this.servicesService.findOne({
+      where: JSON.parse(request.where),
+    });
+
+    return { feedback };
   }
 
   async feedbacks(request: QueryRequest): Promise<ItemPagination> {
-    throw new Error('Method not implemented.');
+    const result = await this.feedbackService.findWithPaging(request);
+
+    return result;
   }
 
   async findFeedbackById(request: Id): Promise<NullableItem> {
-    throw new Error('Method not implemented.');
+    const feedback = await this.feedbackService.findById(request.id);
+
+    return { feedback };
   }
 
   async createFeedback(request: CreateInput): Promise<Feedback> {
-    throw new Error('Method not implemented.');
+    const feedback = await this.feedbackService.create(request);
+
+    return feedback;
   }
 
   async updateFeedback(request: UpdateInput): Promise<Feedback> {
-    throw new Error('Method not implemented.');
+    const service = await this.feedbackService.update(request);
+
+    return service;
   }
 
   async deleteFeedback(request: Id): Promise<Count> {
-    throw new Error('Method not implemented.');
+    const count = await this.feedbackService.delete(request.id);
+    return { count };
   }
 }

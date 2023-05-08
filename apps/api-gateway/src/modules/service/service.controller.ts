@@ -41,6 +41,12 @@ export class ServiceController {
     return result;
   }
 
+  @Get(':id/feedbacks')
+  @UseGuards(JwtAuthGuard)
+  async findFeedback(@Param('id') id: number) {
+    return await this.merchantService.findFeedback({ where: JSON.stringify({ serviceId: id }) });
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findDetail(@Param('id') id: number) {

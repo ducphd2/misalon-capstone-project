@@ -111,5 +111,22 @@
       "SUCCESS": "Deleted payment successfully",
       "FAIL": "Deleted payment fail"
     }
+  },
+  "FEEDBACK": {
+    "CREATE": {
+      "SUCCESS": "Tạo đánh giá thành công",
+      "FAIL": "Tạo đánh giá thất bại"
+    },
+    "READ": {
+      "NOT_EXIST": "Đánh giá này không tồn tại."
+    },
+    "UPDATE": {
+      "SUCCESS": "Updated payment successfully",
+      "FAIL": "Updated payment fail"
+    },
+    "DELETE": {
+      "SUCCESS": "Deleted payment successfully",
+      "FAIL": "Deleted payment fail"
+    }
   }
 }

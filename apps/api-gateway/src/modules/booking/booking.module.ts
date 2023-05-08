@@ -1,14 +1,15 @@
 import { UtilsModule } from '@libs/core';
-import { Module } from '@nestjs/common';
 import { MessageComponent } from '@libs/modules';
+import { Module } from '@nestjs/common';
+
+import { MerchantCommonModule } from '../merchant-common/merchant-common.module';
+import { BookingCommonModule } from '../booking-common/booking-common.module';
 
 import { BookingController } from './booking.controller';
 import { BookingService } from './booking.service';
 
-import { BookingCommonModule } from '@/api-gateway/modules/booking-common/booking-common.module';
-
 @Module({
-  imports: [BookingCommonModule, UtilsModule],
+  imports: [BookingCommonModule, UtilsModule, MerchantCommonModule],
   providers: [BookingService, MessageComponent],
   controllers: [BookingController],
 })

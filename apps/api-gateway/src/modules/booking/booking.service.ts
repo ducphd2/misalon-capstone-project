@@ -5,14 +5,20 @@ import { Injectable, Logger } from '@nestjs/common';
 import { isEmpty, merge } from 'lodash';
 import { MessageComponent } from '@libs/modules';
 
+import { MerchantCommonService } from '../merchant-common/merchant-common.service';
+import { BookingCommonService } from '../booking-common/booking-common.service';
+
 import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/dtos';
-import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 
 @Injectable()
 export class BookingService {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly bookingService: BookingCommonService, private readonly i18n: MessageComponent) {}
+  constructor(
+    private readonly bookingService: BookingCommonService,
+    private readonly i18n: MessageComponent,
+    private readonly merchantService: MerchantCommonService,
+  ) {}
 
   async create(user: UserModel, data: CreateBookingInput, lang?: string) {
     if (user.role === EUserRole.USER) {
@@ -60,5 +66,11 @@ export class BookingService {
     return {
       booking,
     };
+  }
+
+  async findFeedback(id: number, lang?: string) {
+    const result = await this.merchantService.findFeedback({ where: JSON.stringify({ bookingId: id }) });
+
+    return result;
   }
 }

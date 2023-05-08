@@ -34,6 +34,12 @@ export class BookingController {
     return await this.bookingService.delete(id);
   }
 
+  @Get(':id/feedbacks')
+  @UseGuards(JwtAuthGuard)
+  async findFeedback(@Param('id') id: number) {
+    return await this.bookingService.findFeedback(id);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findDetail(@Param('id') id: number) {
