@@ -1,4 +1,3 @@
-import { UtilsModule } from '@libs/core';
 import { MessageComponent } from '@libs/modules';
 import { Module } from '@nestjs/common';
 
@@ -9,7 +8,7 @@ import { BookingController } from './booking.controller';
 import { BookingService } from './booking.service';
 
 @Module({
-  imports: [BookingCommonModule, UtilsModule, MerchantCommonModule],
+  imports: [BookingCommonModule, MerchantCommonModule],
   providers: [BookingService, MessageComponent],
   controllers: [BookingController],
 })

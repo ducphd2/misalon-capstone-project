@@ -19,11 +19,11 @@ import {
   ChangePasswordInput,
   PaginateUserDto,
   UpdatePartialCustomer,
+  UpdatePartialUser,
 } from '@/api-gateway/dtos';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { UpdatePartialUser } from '@/api-gateway/types';
 
 @Controller('users')
 export class UserController {
@@ -46,10 +46,8 @@ export class UserController {
       ErrorHelper.HttpBadRequestException(USER_MESSAGE.UPDATE.INVALID_PASSWORD);
     }
 
-    const password: string = await this.passwordUtils.hash(data.newPassword);
-
     const result = await this.userService.update(user.id, {
-      password,
+      password: data.newPassword,
     });
 
     return result;

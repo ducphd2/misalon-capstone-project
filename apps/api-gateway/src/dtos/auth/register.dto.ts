@@ -1,5 +1,6 @@
 import { Transform, TransformFnParams, Type } from 'class-transformer';
 import { IsDefined, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
 
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 import { CreateMerchantInputDto } from '@/api-gateway/dtos/merchant';
@@ -127,3 +128,5 @@ export class RegisterPayload {
   @Type(() => DeviceInputDto)
   device: DeviceInputDto;
 }
+
+export class UpdatePartialUser extends PartialType<CreateUserInputDto>(CreateUserInputDto) {}

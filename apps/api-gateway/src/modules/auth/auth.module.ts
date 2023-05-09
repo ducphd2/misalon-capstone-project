@@ -1,10 +1,10 @@
-import { UtilsModule } from '@libs/core';
 import { UserClient } from '@libs/grpc-types';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ClientsModule } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
+import { UtilsModule } from '@libs/core';
 
 import { JwtRefreshStrategy, JwtStrategy } from '../../core/strategies';
 
@@ -20,8 +20,8 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
     ClientsModule.register([UserClient]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UserCommonModule,
-    UtilsModule,
     MerchantCommonModule,
+    UtilsModule,
   ],
   controllers: [AuthController],
   providers: [

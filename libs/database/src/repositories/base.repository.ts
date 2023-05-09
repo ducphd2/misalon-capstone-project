@@ -1,16 +1,8 @@
 import { LIMIT, PAGE } from '@libs/core';
 import { CommonProto } from '@libs/grpc-types';
-import { IFindAndPaginateOptions, IPaginationRes } from '@libs/interfaces';
+import { IPaginationRes } from '@libs/interfaces';
 import { isEmpty } from 'lodash';
-import {
-  Attributes,
-  CountOptions,
-  CreateOptions,
-  FindAndCountOptions,
-  FindOptions,
-  UpdateOptions,
-  WhereOptions,
-} from 'sequelize';
+import { CountOptions, CreateOptions, FindAndCountOptions, FindOptions, UpdateOptions, WhereOptions } from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 
 export class BaseRepository<T extends Model> {
@@ -90,8 +82,13 @@ export class BaseRepository<T extends Model> {
     return result;
   }
 
-  async findAndPaginate(query?: IFindAndPaginateOptions, opts?: FindOptions): Promise<IPaginationRes<T>> {
-    const result: IPaginationRes<T> = await this.paginate(query.where, query.page, query.limit, opts);
+  async findAndPaginate(request: CommonProto.QueryRequest, opts?: FindOptions): Promise<IPaginationRes<T>> {
+    const result: IPaginationRes<T> = await this.paginate(
+      request.where as unknown as WhereOptions,
+      request.page,
+      request.limit,
+      opts,
+    );
 
     return result;
   }

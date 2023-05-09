@@ -1,4 +1,5 @@
 import { AUTH_MESSAGE, ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
+import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Post } from '@nestjs/common';
 import { isEmpty } from 'lodash';
@@ -9,7 +10,6 @@ import { AuthService } from './auth.service';
 
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { Branch, Merchant, User } from '@/api-gateway/types';
 
 @Controller('auth')
 export class AuthController {
@@ -92,7 +92,11 @@ export class AuthController {
     return this.handleResponseAuthData(user, merchant, branch);
   }
 
-  private async handleResponseAuthData(user: User, merchant?: Merchant, branch?: Branch) {
+  private async handleResponseAuthData(
+    user: UserProto.User,
+    merchant?: MerchantProto.Merchant,
+    branch?: BranchProto.Branch,
+  ) {
     return {
       user,
       merchant,

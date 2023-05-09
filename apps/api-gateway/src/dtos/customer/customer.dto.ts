@@ -1,15 +1,14 @@
+import { CommonProto } from '@libs/grpc-types';
 import { PartialType } from '@nestjs/mapped-types';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-
-import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 export class AddCustomerDto {
   @IsInt()
   @IsNotEmpty()
   merchantId?: number;
 
-  @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
+  @Transform(({ value }: TransformFnParams) => value?.trim()?.toLowerCase())
   @IsEmail()
   @IsOptional()
   email: string;
@@ -24,20 +23,21 @@ export class AddCustomerDto {
   @IsNotEmpty()
   fullName: string;
 
-  @IsEnum(EUserRole)
+  @IsEnum(CommonProto.EUserRole)
   @IsNotEmpty()
-  role: EUserRole;
+  role: CommonProto.EUserRole;
 
   @IsOptional()
-  @IsEnum(EUserStatus)
-  status: EUserStatus;
+  @IsEnum(CommonProto.EUserStatus)
+  status: CommonProto.EUserStatus;
 
-  @IsEnum(EUserGender)
+  @IsEnum(CommonProto.EUserGender)
   @IsOptional()
-  gender: EUserGender;
+  gender: CommonProto.EUserGender;
 
   @IsOptional()
-  level?: ECustomerLevel;
+  @IsEnum(CommonProto.ECustomerLevel)
+  level?: CommonProto.ECustomerLevel;
 
   @IsOptional()
   contact: string;

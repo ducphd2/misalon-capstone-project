@@ -1,4 +1,3 @@
-import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 import { MessageComponent } from '@libs/modules';
 
@@ -8,7 +7,7 @@ import { FeedbackController } from './feedback.controller';
 import { FeedbackService } from './feedback.service';
 
 @Module({
-  imports: [MerchantCommonModule, UtilsModule],
+  imports: [MerchantCommonModule],
   providers: [FeedbackService, MessageComponent],
   controllers: [FeedbackController],
 })

@@ -9,6 +9,7 @@ import * as NotificationProto from './protos/notification';
 import * as PaymentProto from './protos/payment';
 import * as ServiceProto from './protos/service';
 import * as FeedbackProto from './protos/feedback';
+import * as GroupProto from './protos/group';
 
 export * from './config';
 
@@ -27,6 +28,7 @@ export {
   PaymentProto,
   ServiceProto,
   FeedbackProto,
+  GroupProto,
 };
 
 export const GrpcMetadataErrorKey = 'custom-grpc-error';

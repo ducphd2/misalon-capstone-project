@@ -1,3 +1,4 @@
+import { BranchProto, FeedbackProto, GroupProto, MerchantProto, ServiceProto } from '@libs/grpc-types';
 import {
   BranchPagination,
   Branches,
@@ -20,10 +21,8 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
 import { firstValueFrom } from 'rxjs';
-import { FeedbackProto, MerchantProto } from '@libs/grpc-types';
 
 import { BaseQueryDto, CreateGroupInput } from '@/api-gateway/dtos';
-import { Branch, CreateServiceInput, Group, Merchant, Service } from '@/api-gateway/types';
 
 @Injectable()
 export class MerchantCommonService implements OnModuleInit {
@@ -35,7 +34,7 @@ export class MerchantCommonService implements OnModuleInit {
     this.merchantService = this.client.getService<MerchantServiceClient>(MERCHANT_SERVICE_NAME);
   }
 
-  async create(data: CreateInput): Promise<{ merchant: Merchant; branch?: Branch }> {
+  async create(data: CreateInput): Promise<{ merchant: MerchantProto.Merchant; branch?: BranchProto.Branch }> {
     return await firstValueFrom(this.merchantService.create(data));
   }
 
@@ -67,11 +66,11 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.branches(query));
   }
 
-  async createBranch(data: CreateBranchInput): Promise<Branch> {
+  async createBranch(data: CreateBranchInput): Promise<BranchProto.Branch> {
     return await firstValueFrom(this.merchantService.createBranch(data));
   }
 
-  async updateBranch(id: number, data: UpdateBranchData): Promise<Branch> {
+  async updateBranch(id: number, data: UpdateBranchData): Promise<BranchProto.Branch> {
     return await firstValueFrom(this.merchantService.updateBranch({ id, data }));
   }
 
@@ -91,11 +90,11 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.groups(query));
   }
 
-  async createGroup(data: CreateGroupInput): Promise<Group> {
+  async createGroup(data: CreateGroupInput): Promise<GroupProto.Group> {
     return await firstValueFrom(this.merchantService.createGroup(data));
   }
 
-  async updateGroup(id: number, data: UpdateGroupData): Promise<Group> {
+  async updateGroup(id: number, data: UpdateGroupData): Promise<GroupProto.Group> {
     return await firstValueFrom(this.merchantService.updateGroup({ id, data }));
   }
 
@@ -115,11 +114,11 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.services(query));
   }
 
-  async createService(data: CreateServiceInput): Promise<Service> {
+  async createService(data: ServiceProto.CreateServiceInput): Promise<ServiceProto.Service> {
     return await firstValueFrom(this.merchantService.createService(data));
   }
 
-  async updateService(id: number, data: UpdateServiceData): Promise<Service> {
+  async updateService(id: number, data: UpdateServiceData): Promise<ServiceProto.Service> {
     return await firstValueFrom(this.merchantService.updateService({ id, data }));
   }
 
