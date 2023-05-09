@@ -37,6 +37,8 @@ export class BookingService implements OnModuleInit {
       where: baseWhereQuery,
     });
 
+    if (!items.length) return { items, meta };
+
     const userObservables = items.map((booking) => {
       return this.userService.findById({ id: booking.userId });
     });
