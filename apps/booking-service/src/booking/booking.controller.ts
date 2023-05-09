@@ -17,7 +17,7 @@ export class BookingController implements BookingProto.BookingServiceController 
     return { items };
   }
 
-  async find(request: QueryRequest): Promise<BookingProto.BookingPagination> {
+  async find(request: QueryRequest): Promise<any> {
     return await this.bookingService.find(request);
   }
 
