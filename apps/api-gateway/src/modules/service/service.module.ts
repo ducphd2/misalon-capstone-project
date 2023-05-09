@@ -1,4 +1,3 @@
-import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 import { MessageComponent } from '@libs/modules';
 
@@ -8,7 +7,7 @@ import { ServicesService } from './service.service';
 import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
 
 @Module({
-  imports: [MerchantCommonModule, UtilsModule],
+  imports: [MerchantCommonModule],
   providers: [ServicesService, MessageComponent],
   controllers: [ServiceController],
 })

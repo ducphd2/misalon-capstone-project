@@ -1,4 +1,3 @@
-import { QueryUtils } from '@libs/core';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 import { BranchService } from './branch.service';
@@ -9,11 +8,7 @@ import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/mer
 
 @Controller('branches')
 export class BranchController {
-  constructor(
-    private readonly merchantService: MerchantCommonService,
-    private readonly queryUtils: QueryUtils,
-    private readonly branchService: BranchService,
-  ) {}
+  constructor(private readonly merchantService: MerchantCommonService, private readonly branchService: BranchService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)

@@ -1,5 +1,7 @@
+import { DeviceProto } from '@libs/grpc-types';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
+import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 import {
   AddOperatorInput,
   AdminUpdateCustomerInput,
@@ -13,9 +15,6 @@ import {
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
-
-import { Device } from '@/api-gateway/types';
 
 @Injectable()
 export class UserCommonService implements OnModuleInit {
@@ -64,7 +63,7 @@ export class UserCommonService implements OnModuleInit {
     return await firstValueFrom(this.userService.findDevices(query));
   }
 
-  async upsertDevice(data: CreateDeviceInput): Promise<Device> {
+  async upsertDevice(data: CreateDeviceInput): Promise<DeviceProto.Device> {
     return await firstValueFrom(this.userService.upsertDevice(data));
   }
 

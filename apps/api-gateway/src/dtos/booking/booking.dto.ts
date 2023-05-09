@@ -1,7 +1,6 @@
-import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { CommonProto } from '@libs/grpc-types';
 import { PartialType } from '@nestjs/mapped-types';
-
-import { EBookingStatus } from '@/api-gateway/dtos/common';
+import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBookingInput {
   @IsNotEmpty()
@@ -9,8 +8,8 @@ export class CreateBookingInput {
   serviceId: number;
 
   @IsOptional()
-  @IsEnum(EBookingStatus)
-  status?: EBookingStatus = EBookingStatus.BOOKING_PENDING;
+  @IsEnum(CommonProto.EBookingStatus)
+  status?: CommonProto.EBookingStatus = CommonProto.EBookingStatus.BOOKING_PENDING;
 
   @IsNotEmpty()
   @IsString()

@@ -1,3 +1,4 @@
+import { CommonProto } from '@libs/grpc-types';
 import { Transform, TransformFnParams } from 'class-transformer';
 import {
   IsBoolean,
@@ -14,7 +15,6 @@ import {
 import { BaseQueryDto } from '../base/base.dto';
 
 import { Match } from '@/api-gateway/core';
-import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 
 export class ChangePasswordInput {
   @IsString()
@@ -47,9 +47,9 @@ export class AddOperatorDto {
   @IsNotEmpty()
   fullName: string;
 
-  @IsEnum(EUserRole)
+  @IsEnum(CommonProto.EUserRole)
   @IsNotEmpty()
-  role: EUserRole;
+  role: CommonProto.EUserRole;
 
   @IsNotEmpty()
   @IsInt()
@@ -60,15 +60,16 @@ export class AddOperatorDto {
   branchId?: number;
 
   @IsOptional()
-  @IsEnum(EUserStatus)
-  status: EUserStatus;
+  @IsEnum(CommonProto.EUserStatus)
+  status: CommonProto.EUserStatus;
 
-  @IsEnum(EUserGender)
+  @IsEnum(CommonProto.EUserGender)
   @IsOptional()
-  gender: EUserGender;
+  gender: CommonProto.EUserGender;
 
   @IsOptional()
-  level?: ECustomerLevel;
+  @IsEnum(CommonProto.ECustomerLevel)
+  level?: CommonProto.ECustomerLevel;
 
   @IsOptional()
   contact: string;

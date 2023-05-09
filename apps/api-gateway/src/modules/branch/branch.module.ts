@@ -1,4 +1,3 @@
-import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 import { MessageComponent } from '@libs/modules';
 
@@ -8,7 +7,7 @@ import { BranchService } from './branch.service';
 import { BranchController } from './branch.controller';
 
 @Module({
-  imports: [MerchantCommonModule, UtilsModule],
+  imports: [MerchantCommonModule],
   providers: [BranchService, MessageComponent],
   controllers: [BranchController],
 })

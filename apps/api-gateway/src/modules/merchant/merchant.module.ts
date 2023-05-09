@@ -1,4 +1,3 @@
-import { UtilsModule } from '@libs/core';
 import { Module } from '@nestjs/common';
 
 import { MerchantController } from './merchant.controller';
@@ -7,7 +6,7 @@ import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merc
 import { BookingCommonModule } from '@/api-gateway/modules/booking-common/booking-common.module';
 
 @Module({
-  imports: [MerchantCommonModule, BookingCommonModule, UtilsModule],
+  imports: [MerchantCommonModule, BookingCommonModule],
   controllers: [MerchantController],
   providers: [],
 })

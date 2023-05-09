@@ -1,10 +1,9 @@
+import { IUploadCloudinaryResponse } from '@libs/interfaces';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3 } from 'aws-sdk';
 import { v2 } from 'cloudinary';
 import { createReadStream } from 'streamifier';
-
-import { IUploadCloudinaryResponse } from '@/api-gateway/interfaces';
 
 @Injectable()
 export class UploadRestService {

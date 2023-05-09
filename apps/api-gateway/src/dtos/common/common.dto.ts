@@ -61,13 +61,6 @@ export enum EUserStatus {
   BANNED = 2,
 }
 
-export enum EBookingStatus {
-  BOOKING_PENDING = 0,
-  BOOKING_APPROVE = 1,
-  BOOKING_CANCELLED = 2,
-  BOOKING_REJECT = 3,
-}
-
 export enum EEventMessage {
   CREATE_MESSAGE = 'create_message',
   RECENT_MESSAGES = 'recent_messages',
