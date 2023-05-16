@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start:all:dev": "concurrently \"yarn start:api-gateway:dev\" \"yarn start:user-service:dev\" \"yarn start:merchant-service:dev\" \"yarn start:booking-service:dev\" \"yarn start:notification-service:dev\" \"yarn start:payment-service:dev\"",
+    "start:dev": "concurrently \"yarn start:api-gateway:dev\" \"yarn start:user-service:dev\" \"yarn start:merchant-service:dev\" \"yarn start:booking-service:dev\" \"yarn start:notification-service:dev\" \"yarn start:payment-service:dev\"",
     "start:api-gateway:dev": "nest start @app/api-gateway --watch --debug",
     "start:user-service:dev": "nest start @app/user-service --watch --debug",
     "start:merchant-service:dev": "nest start @app/merchant-service --watch --debug",
