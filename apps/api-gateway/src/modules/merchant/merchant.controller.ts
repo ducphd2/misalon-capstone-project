@@ -115,7 +115,18 @@ export class MerchantController {
 
   @Get(':id/users')
   @UseGuards(JwtAuthGuard)
-  async findUsers(@Param('id') id: number, @Query() query?: GetMerchantUserDto) {
+  @Admin()
+  async findUsers(@User() admin: UserModel, @Param('id') id: number, @Query() query?: GetMerchantUserDto) {
+    const { merchant } = await this.merchantService.findById({ id });
+
+    if (isEmpty(merchant)) {
+      ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
+    }
+
+    if (merchant.userId !== admin.id) {
+      ErrorHelper.HttpBadRequestException(COMMON_MESSAGE.INVALID);
+    }
+
     const baseWhere = {
       merchantId: id,
     };

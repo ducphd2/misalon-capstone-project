@@ -85,8 +85,9 @@ export class UserService implements OnModuleInit {
         order: [[query.orderBy, query.orderDirection]],
       },
     );
-
     const { items, meta } = result;
+
+    if (!items.length) return { items, meta };
 
     const _merchantObservables = items.map((user) => {
       return this.merchantService.findBranchById({ id: user.branchId });
