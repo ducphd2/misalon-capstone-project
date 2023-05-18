@@ -4,7 +4,7 @@ package ducph_user;
 
 import "commons.proto";
 import "device.proto";
-import "merchant_user.proto";
+import "merchant_common.proto";
 
 import "google/protobuf/struct.proto";
 
@@ -27,10 +27,6 @@ service UserService {
   rpc createDevice(device.CreateDeviceInput) returns (device.Device) {}
   rpc findDevices(commons.QueryRequest) returns (device.Devices) {}
   rpc upsertDevice(device.CreateDeviceInput) returns (device.Device) {}
-
-  // merchant_user
-  rpc createMerchantUser(merchant_user.CreateMerchantUserInput)
-      returns (merchant_user.MerchantUser) {}
 
   rpc addOperator(AddOperatorInput) returns (FindOneUser) {}
   rpc countCustomer(commons.QueryRequest) returns (commons.Count) {}
@@ -89,6 +85,7 @@ message User {
   optional bool isRetailCustomer = 43;
   optional int32 merchantId = 44;
   optional ELangNumber lang = 45;
+  optional merchant_common.Branch branch = 46;
 }
 
 message CreateUserInput {
@@ -195,13 +192,11 @@ message UpdateUserData {
 
 message AddOperatorInput {
   CreateUserInput user = 1;
-  optional merchant_user.CreateMerchantUserInput merchantUser = 2;
 }
 
 message AdminUpdateCustomerInput {
   int32 id = 1;
   UpdateUserData user = 2;
-  optional merchant_user.CreateMerchantUserInput merchantUser = 3;
 }
 
 message UserPagination {

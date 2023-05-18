@@ -2,8 +2,6 @@ import { MessageComponent } from '@libs/modules';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
 
-import { ELangType } from '@/api-gateway/dtos';
-
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(this.constructor.name);
@@ -87,6 +85,21 @@ export class MailService {
         address,
         phone,
         lang,
+      },
+    });
+  }
+
+  async sendMerchantAddEmployeeEmail(data: any) {
+    const { email, name, lang, password } = data;
+    await this.sendEmailViaSMTP({
+      to: email,
+      subject: 'Tạo tài khoản thành công',
+      template: 'admin-add-employee',
+      context: {
+        email,
+        name,
+        lang,
+        password,
       },
     });
   }

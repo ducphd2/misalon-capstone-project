@@ -19,9 +19,7 @@ import { NotificationService } from './notification.service';
     SequelizeModule.forFeature([NotificationModel]),
     LangModule,
     MailModule,
-    ClientsModule.register([UserClient]),
-    ClientsModule.register([BookingClient]),
-    ClientsModule.register([MerchantClient]),
+    ClientsModule.register([UserClient, BookingClient, MerchantClient]),
     BullModule.registerQueue({
       name: EBullQueue.NOTIFICATION_QUEUE,
     }),
@@ -30,6 +28,9 @@ import { NotificationService } from './notification.service';
     }),
     BullModule.registerQueue({
       name: EBullQueue.BOOKING_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: EBullQueue.USER_QUEUE,
     }),
   ],
   controllers: [NotificationController],

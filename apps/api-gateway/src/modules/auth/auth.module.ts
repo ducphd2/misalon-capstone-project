@@ -4,7 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ClientsModule } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
-import { UtilsModule } from '@libs/core';
+import { EBullQueue, UtilsModule } from '@libs/core';
+import { BullModule } from '@nestjs/bull';
+import { BullQueueModule, BullQueueProvider } from '@libs/modules';
 
 import { JwtRefreshStrategy, JwtStrategy } from '../../core/strategies';
 
@@ -22,6 +24,19 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
     UserCommonModule,
     MerchantCommonModule,
     UtilsModule,
+    BullQueueModule,
+    BullModule.registerQueue({
+      name: EBullQueue.USER_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: EBullQueue.NOTIFICATION_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: EBullQueue.GATEWAY_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: EBullQueue.BOOKING_QUEUE,
+    }),
   ],
   controllers: [AuthController],
   providers: [
@@ -52,6 +67,7 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
         });
       },
     },
+    BullQueueProvider,
   ],
   exports: [],
 })

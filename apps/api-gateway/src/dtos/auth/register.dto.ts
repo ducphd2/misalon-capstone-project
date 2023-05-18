@@ -1,8 +1,8 @@
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
+import { PartialType } from '@nestjs/mapped-types';
 import { Transform, TransformFnParams, Type } from 'class-transformer';
 import { IsDefined, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
-import { PartialType } from '@nestjs/mapped-types';
 
-import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@/api-gateway/dtos/common';
 import { CreateMerchantInputDto } from '@/api-gateway/dtos/merchant';
 import { DeviceInputDto } from '@/api-gateway/dtos/user';
 
@@ -33,6 +33,7 @@ export class CreateUserInputDto {
   @IsOptional()
   gender: EUserGender;
 
+  @IsEnum(ECustomerLevel)
   @IsOptional()
   level?: ECustomerLevel;
 

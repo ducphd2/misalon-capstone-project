@@ -1,7 +1,6 @@
+import { EServiceShowType, EServiceType } from '@libs/grpc-types/protos/merchant_common';
 import { PartialType } from '@nestjs/mapped-types';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-
-import { EServiceShowType, EServiceType } from '@/api-gateway/dtos/common';
 
 export class CreateServiceInput {
   @IsNotEmpty()

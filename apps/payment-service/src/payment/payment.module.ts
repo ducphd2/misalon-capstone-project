@@ -24,6 +24,9 @@ import { PaymentService } from './payment.service';
     BullModule.registerQueue({
       name: EBullQueue.BOOKING_QUEUE,
     }),
+    BullModule.registerQueue({
+      name: EBullQueue.USER_QUEUE,
+    }),
   ],
   controllers: [PaymentController],
   providers: [PaymentService, PaymentRepository, BullQueueProvider, SecretsService],

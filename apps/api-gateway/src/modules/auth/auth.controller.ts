@@ -1,8 +1,9 @@
-import { AUTH_MESSAGE, ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
+import { AUTH_MESSAGE, EBullEvent, ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Post } from '@nestjs/common';
 import { isEmpty } from 'lodash';
+import { BullQueueProvider } from '@libs/modules';
 
 import { InputLoginRequest, RegisterPayload } from '../../dtos';
 
@@ -19,6 +20,7 @@ export class AuthController {
     private readonly authService: AuthService,
 
     private readonly passwordUtils: PasswordUtils,
+    private readonly bullQueue: BullQueueProvider,
   ) {}
 
   @Post('login')
@@ -63,33 +65,35 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() { user: userInput, merchant: merchantInput, device: deviceInput }: RegisterPayload) {
-    const { count } = await this.usersService.countUser({
-      where: JSON.stringify({ email: userInput.email }),
-    });
+    try {
+      const { count } = await this.usersService.countUser({
+        where: JSON.stringify({ email: userInput.email }),
+      });
 
-    if (count >= 1) throw new Error('The email is taken');
+      if (count >= 1) throw new Error('The email is taken');
 
-    if (userInput.role === EUserRole.USER) {
+      if (userInput.role === EUserRole.USER) {
+        const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
+
+        return this.handleResponseAuthData(user);
+      }
       const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
 
-      return this.handleResponseAuthData(user);
+      const { merchant, branch } = await this.merchantService.create({
+        ...merchantInput,
+        userId: user.id,
+      });
+
+      await this.bullQueue.addUserEvent(EBullEvent.UPDATE_ADMIN_REGISTER, {
+        userId: user.id,
+        merchantId: merchant.id,
+        branchId: branch.id,
+      });
+
+      return this.handleResponseAuthData(user, merchant, branch);
+    } catch (error) {
+      console.log(error);
     }
-    const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
-
-    const { merchant, branch } = await this.merchantService.create({
-      ...merchantInput,
-      userId: user.id,
-    });
-
-    await this.usersService.createMerchantUser({
-      role: userInput.role ?? EUserRole.ADMIN,
-      branchId: branch.id,
-      merchantId: merchant.id,
-      status: userInput.status ?? EUserStatus.ACTIVE,
-      userId: user.id,
-    });
-
-    return this.handleResponseAuthData(user, merchant, branch);
   }
 
   private async handleResponseAuthData(

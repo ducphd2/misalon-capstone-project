@@ -1,7 +1,6 @@
 import { DeviceProto } from '@libs/grpc-types';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
-import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 import {
   AddOperatorInput,
   AdminUpdateCustomerInput,
@@ -65,11 +64,6 @@ export class UserCommonService implements OnModuleInit {
 
   async upsertDevice(data: CreateDeviceInput): Promise<DeviceProto.Device> {
     return await firstValueFrom(this.userService.upsertDevice(data));
-  }
-
-  // Merchant user
-  async createMerchantUser(data: CreateMerchantUserInput): Promise<MerchantUser> {
-    return await firstValueFrom(this.userService.createMerchantUser(data));
   }
 
   async addOperator(data: AddOperatorInput): Promise<FindOneUser> {

@@ -1,4 +1,5 @@
 import { CommonProto } from '@libs/grpc-types';
+import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { Transform, TransformFnParams } from 'class-transformer';
 import {
   IsBoolean,
@@ -6,6 +7,7 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
@@ -148,4 +150,84 @@ export class PaginateUserDto extends BaseQueryDto {
   @IsBoolean()
   @IsOptional()
   excludeMe: boolean;
+}
+
+export class GetMerchantUserDto extends BaseQueryDto {
+  @Transform(({ value }) => +value)
+  @IsEnum(EUserRole)
+  @IsOptional()
+  type: EUserRole;
+
+  @Transform(({ value }) => +value)
+  @IsNumber()
+  @IsOptional()
+  branchId: number;
+}
+
+export class MerchantAddOperatorDto {
+  @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @MaxLength(30)
+  @MinLength(5)
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  fullName: string;
+
+  @IsEnum(CommonProto.EUserRole)
+  @IsNotEmpty()
+  role: CommonProto.EUserRole;
+
+  @IsNotEmpty()
+  @IsInt()
+  branchId?: number;
+
+  @IsOptional()
+  @IsEnum(CommonProto.EUserStatus)
+  status: CommonProto.EUserStatus;
+
+  @IsEnum(CommonProto.EUserGender)
+  @IsOptional()
+  gender: CommonProto.EUserGender;
+
+  @IsOptional()
+  @IsEnum(CommonProto.ECustomerLevel)
+  level?: CommonProto.ECustomerLevel;
+
+  @IsString()
+  @IsNotEmpty()
+  phoneNumber: string;
+
+  @IsOptional()
+  dobDay: number;
+
+  @IsOptional()
+  dobMonth: number;
+
+  @IsOptional()
+  dobYear: number;
+
+  @IsOptional()
+  occupation?: string;
+
+  @IsOptional()
+  avatar?: string;
+
+  @IsOptional()
+  address?: string;
+
+  @IsOptional()
+  cityCode?: number;
+
+  @IsOptional()
+  districtCode?: number;
+
+  @IsOptional()
+  wardCode?: number;
 }

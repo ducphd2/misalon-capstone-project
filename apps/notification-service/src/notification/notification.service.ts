@@ -1,11 +1,12 @@
 import { EBullEvent } from '@libs/core';
 import { NotificationRepository } from '@libs/database';
 import { CommonProto, NotificationProto } from '@libs/grpc-types';
+import { ENotificationType } from '@libs/grpc-types/protos/commons';
 import { BullQueueProvider, MessageComponent } from '@libs/modules';
 import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 
-import { ELangType, ENotificationType } from '@/api-gateway/dtos';
+import { ELangType } from '@/api-gateway/dtos';
 
 @Injectable()
 export class NotificationService {

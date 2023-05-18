@@ -1,8 +1,7 @@
 import { Column, DataType, Table } from 'sequelize-typescript';
+import { ENotificationType } from '@libs/grpc-types/protos/commons';
 
 import { BaseModel } from '../base.model';
-
-import { ENotificationType } from '@/api-gateway/dtos';
 
 @Table({
   modelName: 'notification',

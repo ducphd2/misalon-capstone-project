@@ -1,8 +1,7 @@
 import { Column, DataType, Table } from 'sequelize-typescript';
+import { EImageType, EServeImageType } from '@libs/grpc-types/protos/serve-image';
 
 import { BaseModel } from '../base.model';
-
-import { EImageType, EServeImageType } from '@/api-gateway/dtos/common';
 
 @Table({
   modelName: 'serve_image',

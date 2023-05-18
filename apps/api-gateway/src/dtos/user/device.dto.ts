@@ -1,6 +1,5 @@
+import { EDeviceOs } from '@libs/grpc-types/protos/device';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-
-import { EDeviceOs } from '@/api-gateway/dtos/common';
 
 export class DeviceInputDto {
   @IsEnum(EDeviceOs)

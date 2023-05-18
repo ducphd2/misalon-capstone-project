@@ -7,7 +7,7 @@ import {
   NullableBranch,
   UpdateBranchInput,
 } from '@libs/grpc-types/protos/branch';
-import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { Count, EUserRole, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateInput, Feedback, ItemPagination, NullableItem, UpdateInput } from '@libs/grpc-types/protos/feedback';
 import {
   CreateGroupInput,
@@ -31,8 +31,6 @@ import { GroupService } from '../group/group.service';
 import { ServicesService } from '../service/service.service';
 
 import { MerchantService } from './merchant.service';
-
-import { EUserRole } from '@/api-gateway/dtos';
 
 @UseFilters(GrpcAllExceptionsFilter)
 @UseInterceptors(GrpcLogInterceptor)
