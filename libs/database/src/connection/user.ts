@@ -1,5 +1,5 @@
 import { operatorsAliases } from '@libs/core';
-import { DeviceModel, MerchantUserModel, UserModel } from '@libs/database/entities';
+import { DeviceModel, UserModel } from '@libs/database/entities';
 import { Module } from '@nestjs/common';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
@@ -16,7 +16,7 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
           logging: false,
           typeValidation: true,
           operatorsAliases: operatorsAliases,
-          models: [UserModel, DeviceModel, MerchantUserModel],
+          models: [UserModel, DeviceModel],
           autoLoadModels: true,
           synchronize: true,
           // sync: {

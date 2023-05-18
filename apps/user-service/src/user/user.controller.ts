@@ -1,13 +1,11 @@
 import { DeviceModel } from '@libs/database/entities';
 import { CommonProto, UserProto } from '@libs/grpc-types';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
-import { CreateMerchantUserInput, MerchantUser } from '@libs/grpc-types/protos/merchant_user';
 import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 
 import { DeviceService } from '../device/device.service';
-import { MerchantUserService } from '../merchant-user/merchant-user.service';
 
 import { UserService } from './user.service';
 
@@ -16,17 +14,10 @@ import { UserService } from './user.service';
 @Controller()
 @UserProto.UserServiceControllerMethods()
 export class UserController implements UserProto.UserServiceController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly deviceService: DeviceService,
-    private readonly merchantUserService: MerchantUserService,
-  ) {}
+  constructor(private readonly userService: UserService, private readonly deviceService: DeviceService) {}
 
   async updateCustomer(request: UserProto.AdminUpdateCustomerInput): Promise<UserProto.FindOneUser> {
     const updatedUser = await this.userService.update({ id: request.id, data: request.user });
-
-    // TODO: Need to implement update merchant_user
-    // const updatedMerchantUser = await this.merchantUserService.create();
 
     return {
       user: updatedUser,
@@ -35,7 +26,6 @@ export class UserController implements UserProto.UserServiceController {
 
   async addCustomer(request: UserProto.AddOperatorInput): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(request);
-    await this.merchantUserService.create({ ...request.merchantUser, userId: user.id });
 
     return { user };
   }
@@ -46,13 +36,8 @@ export class UserController implements UserProto.UserServiceController {
 
   async addOperator(request: UserProto.AddOperatorInput): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(request);
-    await this.merchantUserService.create({ ...request.merchantUser, userId: user.id });
 
     return { user };
-  }
-
-  async createMerchantUser(request: CreateMerchantUserInput): Promise<MerchantUser> {
-    return await this.merchantUserService.create(request);
   }
 
   async upsertDevice(request: CreateDeviceInput): Promise<DeviceModel> {

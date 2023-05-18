@@ -76,11 +76,6 @@ export class UserController {
 
     const user = await this.userService.addOperator({
       user: userInput,
-      merchantUser: {
-        branchId: userInput?.branchId,
-        merchantId: merchant.id,
-        role: userInput?.role ?? EUserRole.MASTER_WORKER,
-      },
     });
 
     return user;
@@ -117,11 +112,6 @@ export class UserController {
         role: EUserRole.USER,
         branchId: customerInput?.branchId,
         merchantId: merchant.id,
-      },
-      merchantUser: {
-        branchId: customerInput?.branchId,
-        merchantId: merchant.id,
-        role: EUserRole.USER,
       },
     });
 
@@ -167,10 +157,6 @@ export class UserController {
     const user = await this.userService.updateCustomer({
       id: userId,
       user: {
-        ...customerInput,
-        role: customerInput?.role ?? EUserRole.MASTER_WORKER,
-      },
-      merchantUser: {
         ...customerInput,
         role: customerInput?.role ?? EUserRole.MASTER_WORKER,
       },

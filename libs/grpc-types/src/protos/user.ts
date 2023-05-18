@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { Count, ECustomerLevel, EUserGender, EUserRole, EUserStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
-import { CreateMerchantUserInput, MerchantUser } from "./merchant_user";
+import { Branch } from "./merchant_common";
 
 export const protobufPackage = "ducph_user";
 
@@ -63,6 +63,7 @@ export interface User {
   isRetailCustomer?: boolean | undefined;
   merchantId?: number | undefined;
   lang?: ELangNumber | undefined;
+  branch?: Branch | undefined;
 }
 
 export interface CreateUserInput {
@@ -165,13 +166,11 @@ export interface UpdateUserData {
 
 export interface AddOperatorInput {
   user: CreateUserInput | undefined;
-  merchantUser?: CreateMerchantUserInput | undefined;
 }
 
 export interface AdminUpdateCustomerInput {
   id: number;
   user: UpdateUserData | undefined;
-  merchantUser?: CreateMerchantUserInput | undefined;
 }
 
 export interface UserPagination {
@@ -203,10 +202,6 @@ export interface UserServiceClient {
   findDevices(request: QueryRequest): Observable<Devices>;
 
   upsertDevice(request: CreateDeviceInput): Observable<Device>;
-
-  /** merchant_user */
-
-  createMerchantUser(request: CreateMerchantUserInput): Observable<MerchantUser>;
 
   addOperator(request: AddOperatorInput): Observable<FindOneUser>;
 
@@ -242,10 +237,6 @@ export interface UserServiceController {
 
   upsertDevice(request: CreateDeviceInput): Promise<Device> | Observable<Device> | Device;
 
-  /** merchant_user */
-
-  createMerchantUser(request: CreateMerchantUserInput): Promise<MerchantUser> | Observable<MerchantUser> | MerchantUser;
-
   addOperator(request: AddOperatorInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
   countCustomer(request: QueryRequest): Promise<Count> | Observable<Count> | Count;
@@ -270,7 +261,6 @@ export function UserServiceControllerMethods() {
       "createDevice",
       "findDevices",
       "upsertDevice",
-      "createMerchantUser",
       "addOperator",
       "countCustomer",
       "addCustomer",

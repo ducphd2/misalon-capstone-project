@@ -83,3 +83,28 @@ message Service {
   optional EServiceShowType showType = 21;
   optional bool canPrintableInvoice = 22;
 }
+
+message Branch {
+  // default field
+  int32 id = 1;
+  optional string createdAt = 2;
+  optional string updatedAt = 3;
+  optional string deletedAt = 4;
+  optional string createdBy = 5;
+  optional string updatedBy = 6;
+  optional string deletedBy = 7;
+
+  // reserved field
+  optional string name = 8;
+  optional string phone = 9;
+  optional string address = 10;
+  optional int32 merchantId = 11;
+  optional int32 cityCode = 12;
+  optional int32 districtCode = 13;
+  optional int32 wardCode = 14;
+  optional string city = 15;
+  optional string district = 16;
+  optional string ward = 17;
+  optional double latitude = 18;
+  optional double longitude = 19;
+}

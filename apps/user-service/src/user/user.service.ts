@@ -1,18 +1,33 @@
 import { UserModel } from '@libs/database/entities';
 import { UserRepository } from '@libs/database/repositories';
-import { CommonProto, UserProto } from '@libs/grpc-types';
-import { Injectable } from '@nestjs/common';
+import { CommonProto, MerchantProto, UserProto } from '@libs/grpc-types';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty } from 'lodash';
+import { forkJoin, map, of, switchMap } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
 
 @Injectable()
-export class UserService {
-  constructor(private readonly userRepository: UserRepository, private readonly deviceService: DeviceService) {}
+export class UserService implements OnModuleInit {
+  private merchantService: MerchantProto.MerchantServiceClient;
+
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly deviceService: DeviceService,
+
+    @Inject(MerchantProto.MERCHANT_PACKAGE_NAME) private merchantClient: ClientGrpc,
+  ) {}
+
+  onModuleInit() {
+    this.merchantService = this.merchantClient.getService<MerchantProto.MerchantServiceClient>(
+      MerchantProto.MERCHANT_SERVICE_NAME,
+    );
+  }
 
   async create(dto: UserProto.CreateUserRequest): Promise<UserModel> {
     const user = await this.userRepository.create(dto.user);
-    const device = await this.deviceService.create({ ...dto.device, userId: user.id });
+    await this.deviceService.create({ ...dto.device, userId: user.id });
 
     return user;
   }
@@ -71,6 +86,31 @@ export class UserService {
       },
     );
 
-    return result;
+    const { items, meta } = result;
+
+    const _merchantObservables = items.map((user) => {
+      return this.merchantService.findBranchById({ id: user.branchId });
+    });
+
+    const _userWithBranch = forkJoin(_merchantObservables).pipe(
+      map((merchantResponses) => {
+        return items.map((booking, index) => {
+          return {
+            ...booking,
+            branch: merchantResponses[index].branch,
+          };
+        });
+      }),
+    );
+
+    // Combine the _userWithBranch observable with the meta information using switchMap
+    return _userWithBranch.pipe(
+      switchMap((userWithBranch) => {
+        return of({
+          items: userWithBranch,
+          meta: meta,
+        });
+      }),
+    );
   }
 }

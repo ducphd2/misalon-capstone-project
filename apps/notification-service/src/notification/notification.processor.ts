@@ -94,4 +94,16 @@ export class NotificationProcessor implements OnModuleInit {
       }),
     ]);
   }
+
+  @Process(EBullEvent.NOTIFICATION_SEND_EMAIL_MERCHANT_ADD_OPERATOR)
+  async handleSendMailMerchantAddOperator(job: Job<any>) {
+    const request = job.data;
+
+    await this.mailService.sendMerchantAddEmployeeEmail({
+      email: request?.email,
+      name: request?.fullName,
+      password: request?.password,
+      lang: request?.lang,
+    });
+  }
 }

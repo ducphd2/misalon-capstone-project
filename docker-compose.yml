@@ -9,7 +9,7 @@ services:
       - dbbackups:/backups
     environment:
       # If you need to create multiple database you can add coma separated databases eg gis,data
-      - POSTGRES_DB=gis,user-service,merchant-service,booking-service,notification-service
+      - POSTGRES_DB=gis,user-service,merchant-service,booking-service,notification-service,payment-service
       - POSTGRES_USER=admin
       - POSTGRES_PASS=admin
       # Add extensions you need to be enabled by default in the DB. Default are the five specified below
