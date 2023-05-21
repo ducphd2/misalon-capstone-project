@@ -1,3 +1,5 @@
+import { EServiceType } from '@libs/grpc-types/protos/merchant_common';
+
 export const numberInputs = (
   input: object = {},
 ): {
@@ -37,4 +39,12 @@ export function Property(className = 'fields', defaultValue: unknown = undefined
 
     Reflect.defineMetadata(className, true, target, name);
   };
+}
+
+export function generateUniqueSku(type?: EServiceType): string {
+  const prefix = type === EServiceType.SERVICE ? 'SV' : 'PD';
+  const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace('T', '').slice(0, 12);
+  const random = Math.random().toString(36).substring(2, 7);
+
+  return `${prefix}${timestamp}${random}`.toUpperCase();
 }

@@ -1,4 +1,4 @@
-import { BranchProto, FeedbackProto, GroupProto, MerchantProto, ServiceProto } from '@libs/grpc-types';
+import { BranchProto, FeedbackProto, MerchantProto, ServiceProto } from '@libs/grpc-types';
 import {
   BranchPagination,
   Branches,
@@ -7,7 +7,6 @@ import {
   UpdateBranchData,
 } from '@libs/grpc-types/protos/branch';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
-import { GroupPagination, NullableGroup, UpdateGroupData } from '@libs/grpc-types/protos/group';
 import {
   CreateInput,
   MERCHANT_PACKAGE_NAME,
@@ -22,7 +21,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
 import { firstValueFrom } from 'rxjs';
 
-import { BaseQueryDto, CreateGroupInput } from '@/api-gateway/dtos';
+import { BaseQueryDto } from '@/api-gateway/dtos';
 
 @Injectable()
 export class MerchantCommonService implements OnModuleInit {
@@ -78,30 +77,6 @@ export class MerchantCommonService implements OnModuleInit {
     return await firstValueFrom(this.merchantService.deleteBranch({ id }));
   }
 
-  async findGroupById(id: Id): Promise<NullableGroup> {
-    return await firstValueFrom(this.merchantService.findGroupById(id));
-  }
-
-  async group(query: QueryRequest): Promise<NullableGroup> {
-    return await firstValueFrom(this.merchantService.group(query));
-  }
-
-  async findGroups(query: QueryRequest): Promise<GroupPagination> {
-    return await firstValueFrom(this.merchantService.groups(query));
-  }
-
-  async createGroup(data: CreateGroupInput): Promise<GroupProto.Group> {
-    return await firstValueFrom(this.merchantService.createGroup(data));
-  }
-
-  async updateGroup(id: number, data: UpdateGroupData): Promise<GroupProto.Group> {
-    return await firstValueFrom(this.merchantService.updateGroup({ id, data }));
-  }
-
-  async deleteGroup(id: number): Promise<Count> {
-    return await firstValueFrom(this.merchantService.deleteGroup({ id }));
-  }
-
   async findServiceById(id: Id): Promise<NullableService> {
     return await firstValueFrom(this.merchantService.findServiceById(id));
   }
@@ -144,31 +119,6 @@ export class MerchantCommonService implements OnModuleInit {
     }
 
     const result = await this.findBranches({
-      ...query,
-      where: where ? JSON.stringify(where) : null,
-    });
-
-    return result;
-  }
-
-  async findAllGroups(merchantId?: number, query?: BaseQueryDto) {
-    let where = null;
-
-    if (merchantId) {
-      where = {
-        merchantId,
-      };
-    }
-
-    if (!isEmpty(query?.q)) {
-      merge(where, {
-        search: {
-          _iLike: `%${query?.q}%`,
-        },
-      });
-    }
-
-    const result = await this.findGroups({
       ...query,
       where: where ? JSON.stringify(where) : null,
     });

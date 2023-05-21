@@ -14,7 +14,6 @@ enum EFeedbackType {
 message UpdateData {
   oneof kind {
     int32 merchantId = 1;
-    int32 groupId = 2;
     int32 serviceId = 3;
     int32 bookingId = 4;
     int32 rating = 5;
@@ -30,7 +29,6 @@ message UpdateInput {
 
 message CreateInput {
   optional int32 merchantId = 1;
-  optional int32 groupId = 2;
   optional int32 serviceId = 3;
   optional int32 bookingId = 4;
   optional int32 rating = 5;
@@ -51,7 +49,6 @@ message Feedback {
 
   // reserved field
   optional int32 merchantId = 8;
-  optional int32 groupId = 9;
   optional int32 serviceId = 10;
   optional int32 bookingId = 11;
   optional int32 rating = 12;

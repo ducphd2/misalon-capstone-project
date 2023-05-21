@@ -36,7 +36,7 @@ export class BookingProcessor implements OnModuleInit {
     const request = job.data;
     await this.bookingService.update({
       id: request.id,
-      data: omit(request, ['id']),
+      data: omit(request, ['id']) as any,
     });
   }
 }

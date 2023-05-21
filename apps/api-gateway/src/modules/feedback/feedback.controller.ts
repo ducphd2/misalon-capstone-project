@@ -22,13 +22,6 @@ export class FeedbackController {
     return result;
   }
 
-  @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  async update(@Param('id') id: number, @Body() data: PartialUpdateService) {
-    const result = await this.servicesService.update(id, data);
-    return result;
-  }
-
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number) {

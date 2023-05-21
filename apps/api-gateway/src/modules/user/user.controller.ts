@@ -10,6 +10,7 @@ import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { isEmpty, merge } from 'lodash';
+import { hash } from 'argon2';
 
 import { User } from '@/api-gateway/core';
 import { JwtAuthGuard } from '@/api-gateway/core/guards/auth.guard';
@@ -47,38 +48,10 @@ export class UserController {
     }
 
     const result = await this.userService.update(user.id, {
-      password: data.newPassword,
+      password: await hash(data.newPassword),
     });
 
     return result;
-  }
-
-  @Post('add-operator')
-  @UseGuards(JwtAuthGuard)
-  async addOperator(@User() admin: UserModel, @Body() userInput: AddOperatorDto) {
-    const { merchant } = await this.merchantService.findById({ id: userInput.merchantId });
-
-    if (isEmpty(merchant)) {
-      ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
-    }
-
-    if (merchant.userId !== admin.id) {
-      ErrorHelper.HttpBadRequestException(COMMON_MESSAGE.INVALID);
-    }
-
-    const { count } = await this.userService.countUser({
-      where: JSON.stringify({ email: userInput.email }),
-    });
-
-    if (count >= 1) {
-      ErrorHelper.HttpBadRequestException(USER_MESSAGE.CREATE.EXIST_EMAIL);
-    }
-
-    const user = await this.userService.addOperator({
-      user: userInput,
-    });
-
-    return user;
   }
 
   @Post('add-customer')

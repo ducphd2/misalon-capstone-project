@@ -1,4 +1,5 @@
-import { BookingProto, MerchantProto, UserProto } from '@libs/grpc-types';
+import { BookingProto, MerchantProto, ServiceProto, UserProto } from '@libs/grpc-types';
+import { BookingServiceClient } from '@libs/grpc-types/protos/booking';
 import {
   Branch,
   BranchPagination,
@@ -9,25 +10,15 @@ import {
 } from '@libs/grpc-types/protos/branch';
 import { Count, EUserRole, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateInput, Feedback, ItemPagination, NullableItem, UpdateInput } from '@libs/grpc-types/protos/feedback';
-import {
-  CreateGroupInput,
-  Group,
-  GroupPagination,
-  NullableGroup,
-  UpdateGroupInput,
-} from '@libs/grpc-types/protos/group';
-import { CreateServiceInput, NullableService, Service, UpdateServiceInput } from '@libs/grpc-types/protos/service';
+import { UserServiceClient } from '@libs/grpc-types/protos/user';
 import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, Inject, OnModuleInit, UseFilters, UseInterceptors } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
 import { Observable } from 'rxjs';
-import { UserServiceClient } from '@libs/grpc-types/protos/user';
-import { BookingServiceClient } from '@libs/grpc-types/protos/booking';
-import { ClientGrpc } from '@nestjs/microservices';
 
 import { BranchService } from '../branch/branch.service';
 import { FeedbackService } from '../feedback/feedback.service';
-import { GroupService } from '../group/group.service';
 import { ServicesService } from '../service/service.service';
 
 import { MerchantService } from './merchant.service';
@@ -43,7 +34,6 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   constructor(
     private readonly merchantService: MerchantService,
     private readonly branchService: BranchService,
-    private readonly groupService: GroupService,
     private readonly servicesService: ServicesService,
     private readonly feedbackService: FeedbackService,
     @Inject(UserProto.DUCPH_USER_PACKAGE_NAME) private userClient: ClientGrpc,
@@ -58,9 +48,8 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   async overviewStatistic(request: QueryRequest): Promise<MerchantProto.OverviewStatistic> {
     const whereRequest = JSON.parse(request.where);
 
-    const [branch, group, service] = await Promise.all([
+    const [branch, service] = await Promise.all([
       this.branchService.count(request),
-      this.groupService.count(request),
       this.servicesService.count(request),
     ]);
 
@@ -79,18 +68,11 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
 
     return {
       branch,
-      group,
       service,
       operator: count,
       customer: booking.count,
       booking: booking.count,
     };
-  }
-
-  async groups(request: QueryRequest): Promise<GroupPagination> {
-    const result = await this.groupService.findWithPaging(request);
-
-    return result;
   }
 
   findAll(
@@ -109,8 +91,12 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   }
 
   async findOne(request: QueryRequest): Promise<MerchantProto.NullableMerchant> {
-    const merchant = await this.merchantService.findOne(request);
-    return { merchant };
+    try {
+      const merchant = await this.merchantService.findOne(request);
+      return { merchant } as any;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async create(request: MerchantProto.CreateInput): Promise<MerchantProto.CreateMerchantResponse> {
@@ -124,7 +110,7 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
 
   async findById(id: Id): Promise<MerchantProto.NullableMerchant> {
     const merchant = await this.merchantService.findById(id.id);
-    return { merchant };
+    return { merchant } as any;
   }
 
   async branch(request: QueryRequest): Promise<NullableBranch> {
@@ -160,32 +146,7 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return { count };
   }
 
-  group(request: QueryRequest): NullableGroup | Promise<NullableGroup> | Observable<NullableGroup> {
-    throw new Error('Method not implemented.');
-  }
-
-  findGroupById(request: Id): NullableGroup | Promise<NullableGroup> | Observable<NullableGroup> {
-    throw new Error('Method not implemented.');
-  }
-
-  async createGroup(request: CreateGroupInput): Promise<Group> {
-    const group = await this.groupService.create(request);
-
-    return group;
-  }
-
-  async updateGroup(request: UpdateGroupInput): Promise<Group> {
-    const group = await this.groupService.update(request);
-
-    return group;
-  }
-
-  async deleteGroup(request: Id): Promise<Count> {
-    const count = await this.groupService.delete(request.id);
-    return { count };
-  }
-
-  async service(request: QueryRequest): Promise<NullableService> {
+  async service(request: QueryRequest): Promise<ServiceProto.NullableService> {
     const service = await this.servicesService.findOne({
       where: JSON.parse(request.where),
     });
@@ -199,19 +160,19 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     return service;
   }
 
-  async findServiceById(request: Id): Promise<NullableService> {
+  async findServiceById(request: Id): Promise<ServiceProto.NullableService> {
     const service = await this.servicesService.findById(request.id);
 
     return { service };
   }
 
-  async createService(request: CreateServiceInput): Promise<Service> {
+  async createService(request: ServiceProto.CreateServiceInput): Promise<ServiceProto.Service> {
     const service = await this.servicesService.create(request);
 
     return service;
   }
 
-  async updateService(request: UpdateServiceInput): Promise<Service> {
+  async updateService(request: ServiceProto.UpdateServiceInput): Promise<ServiceProto.Service> {
     const service = await this.servicesService.update(request);
 
     return service;

@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, UseGuards } 
 
 import { BookingService } from './booking.service';
 
-import { JwtAuthGuard, User } from '@/api-gateway/core';
+import { JwtAuthGuard, NormalUser, User } from '@/api-gateway/core';
 import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/dtos';
 
 @Controller('bookings')
@@ -38,6 +38,13 @@ export class BookingController {
   @UseGuards(JwtAuthGuard)
   async findFeedback(@Param('id') id: number) {
     return await this.bookingService.findFeedback(id);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @NormalUser()
+  async findOwn(@User() user: UserModel) {
+    return await this.bookingService.findOwn(user);
   }
 
   @Get(':id')

@@ -3,6 +3,7 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Count, EBookingStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
+import { Service } from "./merchant_common";
 import { User } from "./user_common";
 
 export const protobufPackage = "booking";
@@ -21,57 +22,50 @@ export interface Booking {
   /** reserved field */
   status?: EBookingStatus | undefined;
   userId?: number | undefined;
-  serviceId?: number | undefined;
+  serviceIds: number[];
   startTime?: string | undefined;
   endTime?: string | undefined;
-  duration?: number | undefined;
   note?: string | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
   isCustomerCancel?: boolean | undefined;
   cancelReason?: string | undefined;
   bookingDate?: string | undefined;
-  isAdminUpdate?: boolean | undefined;
-  adminUpdateId?: number | undefined;
-  serviceName?: string | undefined;
-  customerName?: string | undefined;
   customerEmail?: string | undefined;
-  customerAddress?: string | undefined;
-  durationHour?: number | undefined;
-  durationMinute?: number | undefined;
+  customerPhoneNumber?: string | undefined;
+  customerName?: string | undefined;
   user?: User | undefined;
+  services: Service[];
 }
 
 export interface CreateBookingInput {
   status?: EBookingStatus | undefined;
   userId?: number | undefined;
-  serviceId?: number | undefined;
+  serviceIds: number[];
   startTime?: string | undefined;
   endTime?: string | undefined;
-  adminBranchEmail?: string | undefined;
   customerEmail?: string | undefined;
+  customerPhoneNumber?: string | undefined;
   customerName?: string | undefined;
   bookingDate?: string | undefined;
   note?: string | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
-  serviceName?: string | undefined;
 }
 
 export interface UpdateBookingData {
   status?: EBookingStatus | undefined;
   userId?: number | undefined;
-  serviceId?: number | undefined;
+  serviceIds: number[];
   startTime?: string | undefined;
   endTime?: string | undefined;
-  adminBranchEmail?: string | undefined;
   customerEmail?: string | undefined;
+  customerPhoneNumber?: string | undefined;
   customerName?: string | undefined;
   bookingDate?: string | undefined;
   note?: string | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
-  serviceName?: string | undefined;
 }
 
 export interface UpdateBookingInput {

@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { MerchantCommonService } from '../merchant-common/merchant-common.service';
 
-import { CreateInput, PartialUpdateService } from '@/api-gateway/dtos';
+import { CreateInput } from '@/api-gateway/dtos';
 
 @Injectable()
 export class FeedbackService {
@@ -15,14 +15,6 @@ export class FeedbackService {
     return {
       message: this.i18n.lang('lang.FEEDBACK.CREATE.SUCCESS', { lang }),
       feedback,
-    };
-  }
-
-  async update(id: number, data: PartialUpdateService, lang?: string) {
-    const updatedService = await this.merchantService.updateFeedback(id, data);
-    return {
-      message: this.i18n.lang('lang.FEEDBACK.UPDATE.SUCCESS', { lang }),
-      service: updatedService,
     };
   }
 

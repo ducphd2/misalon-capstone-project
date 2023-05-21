@@ -43,7 +43,7 @@ export class BookingService {
       ErrorHelper.HttpNotFoundException(this.i18n.lang('lang.BOOKING.READ.NOT_EXIST', { lang }));
     }
 
-    const updatedBooking = await this.bookingService.update(id, data);
+    const updatedBooking = await this.bookingService.update(id, data as any);
 
     return {
       message: this.i18n.lang('lang.BOOKING.UPDATE.SUCCESS', { lang }),
@@ -58,6 +58,16 @@ export class BookingService {
       message: this.i18n.lang('lang.BOOKING.DELETE.SUCCESS', { lang }),
       result,
     };
+  }
+
+  async findOwn(user: UserModel, lang?: string) {
+    const result = await this.bookingService.findAndPaginate({
+      where: JSON.stringify({
+        userId: user.id,
+      }),
+    });
+
+    return result;
   }
 
   async findDetail(id: number, lang?: string) {

@@ -1,9 +1,9 @@
 import { AUTH_MESSAGE, EBullEvent, ErrorHelper, PasswordUtils, USER_MESSAGE } from '@libs/core';
 import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
-import { EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
+import { EUserRole } from '@libs/grpc-types/protos/commons';
+import { BullQueueProvider } from '@libs/modules';
 import { Body, Controller, Post } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { BullQueueProvider } from '@libs/modules';
 
 import { InputLoginRequest, RegisterPayload } from '../../dtos';
 
@@ -47,10 +47,6 @@ export class AuthController {
       where: JSON.stringify({ userId: user.id }),
     });
 
-    const { branches } = await this.merchantService.branches({
-      where: JSON.stringify({ merchantId: merchant.id }),
-    });
-
     if (data?.device) {
       await this.usersService.upsertDevice({ ...data?.device, userId: user.id });
     }
@@ -59,41 +55,54 @@ export class AuthController {
     return {
       ...re,
       merchant,
-      branches,
     };
   }
 
   @Post('register')
   async register(@Body() { user: userInput, merchant: merchantInput, device: deviceInput }: RegisterPayload) {
-    try {
-      const { count } = await this.usersService.countUser({
-        where: JSON.stringify({ email: userInput.email }),
+    const { count } = await this.usersService.countUser({
+      where: JSON.stringify({ email: userInput.email }),
+    });
+
+    let countSubdomain = null;
+    if (userInput.role !== EUserRole.USER) {
+      countSubdomain = await this.merchantService.findOne({
+        where: JSON.stringify({ subdomain: merchantInput.subdomain }),
       });
+    }
 
-      if (count >= 1) throw new Error('The email is taken');
+    if (count >= 1) {
+      ErrorHelper.HttpBadRequestException('The email is taken');
+    }
+    if (userInput.role !== EUserRole.USER && !isEmpty(countSubdomain.merchant)) {
+      ErrorHelper.HttpBadRequestException('The subdomain is taken');
+    }
 
-      if (userInput.role === EUserRole.USER) {
-        const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
-
-        return this.handleResponseAuthData(user);
-      }
+    if (userInput.role === EUserRole.USER) {
       const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
 
-      const { merchant, branch } = await this.merchantService.create({
-        ...merchantInput,
-        userId: user.id,
-      });
-
-      await this.bullQueue.addUserEvent(EBullEvent.UPDATE_ADMIN_REGISTER, {
-        userId: user.id,
-        merchantId: merchant.id,
-        branchId: branch.id,
-      });
-
-      return this.handleResponseAuthData(user, merchant, branch);
-    } catch (error) {
-      console.log(error);
+      return this.handleResponseAuthData(user);
     }
+    const { user } = await this.usersService.create({
+      user: {
+        ...userInput,
+        subdomain: merchantInput?.subdomain,
+      },
+      device: deviceInput,
+    });
+
+    const { merchant, branch } = await this.merchantService.create({
+      ...merchantInput,
+      userId: user.id,
+    });
+
+    await this.bullQueue.addUserEvent(EBullEvent.UPDATE_ADMIN_REGISTER, {
+      userId: user.id,
+      merchantId: merchant.id,
+      branchId: branch.id,
+    });
+
+    return this.handleResponseAuthData(user);
   }
 
   private async handleResponseAuthData(
@@ -104,7 +113,7 @@ export class AuthController {
     return {
       user,
       merchant,
-      branches: branch ? [branch] : null,
+      branches: branch ? [branch] : undefined,
       accessToken: await this.authService.generateAccessToken(user),
       refreshToken: await this.authService.generateRefreshToken(user),
     };

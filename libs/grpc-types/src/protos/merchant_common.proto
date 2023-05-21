@@ -37,25 +37,6 @@ message Merchant {
   optional string ward = 17;
 }
 
-message Group {
-  // default field
-  int32 id = 1;
-  optional string createdAt = 2;
-  optional string updatedAt = 3;
-  optional string deletedAt = 4;
-  optional string createdBy = 5;
-  optional string updatedBy = 6;
-  optional string deletedBy = 7;
-
-  // reserved field
-  optional int32 merchantId = 8;
-  optional string sku = 9;
-  optional string code = 10;
-  optional string name = 11;
-  optional string description = 12;
-  optional string image = 13;
-}
-
 message Service {
   // default field
   int32 id = 1;
@@ -68,7 +49,6 @@ message Service {
 
   // reserved field
   optional int32 merchantId = 8;
-  optional int32 groupId = 9;
   optional double price = 10;
   optional double initialPrice = 11;
   optional double capitalPrice = 12;
@@ -80,8 +60,6 @@ message Service {
   optional string description = 18;
   optional string image = 19;
   optional EServiceType type = 20;
-  optional EServiceShowType showType = 21;
-  optional bool canPrintableInvoice = 22;
 }
 
 message Branch {

@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
 import { EBullQueue } from '@libs/core';
 import { BullQueueModule, BullQueueProvider, MessageComponent } from '@libs/modules';
+import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
 
-import { MerchantController } from './merchant.controller';
+import { MerchantQueryController } from './merchant-query.controller';
+import { MerchantMutationController } from './merchant-mutation.controller';
 
-import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
 import { BookingCommonModule } from '@/api-gateway/modules/booking-common/booking-common.module';
+import { MerchantCommonModule } from '@/api-gateway/modules/merchant-common/merchant-common.module';
 import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.module';
 
 @Module({
@@ -28,7 +29,7 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
       name: EBullQueue.BOOKING_QUEUE,
     }),
   ],
-  controllers: [MerchantController],
+  controllers: [MerchantQueryController, MerchantMutationController],
   providers: [BullQueueProvider, MessageComponent],
 })
 export class MerchantModule {}

@@ -1,5 +1,17 @@
 import { operatorsAliases } from '@libs/core';
-import { PaymentModel } from '@libs/database';
+import {
+  BookingModel,
+  BranchModel,
+  DeviceModel,
+  FeedbackModel,
+  MerchantModel,
+  NotificationModel,
+  PaymentModel,
+  ServiceModel,
+  UserModel,
+} from '@libs/database/entities';
+import { BookingServiceModel } from '@libs/database/entities/booking/booking-service.model';
+import { BranchUserModel } from '@libs/database/entities/user/branch-user.model';
 import { Module } from '@nestjs/common';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { AbstractSecretsService } from 'libs/modules/global/secrets/adapter';
@@ -12,19 +24,31 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
       useFactory: async (secrets: AbstractSecretsService): Promise<SequelizeModuleOptions> => {
         return {
           dialect: 'postgres',
-          ...secrets.paymentServiceDatabase,
+          ...secrets.userServiceDatabase,
           logging: false,
           typeValidation: true,
           operatorsAliases: operatorsAliases,
-          models: [PaymentModel],
+          models: [
+            UserModel,
+            DeviceModel,
+            MerchantModel,
+            BranchModel,
+            BookingModel,
+            ServiceModel,
+            PaymentModel,
+            FeedbackModel,
+            NotificationModel,
+            BranchUserModel,
+            BookingServiceModel,
+          ],
           autoLoadModels: true,
           synchronize: true,
-          // sync: {
-          //   force: true,
-          // },
-          query: {
-            raw: true,
+          sync: {
+            force: true,
           },
+          // query: {
+          //   raw: true,
+          // },
           define: {
             timestamps: true,
             underscored: true,
@@ -39,4 +63,4 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
     }),
   ],
 })
-export class PaymentDatabaseModule {}
+export class DatabaseModule {}

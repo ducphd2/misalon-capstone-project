@@ -1,28 +1,26 @@
-import { EDeviceOs } from '@libs/grpc-types/protos/device';
 import { BelongsTo, Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
 
+import { BranchModel } from '../merchant';
 import { BaseModel } from '../base.model';
 
 import { UserModel } from './user.model';
 
 @Table({
-  modelName: 'device',
-  tableName: 'devices',
+  modelName: 'branch_user',
+  tableName: 'branch_users',
   underscored: true,
 })
-export class DeviceModel extends BaseModel<DeviceModel> {
+export class BranchUserModel extends BaseModel<BranchUserModel> {
+  @ForeignKey(() => BranchModel)
+  @Column({ type: DataType.INTEGER })
+  branchId?: number;
+
   @ForeignKey(() => UserModel)
   @Column({ type: DataType.INTEGER })
-  userId: number;
+  userId?: number;
 
-  @Column({ type: DataType.INTEGER })
-  os: EDeviceOs;
-
-  @Column({ type: DataType.TEXT })
-  deviceId: string;
-
-  @Column({ type: DataType.TEXT })
-  token: string;
+  @BelongsTo(() => BranchModel)
+  branch?: BranchModel;
 
   @BelongsTo(() => UserModel)
   user?: UserModel;

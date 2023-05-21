@@ -1,18 +1,10 @@
-import { PaymentDatabaseModule } from '@libs/database';
-import { Module } from '@nestjs/common';
+import { DatabaseModule } from '@libs/database';
 import { BullQueueModule } from '@libs/modules';
-import { ConfigModule } from '@nestjs/config';
+import { Module } from '@nestjs/common';
 
 import { PaymentModule } from './payment/payment.module';
 
 @Module({
-  imports: [
-    // ConfigModule.forRoot({
-    //   isGlobal: true,
-    // }),
-    PaymentDatabaseModule,
-    PaymentModule,
-    BullQueueModule,
-  ],
+  imports: [DatabaseModule, PaymentModule, BullQueueModule],
 })
 export class AppModule {}

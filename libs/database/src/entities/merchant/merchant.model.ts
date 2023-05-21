@@ -1,9 +1,20 @@
-import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, Table } from 'sequelize-typescript';
+import {
+  BeforeCreate,
+  BeforeUpdate,
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Table,
+} from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
-import { GroupModel } from '@libs/database/entities/merchant/group.model';
-import { ServiceModel } from '@libs/database/entities/merchant/service.model';
 
+import { UserModel } from '../user';
 import { BaseModel } from '../base.model';
+
+import { ServiceModel } from './service.model';
+import { BranchModel } from './branch.model';
 
 @Table({
   modelName: 'merchant',
@@ -11,8 +22,12 @@ import { BaseModel } from '../base.model';
   underscored: true,
 })
 export class MerchantModel extends BaseModel<MerchantModel> {
+  @ForeignKey(() => UserModel)
   @Column({ type: DataType.INTEGER })
   userId?: number;
+
+  @Column({ type: DataType.TEXT })
+  subdomain?: string;
 
   @Column({ type: DataType.TEXT })
   name?: string;
@@ -56,7 +71,6 @@ export class MerchantModel extends BaseModel<MerchantModel> {
   @Column({
     type: DataType.GEOMETRY('POINT'),
     allowNull: true,
-    // defaultValue: { type: 'Point', coordinates: [0, 0] },
   })
   coordinate: { type: 'Point'; coordinates: [number, number] };
 
@@ -66,11 +80,14 @@ export class MerchantModel extends BaseModel<MerchantModel> {
   })
   search?: string;
 
-  @HasMany(() => GroupModel)
-  groups?: GroupModel[];
-
   @HasMany(() => ServiceModel)
   services?: ServiceModel[];
+
+  @HasMany(() => BranchModel)
+  branches?: BranchModel[];
+
+  @BelongsTo(() => UserModel)
+  user?: UserModel;
 
   @BeforeCreate
   @BeforeUpdate

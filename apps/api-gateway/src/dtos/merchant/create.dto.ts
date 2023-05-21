@@ -21,13 +21,4 @@ export class CreateMerchantInputDto {
 
   @IsOptional()
   wardCode: number;
-
-  @IsOptional()
-  city: string;
-
-  @IsOptional()
-  district: string;
-
-  @IsOptional()
-  ward: string;
 }

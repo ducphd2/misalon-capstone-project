@@ -38,26 +38,6 @@ export interface Merchant {
   ward?: string | undefined;
 }
 
-export interface Group {
-  /** default field */
-  id: number;
-  createdAt?: string | undefined;
-  updatedAt?: string | undefined;
-  deletedAt?: string | undefined;
-  createdBy?: string | undefined;
-  updatedBy?: string | undefined;
-  deletedBy?:
-    | string
-    | undefined;
-  /** reserved field */
-  merchantId?: number | undefined;
-  sku?: string | undefined;
-  code?: string | undefined;
-  name?: string | undefined;
-  description?: string | undefined;
-  image?: string | undefined;
-}
-
 export interface Service {
   /** default field */
   id: number;
@@ -71,7 +51,6 @@ export interface Service {
     | undefined;
   /** reserved field */
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   price?: number | undefined;
   initialPrice?: number | undefined;
   capitalPrice?: number | undefined;
@@ -83,8 +62,6 @@ export interface Service {
   description?: string | undefined;
   image?: string | undefined;
   type?: EServiceType | undefined;
-  showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: boolean | undefined;
 }
 
 export interface Branch {

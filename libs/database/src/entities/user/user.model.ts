@@ -1,8 +1,10 @@
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { hash } from 'argon2';
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
 
+import { FeedbackModel, MerchantModel } from '../merchant';
+import { BookingModel } from '../booking';
 import { BaseModel } from '../base.model';
 
 import { ELangNumber } from '@/api-gateway/dtos';
@@ -15,6 +17,9 @@ import { ELangNumber } from '@/api-gateway/dtos';
 export class UserModel extends BaseModel<UserModel> {
   @Column({ type: DataType.TEXT })
   email?: string;
+
+  @Column({ type: DataType.TEXT })
+  subdomain?: string;
 
   @Column({ type: DataType.TEXT })
   password?: string;
@@ -31,9 +36,6 @@ export class UserModel extends BaseModel<UserModel> {
   @Column({ type: DataType.TEXT })
   fullName?: string;
 
-  @Column({ type: DataType.BOOLEAN })
-  isRetailCustomer?: boolean;
-
   @Column({ type: DataType.TEXT })
   contact?: string;
 
@@ -41,16 +43,10 @@ export class UserModel extends BaseModel<UserModel> {
   phoneNumber?: string;
 
   @Column({ type: DataType.INTEGER })
-  dobDay?: number;
-
-  @Column({ type: DataType.INTEGER })
-  dobMonth?: number;
-
-  @Column({ type: DataType.INTEGER })
-  dobYear?: number;
+  age?: number;
 
   @Column({ type: DataType.TEXT })
-  occupation?: string;
+  job?: string;
 
   @Column({ type: DataType.TEXT })
   avatar?: string;
@@ -58,59 +54,11 @@ export class UserModel extends BaseModel<UserModel> {
   @Column({ type: DataType.TEXT })
   address?: string;
 
-  @Column({ type: DataType.TEXT })
-  cityCode?: number;
-
-  @Column({ type: DataType.TEXT })
-  districtCode?: number;
-
-  @Column({ type: DataType.TEXT })
-  wardCode?: number;
-
   @Column({ type: DataType.INTEGER })
   level?: ECustomerLevel;
 
   @Column({ type: DataType.TEXT })
-  referrer?: string;
-
-  @Column({ type: DataType.TEXT })
-  referrerCode?: string;
-
-  @Column({ type: DataType.TEXT })
-  customerCode?: string;
-
-  @Column({ type: DataType.TEXT })
-  facebook?: string;
-
-  @Column({ type: DataType.TEXT })
-  zaloPhone?: string;
-
-  @Column({ type: DataType.INTEGER })
-  height?: number;
-
-  @Column({ type: DataType.INTEGER })
-  weight?: number;
-
-  @Column({ type: DataType.TEXT })
-  memberCardNo?: string;
-
-  @Column({ type: DataType.TEXT })
-  company?: string;
-
-  @Column({ type: DataType.TEXT })
-  taxNo?: string;
-
-  @Column({ type: DataType.TEXT })
   note?: string;
-
-  @Column({ type: DataType.TEXT })
-  relatedUser?: string;
-
-  @Column({ type: DataType.TEXT })
-  relatedUserRole?: string;
-
-  @Column({ type: DataType.TEXT })
-  relatedUserPhone?: string;
 
   @Column({ type: DataType.INTEGER })
   branchId?: number;
@@ -145,8 +93,16 @@ export class UserModel extends BaseModel<UserModel> {
   })
   search?: string;
 
+  @HasMany(() => BookingModel)
+  bookings?: BookingModel[];
+
+  @HasMany(() => FeedbackModel)
+  feedbacks?: FeedbackModel[];
+
+  @HasOne(() => MerchantModel)
+  merchant?: MerchantModel;
+
   @BeforeCreate
-  @BeforeUpdate
   static async hashPassword(user: UserModel) {
     if (!user.password) return;
     user.password = await hash(user.password);

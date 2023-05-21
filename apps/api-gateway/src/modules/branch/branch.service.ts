@@ -1,8 +1,7 @@
 import { ErrorHelper } from '@libs/core';
-import { UserModel } from '@libs/database/entities';
+import { MessageComponent } from '@libs/modules';
 import { Injectable } from '@nestjs/common';
 import { isEmpty, merge } from 'lodash';
-import { MessageComponent } from '@libs/modules';
 
 import { BaseQueryDto, CreateBranchInput, PartialUpdateBranch } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';

@@ -15,10 +15,6 @@ export class CreateBranchInput {
   address?: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  merchantId: number;
-
-  @IsNumber()
   @IsOptional()
   cityCode?: number;
 
