@@ -3,7 +3,6 @@ import * as BranchProto from './protos/branch';
 import * as CommonProto from './protos/commons';
 import * as DeviceProto from './protos/device';
 import * as FeedbackProto from './protos/feedback';
-import * as GroupProto from './protos/group';
 import * as MerchantProto from './protos/merchant';
 import * as NotificationProto from './protos/notification';
 import * as PaymentProto from './protos/payment';
@@ -21,7 +20,6 @@ export {
   CommonProto,
   DeviceProto,
   FeedbackProto,
-  GroupProto,
   MerchantProto,
   NotificationProto,
   PaymentProto,

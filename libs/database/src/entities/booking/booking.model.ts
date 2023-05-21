@@ -1,7 +1,23 @@
 import { toUFT8NonSpecialCharacters } from '@libs/core';
-import { BaseModel } from '@libs/database/entities/base.model';
 import { EBookingStatus } from '@libs/grpc-types/protos/commons';
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import {
+  BeforeCreate,
+  BeforeUpdate,
+  BelongsTo,
+  BelongsToAssociation,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Table,
+} from 'sequelize-typescript';
+
+import { BaseModel } from '../base.model';
+import { BranchModel, FeedbackModel, ServiceModel } from '../merchant';
+import { UserModel } from '../user';
+
+import { BookingServiceModel } from './booking-service.model';
 
 @Table({
   modelName: 'booking',
@@ -12,29 +28,28 @@ export class BookingModel extends BaseModel<BookingModel> {
   @Column({ type: DataType.INTEGER })
   status?: EBookingStatus;
 
-  @Column({ type: DataType.TEXT })
-  serviceName?: string;
-
-  @Column({ type: DataType.INTEGER })
-  serviceId?: number;
-
+  @ForeignKey(() => UserModel)
   @Column({ type: DataType.INTEGER })
   userId?: number;
 
-  @Column({ type: DataType.TEXT })
-  userEmail?: number;
-
-  @Column({ type: DataType.TEXT })
-  userPhoneNumber?: number;
+  @ForeignKey(() => BranchModel)
+  @Column({ type: DataType.INTEGER })
+  branchId?: number;
 
   @Column({ type: DataType.INTEGER })
   merchantId?: number;
 
-  @Column({ type: DataType.INTEGER })
-  branchId?: number;
-
   @Column({ type: DataType.TEXT })
   startTime?: string;
+
+  @Column({ type: DataType.TEXT })
+  customerEmail?: string;
+
+  @Column({ type: DataType.TEXT })
+  customerPhoneNumber?: string;
+
+  @Column({ type: DataType.TEXT })
+  customerName?: string;
 
   @Column({ type: DataType.TEXT })
   endTime?: string;
@@ -48,20 +63,23 @@ export class BookingModel extends BaseModel<BookingModel> {
   @Column({ type: DataType.TEXT })
   bookingDate?: string;
 
-  @Column({ type: DataType.INTEGER })
-  durationHour?: number;
-
-  @Column({ type: DataType.INTEGER })
-  durationMinute?: number;
-
-  @Column({ type: DataType.INTEGER })
-  duration?: number;
-
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
   search?: string;
+
+  @BelongsTo(() => BranchModel)
+  branch?: BranchModel;
+
+  @BelongsTo(() => UserModel)
+  user?: UserModel;
+
+  @BelongsToMany(() => ServiceModel, () => BookingServiceModel)
+  services?: ServiceModel[];
+
+  @HasMany(() => FeedbackModel)
+  feedbacks?: FeedbackModel[];
 
   @BeforeCreate
   @BeforeUpdate

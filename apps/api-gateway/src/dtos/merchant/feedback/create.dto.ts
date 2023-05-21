@@ -24,10 +24,6 @@ export class CreateInput {
 
   @IsOptional()
   @IsInt()
-  groupId?: number;
-
-  @IsOptional()
-  @IsInt()
   bookingId?: number;
 
   @IsNotEmpty()

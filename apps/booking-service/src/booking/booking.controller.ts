@@ -14,20 +14,24 @@ export class BookingController implements BookingProto.BookingServiceController 
   constructor(private readonly bookingService: BookingService) {}
   async findAll(request: QueryRequest): Promise<BookingProto.Bookings> {
     const items = await this.bookingService.findAll(request);
-    return { items };
+    return { items } as any;
   }
 
   async find(request: QueryRequest): Promise<any> {
-    return await this.bookingService.find(request);
+    try {
+      return await this.bookingService.find(request);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findById(request: Id): Promise<BookingProto.NullableBooking> {
-    return await this.bookingService.findById(request.id);
+    return (await this.bookingService.findById(request.id)) as any;
   }
 
   async findOne(request: QueryRequest): Promise<BookingProto.NullableBooking> {
     const booking = await this.bookingService.findOne(request);
-    return { booking };
+    return { booking } as any;
   }
 
   async count(request: QueryRequest): Promise<Count> {
@@ -38,11 +42,11 @@ export class BookingController implements BookingProto.BookingServiceController 
   async create(request: BookingProto.CreateBookingInput): Promise<BookingProto.Booking> {
     const result = await this.bookingService.create(request);
 
-    return result;
+    return result as any;
   }
 
   async update(request: BookingProto.UpdateBookingInput): Promise<BookingProto.Booking> {
-    return await this.bookingService.update(request);
+    return (await this.bookingService.update(request)) as any;
   }
 
   async delete(request: Id): Promise<Count> {

@@ -2,7 +2,7 @@ import { EServiceType } from '@libs/grpc-types/protos/merchant_common';
 import { PartialType } from '@nestjs/mapped-types';
 import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
-export class CreateServiceInput {
+export class MerchantCreateServiceInput {
   @IsString()
   @IsNotEmpty()
   name?: string;
@@ -46,4 +46,4 @@ export class CreateServiceInput {
   type?: EServiceType;
 }
 
-export class PartialUpdateService extends PartialType(CreateServiceInput) {}
+export class PartialMerchantUpdateService extends PartialType(MerchantCreateServiceInput) {}

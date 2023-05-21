@@ -1,4 +1,4 @@
-import { MerchantModel } from '@libs/database/entities';
+import { BranchModel, MerchantModel, ServiceModel } from '@libs/database/entities';
 import { MerchantRepository } from '@libs/database/repositories';
 import { CommonProto, MerchantProto } from '@libs/grpc-types';
 import { CreateMerchantResponse } from '@libs/grpc-types/protos/merchant';
@@ -14,7 +14,7 @@ export class MerchantService {
   async create(dto: MerchantProto.CreateInput): Promise<CreateMerchantResponse> {
     const merchant = await this.merchantRepository.create(dto);
     const branch = await this.branchService.create({ ...dto, merchantId: merchant.id });
-    return { merchant, branch };
+    return { merchant, branch } as any;
   }
 
   async find(request: CommonProto.QueryRequest): Promise<MerchantModel[]> {
@@ -44,7 +44,8 @@ export class MerchantService {
     const result = await this.merchantRepository.findOne({
       ...dto,
       where,
-      raw: true,
+      include: [BranchModel, ServiceModel],
+      nest: true,
     });
 
     return result;

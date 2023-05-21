@@ -1,10 +1,10 @@
-import { MerchantDatabaseModule } from '@libs/database/connection/merchant';
+import { DatabaseModule } from '@libs/database';
 import { Module } from '@nestjs/common';
 
 import { BranchModule } from './branch/branch.module';
 import { MerchantModule } from './merchant/merchant.module';
 
 @Module({
-  imports: [MerchantDatabaseModule, MerchantModule, BranchModule],
+  imports: [DatabaseModule, MerchantModule, BranchModule],
 })
 export class AppModule {}

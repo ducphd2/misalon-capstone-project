@@ -1,12 +1,25 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Branch, Branches, BranchPagination, CreateBranchInput, NullableBranch, UpdateBranchInput } from "./branch";
+import {
+  Branch as Branch1,
+  Branches,
+  BranchPagination,
+  CreateBranchInput,
+  NullableBranch,
+  UpdateBranchInput,
+} from "./branch";
 import { Count, Id, PageMeta, QueryRequest } from "./commons";
-import { CreateInput as CreateInput1, Feedback, ItemPagination, NullableItem, UpdateInput } from "./feedback";
+import { CreateInput as CreateInput3, Feedback, ItemPagination, NullableItem, UpdateInput } from "./feedback";
 import { NullValue } from "./google/protobuf/struct";
-import { CreateGroupInput, Group, GroupPagination, NullableGroup, UpdateGroupInput } from "./group";
-import { CreateServiceInput, NullableService, Service, ServicePagination, UpdateServiceInput } from "./service";
+import { Branch, Service } from "./merchant_common";
+import {
+  CreateServiceInput,
+  NullableService,
+  Service as Service2,
+  ServicePagination,
+  UpdateServiceInput,
+} from "./service";
 
 export const protobufPackage = "merchant";
 
@@ -43,6 +56,7 @@ export interface CreateInput {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  subdomain?: string | undefined;
 }
 
 export interface Merchant {
@@ -69,6 +83,8 @@ export interface Merchant {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  branches: Branch[];
+  services: Service[];
 }
 
 export interface NullableMerchant {
@@ -78,7 +94,7 @@ export interface NullableMerchant {
 
 export interface CreateMerchantResponse {
   merchant: Merchant | undefined;
-  branch: Branch | undefined;
+  branch: Branch1 | undefined;
 }
 
 export interface Merchants {
@@ -94,7 +110,6 @@ export interface OverviewStatistic {
   customer?: number | undefined;
   booking?: number | undefined;
   branch?: number | undefined;
-  group?: number | undefined;
   service?: number | undefined;
   operator?: number | undefined;
 }
@@ -124,25 +139,11 @@ export interface MerchantServiceClient {
 
   findBranchById(request: Id): Observable<NullableBranch>;
 
-  createBranch(request: CreateBranchInput): Observable<Branch>;
+  createBranch(request: CreateBranchInput): Observable<Branch1>;
 
-  updateBranch(request: UpdateBranchInput): Observable<Branch>;
+  updateBranch(request: UpdateBranchInput): Observable<Branch1>;
 
   deleteBranch(request: Id): Observable<Count>;
-
-  /** group */
-
-  group(request: QueryRequest): Observable<NullableGroup>;
-
-  groups(request: QueryRequest): Observable<GroupPagination>;
-
-  findGroupById(request: Id): Observable<NullableGroup>;
-
-  createGroup(request: CreateGroupInput): Observable<Group>;
-
-  updateGroup(request: UpdateGroupInput): Observable<Group>;
-
-  deleteGroup(request: Id): Observable<Count>;
 
   /** service */
 
@@ -152,9 +153,9 @@ export interface MerchantServiceClient {
 
   findServiceById(request: Id): Observable<NullableService>;
 
-  createService(request: CreateServiceInput): Observable<Service>;
+  createService(request: CreateServiceInput): Observable<Service2>;
 
-  updateService(request: UpdateServiceInput): Observable<Service>;
+  updateService(request: UpdateServiceInput): Observable<Service2>;
 
   deleteService(request: Id): Observable<Count>;
 
@@ -166,7 +167,7 @@ export interface MerchantServiceClient {
 
   findFeedbackById(request: Id): Observable<NullableItem>;
 
-  createFeedback(request: CreateInput1): Observable<Feedback>;
+  createFeedback(request: CreateInput3): Observable<Feedback>;
 
   updateFeedback(request: UpdateInput): Observable<Feedback>;
 
@@ -202,25 +203,11 @@ export interface MerchantServiceController {
 
   findBranchById(request: Id): Promise<NullableBranch> | Observable<NullableBranch> | NullableBranch;
 
-  createBranch(request: CreateBranchInput): Promise<Branch> | Observable<Branch> | Branch;
+  createBranch(request: CreateBranchInput): Promise<Branch1> | Observable<Branch1> | Branch1;
 
-  updateBranch(request: UpdateBranchInput): Promise<Branch> | Observable<Branch> | Branch;
+  updateBranch(request: UpdateBranchInput): Promise<Branch1> | Observable<Branch1> | Branch1;
 
   deleteBranch(request: Id): Promise<Count> | Observable<Count> | Count;
-
-  /** group */
-
-  group(request: QueryRequest): Promise<NullableGroup> | Observable<NullableGroup> | NullableGroup;
-
-  groups(request: QueryRequest): Promise<GroupPagination> | Observable<GroupPagination> | GroupPagination;
-
-  findGroupById(request: Id): Promise<NullableGroup> | Observable<NullableGroup> | NullableGroup;
-
-  createGroup(request: CreateGroupInput): Promise<Group> | Observable<Group> | Group;
-
-  updateGroup(request: UpdateGroupInput): Promise<Group> | Observable<Group> | Group;
-
-  deleteGroup(request: Id): Promise<Count> | Observable<Count> | Count;
 
   /** service */
 
@@ -230,9 +217,9 @@ export interface MerchantServiceController {
 
   findServiceById(request: Id): Promise<NullableService> | Observable<NullableService> | NullableService;
 
-  createService(request: CreateServiceInput): Promise<Service> | Observable<Service> | Service;
+  createService(request: CreateServiceInput): Promise<Service2> | Observable<Service2> | Service2;
 
-  updateService(request: UpdateServiceInput): Promise<Service> | Observable<Service> | Service;
+  updateService(request: UpdateServiceInput): Promise<Service2> | Observable<Service2> | Service2;
 
   deleteService(request: Id): Promise<Count> | Observable<Count> | Count;
 
@@ -244,7 +231,7 @@ export interface MerchantServiceController {
 
   findFeedbackById(request: Id): Promise<NullableItem> | Observable<NullableItem> | NullableItem;
 
-  createFeedback(request: CreateInput1): Promise<Feedback> | Observable<Feedback> | Feedback;
+  createFeedback(request: CreateInput3): Promise<Feedback> | Observable<Feedback> | Feedback;
 
   updateFeedback(request: UpdateInput): Promise<Feedback> | Observable<Feedback> | Feedback;
 
@@ -273,12 +260,6 @@ export function MerchantServiceControllerMethods() {
       "createBranch",
       "updateBranch",
       "deleteBranch",
-      "group",
-      "groups",
-      "findGroupById",
-      "createGroup",
-      "updateGroup",
-      "deleteGroup",
       "service",
       "services",
       "findServiceById",

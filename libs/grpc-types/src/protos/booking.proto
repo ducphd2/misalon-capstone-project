@@ -5,6 +5,7 @@ package booking;
 import "commons.proto";
 import "google/protobuf/struct.proto";
 import "user_common.proto";
+import "merchant_common.proto";
 
 service BookingService {
   rpc find(commons.QueryRequest) returns (BookingPagination) {}
@@ -30,59 +31,50 @@ message Booking {
   // reserved field
   optional commons.EBookingStatus status = 8;
   optional int32 userId = 9;
-  optional int32 serviceId = 10;
+  repeated int32 serviceIds = 10;
   optional string startTime = 11;
   optional string endTime = 12;
-  optional int32 duration = 13;
   optional string note = 14;
   optional int32 merchantId = 15;
   optional int32 branchId = 16;
   optional bool isCustomerCancel = 17;
   optional string cancelReason = 18;
   optional string bookingDate = 19;
-  optional bool isAdminUpdate = 20;
-  optional int32 adminUpdateId = 21;
-  optional string serviceName = 22;
-  optional string customerName = 23;
-  optional string customerEmail = 24;
-  optional string customerAddress = 25;
-  optional int32 durationHour = 26;
-  optional int32 durationMinute = 27;
-  optional user_common.User user = 28;
+  optional string customerEmail = 20;
+  optional string customerPhoneNumber = 21;
+  optional string customerName = 22;
+  optional user_common.User user = 23;
+  repeated merchant_common.Service services = 24;
 }
 
 message CreateBookingInput {
   optional commons.EBookingStatus status = 1;
   optional int32 userId = 2;
-  optional int32 serviceId = 3;
+  repeated int32 serviceIds = 3;
   optional string startTime = 4;
   optional string endTime = 5;
-  optional string adminBranchEmail = 6;
-  optional string customerEmail = 7;
+  optional string customerEmail = 6;
+  optional string customerPhoneNumber = 7;
   optional string customerName = 8;
   optional string bookingDate = 9;
   optional string note = 10;
   optional int32 merchantId = 11;
   optional int32 branchId = 12;
-  optional string serviceName = 13;
 }
 
 message UpdateBookingData {
-  oneof kind {
-    commons.EBookingStatus status = 1;
-    int32 userId = 2;
-    int32 serviceId = 3;
-    string startTime = 4;
-    string endTime = 5;
-    string adminBranchEmail = 6;
-    string customerEmail = 7;
-    string customerName = 8;
-    string bookingDate = 9;
-    string note = 10;
-    int32 merchantId = 11;
-    int32 branchId = 12;
-    string serviceName = 13;
-  }
+  optional commons.EBookingStatus status = 1;
+  optional int32 userId = 2;
+  repeated int32 serviceIds = 3;
+  optional string startTime = 4;
+  optional string endTime = 5;
+  optional string customerEmail = 6;
+  optional string customerPhoneNumber = 7;
+  optional string customerName = 8;
+  optional string bookingDate = 9;
+  optional string note = 10;
+  optional int32 merchantId = 11;
+  optional int32 branchId = 12;
 }
 
 message UpdateBookingInput {

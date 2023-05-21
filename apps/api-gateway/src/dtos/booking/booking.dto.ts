@@ -1,11 +1,17 @@
 import { CommonProto } from '@libs/grpc-types';
 import { PartialType } from '@nestjs/mapped-types';
-import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateBookingInput {
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
   @IsNotEmpty()
+  serviceIds: number[];
+
   @IsInt()
-  serviceId: number;
+  @IsPositive()
+  @IsNotEmpty()
+  branchId?: number;
 
   @IsOptional()
   @IsEnum(CommonProto.EBookingStatus)
@@ -25,27 +31,11 @@ export class CreateBookingInput {
 
   @IsOptional()
   @IsString()
-  serviceName?: string;
-
-  @IsOptional()
-  @IsString()
-  userEmail?: string;
-
-  @IsOptional()
-  @IsString()
-  userPhoneNumber?: string;
-
-  @IsOptional()
-  @IsString()
   note?: string;
 
   @IsOptional()
   @IsInt()
   merchantId?: number;
-
-  @IsOptional()
-  @IsInt()
-  branchId?: number;
 
   @IsOptional()
   @IsInt()

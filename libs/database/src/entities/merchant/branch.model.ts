@@ -1,5 +1,6 @@
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
+import { MerchantModel } from '@libs/database/entities/merchant/merchant.model';
 
 import { BaseModel } from '../base.model';
 
@@ -9,6 +10,7 @@ import { BaseModel } from '../base.model';
   underscored: true,
 })
 export class BranchModel extends BaseModel<BranchModel> {
+  @ForeignKey(() => MerchantModel)
   @Column({ type: DataType.INTEGER, allowNull: false })
   merchantId?: number;
 
@@ -63,6 +65,9 @@ export class BranchModel extends BaseModel<BranchModel> {
     allowNull: true,
   })
   search?: string;
+
+  @BelongsTo(() => MerchantModel)
+  merchant?: MerchantModel;
 
   @BeforeCreate
   @BeforeUpdate

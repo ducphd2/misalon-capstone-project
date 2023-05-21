@@ -1,18 +1,23 @@
 import { COMMON_MESSAGE, EBullEvent, ErrorHelper, MERCHANT_MESSAGE, USER_MESSAGE } from '@libs/core';
 import { UserModel } from '@libs/database/entities';
-import { MerchantPagination } from '@libs/grpc-types/protos/merchant';
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
-import { isEmpty, merge } from 'lodash';
 import { BullQueueProvider, MessageComponent } from '@libs/modules';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { isEmpty } from 'lodash';
 
-import { Admin, JwtAuthGuard, User } from '@/api-gateway/core';
-import { BaseQueryDto, GetMerchantUserDto, MerchantAddOperatorDto } from '@/api-gateway/dtos';
+import { Admin, JwtAuthGuard, Token, User } from '@/api-gateway/core';
+import {
+  CreateBookingInput,
+  CreateBranchInput,
+  MerchantAddOperatorDto,
+  MerchantCreateServiceInput,
+  TokenDto,
+} from '@/api-gateway/dtos';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 
 @Controller('merchants')
-export class MerchantController {
+export class MerchantMutationController {
   constructor(
     private readonly merchantService: MerchantCommonService,
     private readonly bookingService: BookingCommonService,
@@ -20,58 +25,6 @@ export class MerchantController {
     private readonly bullQueueProvider: BullQueueProvider,
     private readonly i18n: MessageComponent,
   ) {}
-
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async findAllMerchants(@Query() query: BaseQueryDto): Promise<MerchantPagination> {
-    let where = null;
-
-    if (!isEmpty(query?.q)) {
-      where = {
-        search: {
-          _iLike: `%${query?.q}%`,
-        },
-      };
-    }
-
-    const result = await this.merchantService.find({
-      ...query,
-      where: where ? JSON.stringify(where) : null,
-    });
-    return result;
-  }
-
-  @Get(':id/branches')
-  @UseGuards(JwtAuthGuard)
-  @Admin()
-  async findBranches(@User() admin: UserModel, @Param('id') id: number, @Query() query?: BaseQueryDto) {
-    const result = await this.merchantService.findAllBranches(id, query);
-    return result;
-  }
-
-  @Get(':id/groups')
-  @UseGuards(JwtAuthGuard)
-  @Admin()
-  async findGroups(@User() admin: UserModel, @Param('id') id: number, @Query() query?: BaseQueryDto) {
-    const result = await this.merchantService.findAllGroups(id, query);
-    return result;
-  }
-
-  @Get(':id/services')
-  @UseGuards(JwtAuthGuard)
-  @Admin()
-  async findServices(@Param('id') id: number, @Query() query?: BaseQueryDto) {
-    const result = await this.merchantService.findAllServices(query, id);
-    return result;
-  }
-
-  @Get(':id/bookings')
-  @UseGuards(JwtAuthGuard)
-  @Admin()
-  async findBookings(@Param('id') id: number, @Query() query?: BaseQueryDto) {
-    const result = await this.bookingService.findBookings(query, id);
-    return result;
-  }
 
   @Post(':id/users')
   @UseGuards(JwtAuthGuard)
@@ -113,10 +66,15 @@ export class MerchantController {
     };
   }
 
-  @Get(':id/users')
+  @Post(':id/branches')
   @UseGuards(JwtAuthGuard)
   @Admin()
-  async findUsers(@User() admin: UserModel, @Param('id') id: number, @Query() query?: GetMerchantUserDto) {
+  async createBranch(
+    @User() admin: UserModel,
+    @Param('id') id: number,
+    @Body() data: CreateBranchInput,
+    @Token() { lang }: TokenDto,
+  ) {
     const { merchant } = await this.merchantService.findById({ id });
 
     if (isEmpty(merchant)) {
@@ -127,27 +85,65 @@ export class MerchantController {
       ErrorHelper.HttpBadRequestException(COMMON_MESSAGE.INVALID);
     }
 
-    const baseWhere = {
-      merchantId: id,
+    const branch = await this.merchantService.createBranch({ ...data, merchantId: id });
+
+    return {
+      message: this.i18n.lang('lang.BRANCH.CREATE.SUCCESS', { lang }),
+      branch,
     };
-
-    if (query.branchId) {
-      merge(baseWhere, {
-        branchId: query.branchId,
-      });
-    }
-
-    const result = await this.userService.find({
-      ...query,
-      where: JSON.stringify(baseWhere),
-    });
-    return result;
   }
 
-  @Get(':id')
+  @Post(':id/services')
   @UseGuards(JwtAuthGuard)
-  async getMerchantDetail(@Param('id') id: number) {
+  @Admin()
+  async createService(
+    @User() admin: UserModel,
+    @Param('id') id: number,
+    @Body() data: MerchantCreateServiceInput,
+    @Token() { lang }: TokenDto,
+  ) {
     const { merchant } = await this.merchantService.findById({ id });
-    return { merchant };
+
+    if (isEmpty(merchant)) {
+      ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
+    }
+
+    if (merchant.userId !== admin.id) {
+      ErrorHelper.HttpBadRequestException(COMMON_MESSAGE.INVALID);
+    }
+
+    const service = await this.merchantService.createService({ ...data, merchantId: id });
+
+    return {
+      message: this.i18n.lang('lang.SERVICE.CREATE.SUCCESS', { lang }),
+      service,
+    };
+  }
+
+  @Post(':id/bookings')
+  @UseGuards(JwtAuthGuard)
+  @Admin()
+  async createBooking(
+    @User() admin: UserModel,
+    @Param('id') id: number,
+    @Body() data: CreateBookingInput,
+    @Token() { lang }: TokenDto,
+  ) {
+    const { merchant } = await this.merchantService.findById({ id });
+
+    if (isEmpty(merchant)) {
+      ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
+    }
+
+    if (merchant.userId !== admin.id) {
+      ErrorHelper.HttpBadRequestException(COMMON_MESSAGE.INVALID);
+    }
+
+    const booking = await this.bookingService.create({ ...data, merchantId: id });
+
+    return {
+      message: this.i18n.lang('lang.SERVICE.CREATE.SUCCESS', { lang }),
+      booking,
+    };
   }
 }

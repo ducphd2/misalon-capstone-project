@@ -11,7 +11,6 @@ export enum EFeedbackType {
 
 export interface UpdateData {
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   serviceId?: number | undefined;
   bookingId?: number | undefined;
   rating?: number | undefined;
@@ -26,7 +25,6 @@ export interface UpdateInput {
 
 export interface CreateInput {
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   serviceId?: number | undefined;
   bookingId?: number | undefined;
   rating?: number | undefined;
@@ -48,7 +46,6 @@ export interface Feedback {
     | undefined;
   /** reserved field */
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   serviceId?: number | undefined;
   bookingId?: number | undefined;
   rating?: number | undefined;

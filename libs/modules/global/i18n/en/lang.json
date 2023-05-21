@@ -19,23 +19,6 @@
       "FAIL": "Deleted branch fail"
     }
   },
-  "GROUP": {
-    "CREATE": {
-      "SUCCESS": "Created group successfully",
-      "FAIL": "Created group fail"
-    },
-    "READ": {
-      "NOT_EXIST": "This group does not exist."
-    },
-    "UPDATE": {
-      "SUCCESS": "Updated group successfully",
-      "FAIL": "Updated group fail"
-    },
-    "DELETE": {
-      "SUCCESS": "Deleted group successfully",
-      "FAIL": "Deleted group fail"
-    }
-  },
   "SERVICE": {
     "CREATE": {
       "SUCCESS": "Created service successfully",

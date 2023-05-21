@@ -1,10 +1,10 @@
-import { BookingDatabaseModule } from '@libs/database';
-import { Module } from '@nestjs/common';
+import { DatabaseModule } from '@libs/database';
 import { BullQueueModule } from '@libs/modules';
+import { Module } from '@nestjs/common';
 
 import { BookingModule } from './booking/booking.module';
 
 @Module({
-  imports: [BookingDatabaseModule, BookingModule, BullQueueModule],
+  imports: [DatabaseModule, BookingModule, BullQueueModule],
 })
 export class AppModule {}

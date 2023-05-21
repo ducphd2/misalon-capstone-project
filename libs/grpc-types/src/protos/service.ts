@@ -19,10 +19,8 @@ export enum EServiceType {
 
 export interface UpdateServiceData {
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   price?: number | undefined;
   initialPrice?: number | undefined;
-  capitalPrice?: number | undefined;
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;
@@ -31,8 +29,6 @@ export interface UpdateServiceData {
   description?: string | undefined;
   image?: string | undefined;
   type?: EServiceType | undefined;
-  showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: boolean | undefined;
 }
 
 export interface UpdateServiceInput {
@@ -42,20 +38,15 @@ export interface UpdateServiceInput {
 
 export interface CreateServiceInput {
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   price?: number | undefined;
   initialPrice?: number | undefined;
-  capitalPrice?: number | undefined;
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;
-  code?: string | undefined;
   name?: string | undefined;
   description?: string | undefined;
   image?: string | undefined;
   type?: EServiceType | undefined;
-  showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: boolean | undefined;
 }
 
 export interface Service {
@@ -71,10 +62,8 @@ export interface Service {
     | undefined;
   /** reserved field */
   merchantId?: number | undefined;
-  groupId?: number | undefined;
   price?: number | undefined;
   initialPrice?: number | undefined;
-  capitalPrice?: number | undefined;
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;
@@ -83,8 +72,6 @@ export interface Service {
   description?: string | undefined;
   image?: string | undefined;
   type?: EServiceType | undefined;
-  showType?: EServiceShowType | undefined;
-  canPrintableInvoice?: boolean | undefined;
   merchant?: Merchant | undefined;
 }
 

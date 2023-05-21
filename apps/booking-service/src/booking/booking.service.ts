@@ -1,4 +1,10 @@
-import { BookingRepository } from '@libs/database';
+import {
+  BookingRepository,
+  BookingServiceModel,
+  BookingServiceRepository,
+  ServiceModel,
+  UserModel,
+} from '@libs/database';
 import { BookingProto, CommonProto, NotificationProto, UserProto } from '@libs/grpc-types';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -12,6 +18,7 @@ export class BookingService implements OnModuleInit {
 
   constructor(
     private readonly bookingRepository: BookingRepository,
+    private readonly bookingServiceRepository: BookingServiceRepository,
     @Inject(NotificationProto.NOTIFICATION_PACKAGE_NAME) private notificationClient: ClientGrpc,
     @Inject(UserProto.DUCPH_USER_PACKAGE_NAME) private userClient: ClientGrpc,
   ) {}
@@ -25,45 +32,30 @@ export class BookingService implements OnModuleInit {
 
   async create(dto: BookingProto.CreateBookingInput) {
     const booking = await this.bookingRepository.create(dto);
+
+    await Promise.all(
+      dto.serviceIds.map((id) => this.bookingServiceRepository.create({ bookingId: booking.id, serviceId: id })),
+    );
+
     await firstValueFrom(this.notificationService.createBookingNotification({ ...booking, ...dto }));
+
     return booking;
   }
 
   async find(request: CommonProto.QueryRequest) {
     const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
 
-    const { items, meta } = await this.bookingRepository.findAndPaginate({
-      ...request,
-      where: baseWhereQuery,
-    });
-
-    if (!items.length) return { items, meta };
-
-    const userObservables = items.map((booking) => {
-      return this.userService.findById({ id: booking.userId });
-    });
-
-    // Use forkJoin to wait for all the userObservables to complete and retrieve the user information for all bookings
-    const bookingsWithUser$ = forkJoin(userObservables).pipe(
-      map((userResponses) => {
-        return items.map((booking, index) => {
-          return {
-            ...booking,
-            user: userResponses[index].user,
-          };
-        });
-      }),
+    const result = await this.bookingRepository.findAndPaginate(
+      {
+        ...request,
+        where: baseWhereQuery,
+      },
+      {
+        include: [ServiceModel, UserModel],
+      },
     );
 
-    // Combine the bookingsWithUser$ observable with the meta information using switchMap
-    return bookingsWithUser$.pipe(
-      switchMap((bookingsWithUser) => {
-        return of({
-          items: bookingsWithUser,
-          meta: meta,
-        });
-      }),
-    );
+    return result;
   }
 
   async findAll(request: CommonProto.QueryRequest) {
@@ -72,6 +64,7 @@ export class BookingService implements OnModuleInit {
     const result = await this.bookingRepository.find({
       ...request,
       where: baseWhereQuery,
+      include: [ServiceModel],
     });
 
     return result;

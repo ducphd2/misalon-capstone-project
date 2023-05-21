@@ -1,9 +1,22 @@
-import { EServiceShowType, EServiceType } from '@libs/grpc-types/protos/service';
-import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
-import { toUFT8NonSpecialCharacters } from '@libs/core';
-import { MerchantModel } from '@libs/database/entities/merchant/merchant.model';
+import { generateUniqueSku, toUFT8NonSpecialCharacters } from '@libs/core';
+import { EServiceType } from '@libs/grpc-types/protos/service';
+import {
+  BeforeCreate,
+  BeforeUpdate,
+  BelongsTo,
+  BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Table,
+} from 'sequelize-typescript';
 
+import { BookingModel, BookingServiceModel } from '../booking';
 import { BaseModel } from '../base.model';
+
+import { FeedbackModel } from './feedback.model';
+import { MerchantModel } from './merchant.model';
 
 @Table({
   modelName: 'service',
@@ -11,8 +24,11 @@ import { BaseModel } from '../base.model';
   underscored: true,
 })
 export class ServiceModel extends BaseModel<ServiceModel> {
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  groupId?: number;
+  @Column({ type: DataType.TEXT })
+  name?: string;
+
+  @Column({ type: DataType.TEXT })
+  description?: string;
 
   @ForeignKey(() => MerchantModel)
   @Column({ type: DataType.INTEGER })
@@ -34,25 +50,10 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   sku?: string;
 
   @Column({ type: DataType.TEXT })
-  code?: string;
-
-  @Column({ type: DataType.TEXT })
-  name?: string;
-
-  @Column({ type: DataType.TEXT })
-  description?: string;
-
-  @Column({ type: DataType.TEXT })
   image?: string;
 
   @Column({ type: DataType.INTEGER })
   type?: EServiceType;
-
-  @Column({ type: DataType.INTEGER })
-  showType?: EServiceShowType;
-
-  @Column({ type: DataType.BOOLEAN })
-  canPrintableInvoice?: boolean;
 
   @Column({
     type: DataType.TEXT,
@@ -60,17 +61,31 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   })
   search?: string;
 
-  @BelongsTo(() => MerchantModel, 'merchantId')
+  @BelongsTo(() => MerchantModel)
   merchant?: MerchantModel;
+
+  @HasMany(() => FeedbackModel)
+  feedbacks?: FeedbackModel[];
+
+  @BelongsToMany(() => BookingModel, () => BookingServiceModel)
+  bookings?: BookingModel[];
 
   @BeforeCreate
   @BeforeUpdate
   static async updateSearch(model: ServiceModel) {
-    const columnsToConcatenate = ['name', 'code', 'sku', 'price', 'initialPrice', 'description'];
+    const columnsToConcatenate = ['name', 'sku', 'price', 'initialPrice', 'description'];
     const concatenatedValues = columnsToConcatenate
       .map((columnName) => (model.get(columnName) ? model.get(columnName) : ' '))
       .join(' ');
 
     model.setDataValue('search', concatenatedValues.concat(' ', toUFT8NonSpecialCharacters(concatenatedValues)));
+  }
+
+  @BeforeCreate
+  @BeforeUpdate
+  static async upsertSku(model: ServiceModel) {
+    if (!model.get('sku')) {
+      model.setDataValue('sku', generateUniqueSku(model.get('type') ?? EServiceType.SERVICE));
+    }
   }
 }
