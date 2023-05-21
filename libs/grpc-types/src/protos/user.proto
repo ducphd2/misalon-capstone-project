@@ -86,6 +86,8 @@ message User {
   optional int32 merchantId = 44;
   optional ELangNumber lang = 45;
   optional merchant_common.Branch branch = 46;
+  optional int32  age = 47;
+  optional string job = 48;
 }
 
 message CreateUserInput {
