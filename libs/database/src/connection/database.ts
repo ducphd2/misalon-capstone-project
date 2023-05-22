@@ -43,9 +43,9 @@ import { SecretsModule } from 'libs/modules/global/secrets/module';
           ],
           autoLoadModels: true,
           synchronize: true,
-          sync: {
-            force: true,
-          },
+          // sync: {
+          //   force: true,
+          // },
           // query: {
           //   raw: true,
           // },
