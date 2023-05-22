@@ -14,6 +14,11 @@ import { isEmpty } from 'lodash';
 import * as moment from 'moment';
 import * as qs from 'qs';
 
+interface IBodyPayment {
+  bookingIds: number[];
+  paymentId: number;
+}
+
 @Injectable()
 export class PaymentService implements OnModuleInit {
   private notificationService: NotificationProto.NotificationServiceClient;
@@ -45,7 +50,8 @@ export class PaymentService implements OnModuleInit {
 
     await this.bullQueue.addBookingEvent(EBullEvent.MAKE_PAYMENT_BOOKING, {
       status: EBookingStatus.BOOKING_FINISHED,
-      id: dto.bookingId,
+      bookingIds: dto.bookingIds,
+      paymentId: payment.id,
     });
 
     return {
@@ -179,8 +185,26 @@ export class PaymentService implements OnModuleInit {
     return signed;
   }
 
-  async callback(query: IVnPayParams) {
-    if (query.vnp_TransactionStatus === '00') {
+  checkPaymentStatus(vnpResponse: IVnPayParams) {
+    let vnpParams = vnpResponse;
+    const secureHash = vnpParams.vnp_SecureHash;
+    delete vnpParams.vnp_SecureHash;
+    delete vnpParams.vnp_SecureHashType;
+
+    vnpParams = this.sortObject(vnpParams);
+
+    const signData = qs.stringify(vnpParams);
+
+    const signed = this.makeSignedHash(this.configService.vnpSecretKey, signData);
+
+    if (secureHash === signed && vnpParams.vnp_TransactionStatus === '00') return true;
+    return false;
+  }
+
+  async handleCallbackVnPay(query: IVnPayParams, body: IBodyPayment) {
+    const isSuccess = this.checkPaymentStatus(query);
+
+    if (isSuccess) {
       const result = await this.paymentRepository.update(
         {
           status: EPaymentStatus.FINISHED,
@@ -193,10 +217,17 @@ export class PaymentService implements OnModuleInit {
         },
         {
           where: {
-            code: query.vnp_TxnRef,
+            id: body.paymentId,
           },
         },
       );
+
+      await this.bullQueue.addBookingEvent(EBullEvent.UPDATE_VNPAY_BOOKINGS, {
+        status: EBookingStatus.BOOKING_PAYMENT_FINISHED,
+        bookingIds: body.bookingIds,
+        paymentId: body.paymentId,
+      });
+
       return result[0];
     } else {
       const result = await this.paymentRepository.update(
@@ -205,10 +236,17 @@ export class PaymentService implements OnModuleInit {
         },
         {
           where: {
-            code: query.vnp_TxnRef,
+            id: body.paymentId,
           },
         },
       );
+
+      await this.bullQueue.addBookingEvent(EBullEvent.UPDATE_VNPAY_BOOKINGS, {
+        status: EBookingStatus.BOOKING_PAYMENT_FAILED,
+        bookingIds: body.bookingIds,
+        paymentId: body.paymentId,
+      });
+
       return result[0];
     }
   }

@@ -1,19 +1,16 @@
 import { EPaymentType } from '@libs/core';
 import { PartialType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 import { CreateProductBookingInput } from '../product';
 import { CreateOperatorBookingInput } from '../operator';
 
 export class CreatePaymentInput {
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
   @IsNotEmpty()
-  @IsInt()
-  bookingId: number;
-
-  @IsOptional()
-  @IsInt()
-  serviceId: number;
+  bookingIds: number[];
 
   @IsOptional()
   @IsInt()
@@ -28,6 +25,7 @@ export class CreatePaymentInput {
   branchId?: number;
 
   @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   totalPrice: number;
 

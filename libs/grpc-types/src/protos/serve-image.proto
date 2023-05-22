@@ -20,9 +20,9 @@ message ServiceImage {
   optional string createdAt = 2;
   optional string updatedAt = 3;
   optional string deletedAt = 4;
-  optional string createdBy = 5;
-  optional string updatedBy = 6;
-  optional string deletedBy = 7;
+  optional int32 createdBy = 5;
+  optional int32 updatedBy = 6;
+  optional int32 deletedBy = 7;
 
   // reserved field
   EServeImageType serveType = 8;

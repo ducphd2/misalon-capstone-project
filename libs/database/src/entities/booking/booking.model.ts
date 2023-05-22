@@ -4,7 +4,6 @@ import {
   BeforeCreate,
   BeforeUpdate,
   BelongsTo,
-  BelongsToAssociation,
   BelongsToMany,
   Column,
   DataType,
@@ -15,6 +14,7 @@ import {
 
 import { BaseModel } from '../base.model';
 import { BranchModel, FeedbackModel, ServiceModel } from '../merchant';
+import { PaymentModel } from '../payment';
 import { UserModel } from '../user';
 
 import { BookingServiceModel } from './booking-service.model';
@@ -35,6 +35,10 @@ export class BookingModel extends BaseModel<BookingModel> {
   @ForeignKey(() => BranchModel)
   @Column({ type: DataType.INTEGER })
   branchId?: number;
+
+  @ForeignKey(() => PaymentModel)
+  @Column({ type: DataType.INTEGER })
+  paymentId?: number;
 
   @Column({ type: DataType.INTEGER })
   merchantId?: number;
@@ -74,6 +78,9 @@ export class BookingModel extends BaseModel<BookingModel> {
 
   @BelongsTo(() => UserModel)
   user?: UserModel;
+
+  @BelongsTo(() => PaymentModel)
+  payment?: PaymentModel;
 
   @BelongsToMany(() => ServiceModel, () => BookingServiceModel)
   services?: ServiceModel[];

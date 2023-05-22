@@ -44,7 +44,7 @@ export class PaymentController implements PaymentProto.PaymentServiceController 
 
   async callback(request: PaymentProto.CallbackQuery): Promise<PaymentProto.Payment> {
     try {
-      const result = await this.paymentService.callback(JSON.parse(request.query));
+      const result = await this.paymentService.handleCallbackVnPay(JSON.parse(request.query), JSON.parse(request.body));
 
       return result;
     } catch (error) {

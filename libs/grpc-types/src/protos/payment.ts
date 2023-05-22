@@ -3,6 +3,7 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Count, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
+import { User } from "./user_common";
 
 export const protobufPackage = "payment";
 
@@ -23,10 +24,10 @@ export interface Payment {
   createdAt?: string | undefined;
   updatedAt?: string | undefined;
   deletedAt?: string | undefined;
-  createdBy?: string | undefined;
-  updatedBy?: string | undefined;
+  createdBy?: number | undefined;
+  updatedBy?: number | undefined;
   deletedBy?:
-    | string
+    | number
     | undefined;
   /** reserved field */
   status?: EPaymentStatus | undefined;
@@ -38,13 +39,16 @@ export interface Payment {
   branchId?: number | undefined;
   totalPrice?: number | undefined;
   vnpUrl?: string | undefined;
+  creator?: User | undefined;
+  updater?: User | undefined;
+  user?: User | undefined;
 }
 
 export interface CreatePaymentInput {
   type?: EPaymentType | undefined;
   userId?: number | undefined;
-  serviceId?: number | undefined;
-  bookingId?: number | undefined;
+  createdBy?: number | undefined;
+  bookingIds: number[];
   merchantId?: number | undefined;
   branchId?: number | undefined;
   totalPrice?: number | undefined;
@@ -80,6 +84,7 @@ export interface PaymentPagination {
 
 export interface CallbackQuery {
   query: string;
+  body: string;
 }
 
 export interface Payments {

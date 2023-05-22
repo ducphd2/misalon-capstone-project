@@ -22,8 +22,8 @@ export class PaymentController {
 
   @Get('callback')
   @UseGuards(JwtAuthGuard)
-  async callback(@Query() query: any) {
-    return await this.paymentService.callback(JSON.stringify(query));
+  async callback(@Query() query: any, @Body() data: any) {
+    return await this.paymentService.callback(JSON.stringify(query), JSON.stringify(data));
   }
 
   // @Patch(':id')

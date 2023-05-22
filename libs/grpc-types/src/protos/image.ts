@@ -8,10 +8,10 @@ export interface Image {
   createdAt?: string | undefined;
   updatedAt?: string | undefined;
   deletedAt?: string | undefined;
-  createdBy?: string | undefined;
-  updatedBy?: string | undefined;
+  createdBy?: number | undefined;
+  updatedBy?: number | undefined;
   deletedBy?:
-    | string
+    | number
     | undefined;
   /** reserved field */
   description?: string | undefined;

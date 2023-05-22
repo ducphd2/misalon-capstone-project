@@ -3,6 +3,7 @@ import { hash } from 'argon2';
 import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
 
+import { PaymentModel } from '../payment';
 import { FeedbackModel, MerchantModel } from '../merchant';
 import { BookingModel } from '../booking';
 import { BaseModel } from '../base.model';
@@ -98,6 +99,9 @@ export class UserModel extends BaseModel<UserModel> {
 
   @HasMany(() => FeedbackModel)
   feedbacks?: FeedbackModel[];
+
+  @HasMany(() => PaymentModel)
+  payments?: PaymentModel[];
 
   @HasOne(() => MerchantModel)
   merchant?: MerchantModel;
