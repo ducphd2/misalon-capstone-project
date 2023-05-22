@@ -68,10 +68,11 @@ export class PaymentCommonService implements OnModuleInit {
     return result;
   }
 
-  async callback(query: string) {
+  async callback(query: string, body: string) {
     return await firstValueFrom(
       this.paymentService.callback({
         query,
+        body,
       }),
     );
   }

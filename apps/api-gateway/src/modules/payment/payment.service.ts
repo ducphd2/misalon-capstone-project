@@ -64,8 +64,8 @@ export class PaymentService {
     };
   }
 
-  async callback(query: any) {
-    const payment = await this.paymentService.callback(query);
+  async callback(query: any, body: string) {
+    const payment = await this.paymentService.callback(query, body);
 
     return {
       payment,

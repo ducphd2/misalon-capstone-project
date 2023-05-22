@@ -50,6 +50,8 @@ export enum EBookingStatus {
   BOOKING_REJECT = 3,
   BOOKING_FINISHED = 4,
   BOOKING_PAYMENT_PENDING = 5,
+  BOOKING_PAYMENT_FINISHED = 6,
+  BOOKING_PAYMENT_FAILED = 7,
 }
 
 export interface Id {

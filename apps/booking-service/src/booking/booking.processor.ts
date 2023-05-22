@@ -34,9 +34,13 @@ export class BookingProcessor implements OnModuleInit {
   @Process(EBullEvent.MAKE_PAYMENT_BOOKING)
   async handlePaymentPendingBookingEvent(job: Job<any>) {
     const request = job.data;
-    await this.bookingService.update({
-      id: request.id,
-      data: omit(request, ['id']) as any,
-    });
+    await Promise.all(
+      request.bookingIds.map((bookingId: number) => {
+        this.bookingService.update({
+          id: bookingId,
+          data: omit(request, ['bookingIds']) as any,
+        });
+      }),
+    );
   }
 }

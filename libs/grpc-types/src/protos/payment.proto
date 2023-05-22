@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package payment;
 
-import "commons.proto";
 import "google/protobuf/struct.proto";
+import "commons.proto";
+import "user_common.proto";
 
 enum EPaymentStatus {
   PENDING = 0;
@@ -34,9 +35,9 @@ message Payment {
   optional string createdAt = 2;
   optional string updatedAt = 3;
   optional string deletedAt = 4;
-  optional string createdBy = 5;
-  optional string updatedBy = 6;
-  optional string deletedBy = 7;
+  optional int32 createdBy = 5;
+  optional int32 updatedBy = 6;
+  optional int32 deletedBy = 7;
 
   // reserved field
   optional EPaymentStatus status = 8;
@@ -48,13 +49,16 @@ message Payment {
   optional int32 branchId = 14;
   optional double totalPrice = 15;
   optional string vnpUrl = 16;
+  optional user_common.User creator = 17;
+  optional user_common.User updater = 18;
+  optional user_common.User user = 19;
 }
 
 message CreatePaymentInput {
   optional EPaymentType type = 1;
   optional int32 userId = 2;
-  optional int32 serviceId = 3;
-  optional int32 bookingId = 4;
+  optional int32 createdBy = 3;
+  repeated int32 bookingIds = 4;
   optional int32 merchantId = 5;
   optional int32 branchId = 6;
   optional double totalPrice = 7;
@@ -94,6 +98,7 @@ message PaymentPagination {
 
 message CallbackQuery {
   string query = 1;
+  string body = 2;
 }
 
 message Payments {
