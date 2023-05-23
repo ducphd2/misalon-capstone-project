@@ -89,6 +89,12 @@ export class MerchantQueryController {
       });
     }
 
+    if (query.type.toString()) {
+      merge(baseWhere, {
+        role: query.type,
+      });
+    }
+
     const result = await this.userService.find({
       ...query,
       where: JSON.stringify(baseWhere),

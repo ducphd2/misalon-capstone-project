@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 import { Count, EUserGender, EUserRole, EUserStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
-import { Branch } from "./merchant_common";
+import { Branch, Merchant } from "./merchant_common";
 
 export const protobufPackage = "ducph_user";
 
@@ -41,6 +41,7 @@ export interface User {
   lang?: ELangNumber | undefined;
   branch?: Branch | undefined;
   age?: number | undefined;
+  merchant?: Merchant | undefined;
 }
 
 export interface CreateUserInput {
