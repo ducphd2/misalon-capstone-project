@@ -1,4 +1,4 @@
-import { UserModel } from '@libs/database/entities';
+import { BranchModel, MerchantModel, UserModel } from '@libs/database/entities';
 import { UserRepository } from '@libs/database/repositories';
 import { CommonProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
@@ -83,35 +83,15 @@ export class UserService implements OnModuleInit {
       },
       {
         order: [[query.orderBy, query.orderDirection]],
+        include: [
+          {
+            model: MerchantModel,
+            include: [BranchModel],
+          },
+        ],
       },
     );
-    const { items, meta } = result;
 
-    if (!items.length) return { items, meta };
-
-    const _merchantObservables = items.map((user) => {
-      return this.merchantService.findBranchById({ id: user.branchId });
-    });
-
-    const _userWithBranch = forkJoin(_merchantObservables).pipe(
-      map((merchantResponses) => {
-        return items.map((booking, index) => {
-          return {
-            ...booking,
-            branch: merchantResponses[index].branch,
-          };
-        });
-      }),
-    );
-
-    // Combine the _userWithBranch observable with the meta information using switchMap
-    return _userWithBranch.pipe(
-      switchMap((userWithBranch) => {
-        return of({
-          items: userWithBranch,
-          meta: meta,
-        });
-      }),
-    );
+    return result;
   }
 }
