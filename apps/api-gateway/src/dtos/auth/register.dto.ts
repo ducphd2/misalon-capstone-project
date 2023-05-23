@@ -114,6 +114,66 @@ export class CreateUserInputDto {
 }
 
 export class RegisterPayload {
+  @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
+  @IsEmail()
+  email: string;
+
+  @MaxLength(30)
+  @MinLength(5)
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsOptional()
+  @IsString()
+  fullName: string;
+
+  @IsEnum(EUserGender)
+  @IsOptional()
+  gender: EUserGender;
+
+  @IsOptional()
+  dobDay: number;
+
+  @IsOptional()
+  dobMonth: number;
+
+  @IsOptional()
+  dobYear: number;
+
+  @IsOptional()
+  job?: string;
+
+  @IsOptional()
+  avatar?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  merchantAddress?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  merchantName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  merchantPhoneNumber: string;
+
+  @IsString()
+  @IsNotEmpty()
+  subdomain: string;
+
+  @IsOptional()
+  cityCode: number;
+
+  @IsOptional()
+  districtCode: number;
+
+  @IsOptional()
+  wardCode: number;
+}
+
+export class CustomerRegisterPayload {
   @IsNotEmpty()
   @IsDefined()
   @Type(() => CreateUserInputDto)

@@ -3,9 +3,9 @@ import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { BullQueueProvider } from '@libs/modules';
 import { Body, Controller, Post } from '@nestjs/common';
-import { isEmpty } from 'lodash';
+import _, { isEmpty } from 'lodash';
 
-import { InputLoginRequest, RegisterPayload } from '../../dtos';
+import { CustomerRegisterPayload, InputLoginRequest, RegisterPayload } from '../../dtos';
 
 import { AuthService } from './auth.service';
 
@@ -59,40 +59,40 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() { user: userInput, merchant: merchantInput, device: deviceInput }: RegisterPayload) {
+  async register(@Body() data: RegisterPayload) {
     const { count } = await this.usersService.countUser({
-      where: JSON.stringify({ email: userInput.email }),
+      where: JSON.stringify({ email: data.email }),
     });
 
     let countSubdomain = null;
-    if (userInput.role !== EUserRole.USER) {
-      countSubdomain = await this.merchantService.findOne({
-        where: JSON.stringify({ subdomain: merchantInput.subdomain }),
-      });
-    }
+    countSubdomain = await this.merchantService.findOne({
+      where: JSON.stringify({ subdomain: data.subdomain }),
+    });
 
     if (count >= 1) {
       ErrorHelper.HttpBadRequestException('The email is taken');
     }
-    if (userInput.role !== EUserRole.USER && !isEmpty(countSubdomain.merchant)) {
+    if (!isEmpty(countSubdomain.merchant)) {
       ErrorHelper.HttpBadRequestException('The subdomain is taken');
     }
 
-    if (userInput.role === EUserRole.USER) {
-      const { user } = await this.usersService.create({ user: userInput, device: deviceInput });
-
-      return this.handleResponseAuthData(user);
-    }
     const { user } = await this.usersService.create({
       user: {
-        ...userInput,
-        subdomain: merchantInput?.subdomain,
+        email: data.email,
+        password: data.password,
+        fullName: data?.fullName,
+        gender: data?.gender,
+        avatar: data?.avatar,
+        role: EUserRole.ADMIN,
+        subdomain: data?.subdomain,
       },
-      device: deviceInput,
     });
 
     const { merchant, branch } = await this.merchantService.create({
-      ...merchantInput,
+      address: data.merchantAddress,
+      phone: data.merchantPhoneNumber,
+      subdomain: data.subdomain,
+      name: data.merchantName,
       userId: user.id,
     });
 
@@ -100,6 +100,27 @@ export class AuthController {
       userId: user.id,
       merchantId: merchant.id,
       branchId: branch.id,
+    });
+
+    return this.handleResponseAuthData(user);
+  }
+
+  @Post('customer-register')
+  async customerRegister(@Body() { user: userInput, device: deviceInput }: CustomerRegisterPayload) {
+    const { count } = await this.usersService.countUser({
+      where: JSON.stringify({ email: userInput.email }),
+    });
+
+    if (count >= 1) {
+      ErrorHelper.HttpBadRequestException('The email is taken');
+    }
+
+    const { user } = await this.usersService.create({
+      user: {
+        ...userInput,
+        role: EUserRole.USER,
+      },
+      device: deviceInput,
     });
 
     return this.handleResponseAuthData(user);
