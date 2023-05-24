@@ -2,7 +2,6 @@ import { TransformInterceptor } from '@libs/interceptors';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 
 import { AppModule } from './app.module';
 
@@ -13,15 +12,20 @@ async function bootstrap() {
 
   const configService = app.get<ConfigService>(ConfigService);
 
-  app.enableCors({
-    origin: true,
+  const cors = {
+    origin: ['http://localhost:3000', 'http://localhost:4000', '*'],
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
     credentials: true,
-    optionsSuccessStatus: 200,
-  });
+    allowedHeaders: ['Accept', 'Content-Type', 'Authorization'],
+  };
+
+  app.enableCors(cors);
+
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalInterceptors(new TransformInterceptor());
-  app.useWebSocketAdapter(new IoAdapter(app));
   app.setGlobalPrefix('api');
 
   app.enableShutdownHooks();
