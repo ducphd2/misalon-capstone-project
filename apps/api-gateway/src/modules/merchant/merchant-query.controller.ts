@@ -83,6 +83,14 @@ export class MerchantQueryController {
       merchantId: id,
     };
 
+    if (!isEmpty(query?.q)) {
+      merge(baseWhere, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
     if (query.branchId) {
       merge(baseWhere, {
         branchId: query.branchId,
