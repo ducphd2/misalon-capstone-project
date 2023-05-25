@@ -21,13 +21,13 @@ export class UserController implements UserProto.UserServiceController {
 
     return {
       user: updatedUser,
-    };
+    } as any;
   }
 
   async addCustomer(request: UserProto.AddOperatorInput): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(request);
 
-    return { user };
+    return { user } as any;
   }
   async countCustomer(request: CommonProto.QueryRequest): Promise<CommonProto.Count> {
     const count = await this.userService.countCustomer(request);
@@ -37,7 +37,7 @@ export class UserController implements UserProto.UserServiceController {
   async addOperator(request: UserProto.AddOperatorInput): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(request);
 
-    return { user };
+    return { user } as any;
   }
 
   async upsertDevice(request: CreateDeviceInput): Promise<DeviceModel> {
@@ -66,7 +66,7 @@ export class UserController implements UserProto.UserServiceController {
   async update(request: UserProto.UpdateUserInput): Promise<UserProto.FindOneUser> {
     const updatedUser = await this.userService.update(request);
 
-    return { user: updatedUser };
+    return { user: updatedUser } as any;
   }
 
   deleteCustomer(request: CommonProto.Id): Promise<CommonProto.Count> {
@@ -75,16 +75,16 @@ export class UserController implements UserProto.UserServiceController {
 
   async create(data: UserProto.CreateUserRequest): Promise<UserProto.FindOneUser> {
     const user = await this.userService.create(data);
-    return { user };
+    return { user } as any;
   }
 
   async findById({ id }: CommonProto.Id): Promise<UserProto.FindOneUser> {
     const user = await this.userService.findById(id);
-    return { user };
+    return { user } as any;
   }
 
   async findOne(request: CommonProto.QueryRequest): Promise<UserProto.FindOneUser> {
     const user = await this.userService.findOne(request);
-    return { user };
+    return { user } as any;
   }
 }

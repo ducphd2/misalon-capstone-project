@@ -151,7 +151,7 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
       where: JSON.parse(request.where),
     });
 
-    return { service };
+    return { service } as any;
   }
 
   async services(request: QueryRequest) {
@@ -163,19 +163,19 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   async findServiceById(request: Id): Promise<ServiceProto.NullableService> {
     const service = await this.servicesService.findById(request.id);
 
-    return { service };
+    return { service } as any;
   }
 
   async createService(request: ServiceProto.CreateServiceInput): Promise<ServiceProto.Service> {
     const service = await this.servicesService.create(request);
 
-    return service;
+    return service as any;
   }
 
   async updateService(request: ServiceProto.UpdateServiceInput): Promise<ServiceProto.Service> {
     const service = await this.servicesService.update(request);
 
-    return service;
+    return service as any;
   }
 
   async deleteService(request: Id): Promise<Count> {

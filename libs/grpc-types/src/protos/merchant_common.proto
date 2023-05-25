@@ -35,6 +35,7 @@ message Merchant {
   optional string city = 15;
   optional string district = 16;
   optional string ward = 17;
+  repeated Branch branches = 18;
 }
 
 message Service {
