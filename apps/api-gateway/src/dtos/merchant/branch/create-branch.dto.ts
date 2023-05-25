@@ -45,6 +45,10 @@ export class CreateBranchInput {
   @IsNumber()
   @IsOptional()
   longitude?: number;
+
+  @IsString()
+  @IsOptional()
+  openTime?: string;
 }
 
 export class PartialUpdateBranch extends PartialType<CreateBranchInput>(CreateBranchInput) {}
