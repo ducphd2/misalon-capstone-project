@@ -40,9 +40,13 @@ export class BookingController implements BookingProto.BookingServiceController 
   }
 
   async create(request: BookingProto.CreateBookingInput): Promise<BookingProto.Booking> {
-    const result = await this.bookingService.create(request);
+    try {
+      const result = await this.bookingService.create(request);
 
-    return result as any;
+      return result as any;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async update(request: BookingProto.UpdateBookingInput): Promise<BookingProto.Booking> {

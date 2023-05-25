@@ -3,6 +3,7 @@ import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } fr
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { Job } from 'bull';
 import { omit } from 'lodash';
+import { BookingServiceRepository } from '@libs/database';
 
 import { BookingService } from './booking.service';
 
@@ -10,7 +11,10 @@ import { BookingService } from './booking.service';
 export class BookingProcessor implements OnModuleInit {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly bookingService: BookingService) {}
+  constructor(
+    private readonly bookingService: BookingService,
+    private readonly bookingServiceRepository: BookingServiceRepository,
+  ) {}
 
   onModuleInit() {
     this.logger.log('booking processor init');
@@ -41,6 +45,15 @@ export class BookingProcessor implements OnModuleInit {
           data: omit(request, ['bookingIds']) as any,
         });
       }),
+    );
+  }
+
+  @Process(EBullEvent.BS_INSERT_BOOKING_SERVICES_DATA)
+  async handleInserBookingServices(job: Job<any>) {
+    const { serviceIds, bookingId } = job.data;
+
+    await Promise.all(
+      serviceIds.map((serviceId: number) => this.bookingServiceRepository.create({ bookingId, serviceId })),
     );
   }
 }

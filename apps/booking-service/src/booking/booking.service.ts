@@ -1,37 +1,33 @@
-import { BookingRepository, BookingServiceRepository, ServiceModel, UserModel } from '@libs/database';
-import { BookingProto, CommonProto, NotificationProto, UserProto } from '@libs/grpc-types';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { EBullEvent } from '@libs/core';
+import { BookingRepository, ServiceModel, UserModel } from '@libs/database';
+import { BookingProto, CommonProto } from '@libs/grpc-types';
+import { BullQueueProvider } from '@libs/modules';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class BookingService implements OnModuleInit {
-  private notificationService: NotificationProto.NotificationServiceClient;
-  private userService: UserProto.UserServiceClient;
-
   constructor(
     private readonly bookingRepository: BookingRepository,
-    private readonly bookingServiceRepository: BookingServiceRepository,
-    @Inject(NotificationProto.NOTIFICATION_PACKAGE_NAME) private notificationClient: ClientGrpc,
-    @Inject(UserProto.DUCPH_USER_PACKAGE_NAME) private userClient: ClientGrpc,
+    private readonly bullQueueProvider: BullQueueProvider,
   ) {}
 
-  onModuleInit() {
-    this.notificationService = this.notificationClient.getService<NotificationProto.NotificationServiceClient>(
-      NotificationProto.NOTIFICATION_SERVICE_NAME,
-    );
-    this.userService = this.userClient.getService<UserProto.UserServiceClient>(UserProto.USER_SERVICE_NAME);
-  }
+  onModuleInit() {}
 
   async create(dto: BookingProto.CreateBookingInput) {
     const booking = await this.bookingRepository.create(dto);
 
-    await Promise.all(
-      dto.serviceIds.map((id) => this.bookingServiceRepository.create({ bookingId: booking.id, serviceId: id })),
-    );
-
-    await firstValueFrom(this.notificationService.createBookingNotification({ ...booking, ...dto }));
+    await Promise.all([
+      this.bullQueueProvider.addBookingEvent(EBullEvent.BS_INSERT_BOOKING_SERVICES_DATA, {
+        serviceIds: dto.serviceIds,
+        bookingId: booking.id,
+        userId: booking?.userId,
+      }),
+      this.bullQueueProvider.addNotificationEvent(EBullEvent.NS_NEW_BOOKING, {
+        ...booking,
+        ...dto,
+      }),
+    ]);
 
     return booking;
   }
