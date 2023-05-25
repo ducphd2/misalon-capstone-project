@@ -9,18 +9,17 @@ import {
 import { UserModel } from '@libs/database/entities';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { isEmpty, merge } from 'lodash';
 import { hash } from 'argon2';
+import { isEmpty, merge } from 'lodash';
 
 import { User } from '@/api-gateway/core';
 import { JwtAuthGuard } from '@/api-gateway/core/guards/auth.guard';
 import {
   AddCustomerDto,
-  AddOperatorDto,
   ChangePasswordInput,
   PaginateUserDto,
   UpdatePartialCustomer,
-  UpdatePartialUser,
+  UpdateUserDto,
 } from '@/api-gateway/dtos';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
@@ -138,13 +137,6 @@ export class UserController {
     return user;
   }
 
-  @Post('add-user')
-  @UseGuards(JwtAuthGuard)
-  async updateUser(@Param('id') id: number, @Body() data: UpdatePartialUser) {
-    const user = await this.userService.update(id, data);
-    return user;
-  }
-
   @Get('merchant/:id')
   @UseGuards(JwtAuthGuard)
   async getOperators(@Param('id') merchantId: number, @Query() query: PaginateUserDto) {
@@ -213,5 +205,22 @@ export class UserController {
     });
 
     return result;
+  }
+
+  @Patch()
+  @UseGuards(JwtAuthGuard)
+  async updateUser(@User() user: UserModel, @Body() input: UpdateUserDto) {
+    const updatedUser = await this.userService.updateCustomer({
+      id: user.id,
+      user: {
+        ...input,
+        role: EUserRole.USER,
+      },
+    });
+
+    return {
+      message: 'Cập nhật thông tin người dùng thành công',
+      user: updatedUser,
+    };
   }
 }
