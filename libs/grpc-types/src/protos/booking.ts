@@ -3,7 +3,7 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Count, EBookingStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
-import { Service } from "./merchant_common";
+import { Branch, Merchant, Service } from "./merchant_common";
 import { User } from "./user_common";
 
 export const protobufPackage = "booking";
@@ -21,8 +21,10 @@ export interface Booking {
     | undefined;
   /** reserved field */
   status?: EBookingStatus | undefined;
-  userId?: number | undefined;
-  serviceIds: number[];
+  userId?:
+    | number
+    | undefined;
+  /** repeated int32 serviceIds = 10; */
   startTime?: string | undefined;
   endTime?: string | undefined;
   note?: string | undefined;
@@ -36,6 +38,8 @@ export interface Booking {
   customerName?: string | undefined;
   user?: User | undefined;
   services: Service[];
+  merchant?: Merchant | undefined;
+  branch?: Branch | undefined;
 }
 
 export interface CreateBookingInput {

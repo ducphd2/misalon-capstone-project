@@ -26,7 +26,12 @@ export class BookingController implements BookingProto.BookingServiceController 
   }
 
   async findById(request: Id): Promise<BookingProto.NullableBooking> {
-    return (await this.bookingService.findById(request.id)) as any;
+    try {
+      const booking = await this.bookingService.findById(request.id);
+      return { booking } as any;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findOne(request: QueryRequest): Promise<BookingProto.NullableBooking> {

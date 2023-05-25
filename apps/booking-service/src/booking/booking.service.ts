@@ -1,9 +1,10 @@
 import { EBullEvent } from '@libs/core';
-import { BookingRepository, ServiceModel, UserModel } from '@libs/database';
+import { BookingRepository, BranchModel, MerchantModel, ServiceModel, UserModel } from '@libs/database';
 import { BookingProto, CommonProto } from '@libs/grpc-types';
 import { BullQueueProvider } from '@libs/modules';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { isEmpty } from 'lodash';
+import { isEmpty, omit } from 'lodash';
+import { model } from 'mongoose';
 
 @Injectable()
 export class BookingService implements OnModuleInit {
@@ -41,7 +42,14 @@ export class BookingService implements OnModuleInit {
         where: baseWhereQuery,
       },
       {
-        include: [ServiceModel, UserModel],
+        include: [
+          ServiceModel,
+          UserModel,
+          {
+            model: BranchModel,
+            include: [MerchantModel],
+          },
+        ],
       },
     );
 
@@ -54,10 +62,23 @@ export class BookingService implements OnModuleInit {
     const result = await this.bookingRepository.find({
       ...request,
       where: baseWhereQuery,
-      include: [ServiceModel],
+      include: [
+        ServiceModel,
+        UserModel,
+        {
+          model: BranchModel,
+          include: [MerchantModel],
+        },
+      ],
     });
 
-    return result;
+    return result.map((booking) => {
+      return {
+        ...omit(booking, ['branch']),
+        branch: booking.branch,
+        merchant: booking.branch.merchant,
+      };
+    });
   }
 
   async findWithPaging(request: CommonProto.QueryRequest) {
@@ -68,12 +89,31 @@ export class BookingService implements OnModuleInit {
       where: baseWhereQuery,
     });
 
-    return result;
+    return result.items.map((booking) => {
+      return {
+        ...omit(booking, ['branch']),
+        branch: booking.branch,
+        merchant: booking.branch.merchant,
+      };
+    });
   }
 
   async findById(id: number) {
-    const booking = await this.bookingRepository.findById(id);
-    return { booking };
+    const booking = await this.bookingRepository.findById(id, {
+      include: [
+        ServiceModel,
+        UserModel,
+        {
+          model: BranchModel,
+          include: [MerchantModel],
+        },
+      ],
+    });
+    return {
+      ...omit(booking, ['branch']),
+      branch: booking.branch,
+      merchant: booking.branch.merchant,
+    };
   }
 
   async findOne(dto: CommonProto.QueryRequest) {
