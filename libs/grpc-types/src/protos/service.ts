@@ -19,8 +19,10 @@ export enum EServiceType {
 
 export interface UpdateServiceData {
   merchantId?: number | undefined;
-  price?: number | undefined;
-  initialPrice?: number | undefined;
+  price?:
+    | number
+    | undefined;
+  /** double initialPrice = 4; */
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;
@@ -38,8 +40,10 @@ export interface UpdateServiceInput {
 
 export interface CreateServiceInput {
   merchantId?: number | undefined;
-  price?: number | undefined;
-  initialPrice?: number | undefined;
+  price?:
+    | number
+    | undefined;
+  /** optional double initialPrice = 4; */
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;
@@ -62,8 +66,10 @@ export interface Service {
     | undefined;
   /** reserved field */
   merchantId?: number | undefined;
-  price?: number | undefined;
-  initialPrice?: number | undefined;
+  price?:
+    | number
+    | undefined;
+  /** optional double initialPrice = 11; */
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;

@@ -50,8 +50,8 @@ message Service {
   // reserved field
   optional int32 merchantId = 8;
   optional double price = 10;
-  optional double initialPrice = 11;
-  optional double capitalPrice = 12;
+  // optional double initialPrice = 11;
+  // optional double capitalPrice = 12;
   optional int32 durationHour = 13;
   optional int32 durationMinute = 14;
   optional string sku = 15;

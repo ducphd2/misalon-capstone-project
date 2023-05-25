@@ -51,9 +51,13 @@ export interface Service {
     | undefined;
   /** reserved field */
   merchantId?: number | undefined;
-  price?: number | undefined;
-  initialPrice?: number | undefined;
-  capitalPrice?: number | undefined;
+  price?:
+    | number
+    | undefined;
+  /**
+   * optional double initialPrice = 11;
+   * optional double capitalPrice = 12;
+   */
   durationHour?: number | undefined;
   durationMinute?: number | undefined;
   sku?: string | undefined;

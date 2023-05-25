@@ -24,10 +24,10 @@ export class CreateServiceInput {
   @IsNotEmpty()
   price?: number;
 
-  @IsNumber()
-  @IsPositive()
-  @IsOptional()
-  initialPrice?: number;
+  // @IsNumber()
+  // @IsPositive()
+  // @IsOptional()
+  // initialPrice?: number;
 
   @IsNumber()
   @IsPositive()
