@@ -1,4 +1,4 @@
-import { MerchantModel, ServiceModel } from '@libs/database/entities';
+import { BranchModel, MerchantModel, ServiceModel } from '@libs/database/entities';
 import { ServiceRepository } from '@libs/database/repositories';
 import { CommonProto, ServiceProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
@@ -39,9 +39,12 @@ export class ServicesService {
         where: baseWhereQuery,
       },
       {
-        include: [MerchantModel],
-        raw: true,
-        nest: true,
+        include: [
+          {
+            model: MerchantModel,
+            include: [BranchModel],
+          },
+        ],
       },
     );
 

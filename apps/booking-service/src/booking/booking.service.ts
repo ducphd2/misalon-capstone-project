@@ -1,15 +1,9 @@
-import {
-  BookingRepository,
-  BookingServiceModel,
-  BookingServiceRepository,
-  ServiceModel,
-  UserModel,
-} from '@libs/database';
+import { BookingRepository, BookingServiceRepository, ServiceModel, UserModel } from '@libs/database';
 import { BookingProto, CommonProto, NotificationProto, UserProto } from '@libs/grpc-types';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty } from 'lodash';
-import { firstValueFrom, forkJoin, map, of, switchMap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class BookingService implements OnModuleInit {

@@ -36,6 +36,7 @@ export interface Merchant {
   city?: string | undefined;
   district?: string | undefined;
   ward?: string | undefined;
+  branches: Branch[];
 }
 
 export interface Service {
