@@ -31,7 +31,7 @@ message Booking {
   // reserved field
   optional commons.EBookingStatus status = 8;
   optional int32 userId = 9;
-  repeated int32 serviceIds = 10;
+  // repeated int32 serviceIds = 10;
   optional string startTime = 11;
   optional string endTime = 12;
   optional string note = 14;
@@ -45,6 +45,8 @@ message Booking {
   optional string customerName = 22;
   optional user_common.User user = 23;
   repeated merchant_common.Service services = 24;
+  optional merchant_common.Merchant merchant = 25;
+  optional merchant_common.Branch branch = 26;
 }
 
 message CreateBookingInput {

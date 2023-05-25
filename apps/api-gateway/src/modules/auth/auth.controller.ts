@@ -3,7 +3,7 @@ import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { BullQueueProvider } from '@libs/modules';
 import { Body, Controller, Post } from '@nestjs/common';
-import _, { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { CustomerRegisterPayload, InputLoginRequest, RegisterPayload } from '../../dtos';
 
@@ -106,7 +106,7 @@ export class AuthController {
   }
 
   @Post('customer-register')
-  async customerRegister(@Body() { user: userInput, device: deviceInput }: CustomerRegisterPayload) {
+  async customerRegister(@Body() { user: userInput, device }: CustomerRegisterPayload) {
     const { count } = await this.usersService.countUser({
       where: JSON.stringify({ email: userInput.email }),
     });
@@ -120,7 +120,7 @@ export class AuthController {
         ...userInput,
         role: EUserRole.USER,
       },
-      device: deviceInput,
+      device,
     });
 
     return this.handleResponseAuthData(user);
