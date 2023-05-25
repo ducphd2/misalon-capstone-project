@@ -106,4 +106,10 @@ export class NotificationProcessor implements OnModuleInit {
       lang: request?.lang,
     });
   }
+
+  @Process(EBullEvent.NS_NEW_BOOKING)
+  async handleNewBooking(job: Job<any>) {
+    const request = job.data;
+    console.log('Must to implement handle new booking notification in email, push notification in react and mobile');
+  }
 }
