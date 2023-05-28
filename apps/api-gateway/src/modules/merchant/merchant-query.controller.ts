@@ -43,7 +43,7 @@ export class MerchantQueryController {
 
   @Get(':id/branches')
   @UseGuards(JwtAuthGuard)
-  @Admin()
+  // @Admin()
   async findBranches(@User() admin: UserModel, @Param('id') id: number, @Query() query?: BaseQueryDto) {
     const result = await this.merchantService.findAllBranches(id, query);
     return result;
@@ -51,7 +51,7 @@ export class MerchantQueryController {
 
   @Get(':id/services')
   @UseGuards(JwtAuthGuard)
-  @Admin()
+  // @Admin()
   async findServices(@Param('id') id: number, @Query() query?: BaseQueryDto) {
     const result = await this.merchantService.findAllServices(query, id);
     return result;
