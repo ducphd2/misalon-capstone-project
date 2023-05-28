@@ -127,12 +127,12 @@ export class MerchantCommonService implements OnModuleInit {
   }
 
   async findAllServices(query?: BaseQueryDto, merchantId?: number) {
-    let where = null;
+    const where = {};
 
     if (merchantId) {
-      where = {
+      merge(where, {
         merchantId,
-      };
+      });
     }
 
     if (!isEmpty(query?.q)) {
@@ -145,7 +145,7 @@ export class MerchantCommonService implements OnModuleInit {
 
     const result = await this.findService({
       ...query,
-      where: where ? JSON.stringify(where) : null,
+      where: !isEmpty(where) ? JSON.stringify(where) : null,
     });
 
     return result;
