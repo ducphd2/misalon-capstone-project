@@ -17,10 +17,13 @@ import { EEventMessage } from '@/api-gateway/dtos';
 
 @Injectable()
 @WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
+  cors: true,
 })
+// @WebSocketGateway({
+//   cors: {
+//     origin: '*',
+//   },
+// })
 export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private readonly messagesService: MessagesService) {}
 
