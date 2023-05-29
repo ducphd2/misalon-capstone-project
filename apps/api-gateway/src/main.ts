@@ -13,7 +13,7 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
 
   const cors = {
-    origin: ['http://localhost:4000'],
+    origin: '*',
     methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
     preflightContinue: false,
     optionsSuccessStatus: 204,
