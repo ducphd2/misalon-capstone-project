@@ -61,6 +61,7 @@ message UpdateMerchantData {
     string ward = 10;
     double latitude = 11;
     double longitude = 12;
+    string image = 13;
   }
 }
 
@@ -83,6 +84,7 @@ message CreateInput {
   optional double latitude = 11;
   optional double longitude = 12;
   optional string subdomain = 13;
+  optional string image = 14;
 }
 
 message Merchant {
@@ -110,6 +112,7 @@ message Merchant {
   optional double longitude = 19;
   repeated merchant_common.Branch branches = 20;
   repeated merchant_common.Service services = 21;
+  optional string image = 22;
 }
 
 message NullableMerchant {

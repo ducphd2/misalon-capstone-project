@@ -36,6 +36,7 @@ export interface UpdateMerchantData {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  image?: string | undefined;
 }
 
 export interface UpdateMerchantInput {
@@ -57,6 +58,7 @@ export interface CreateInput {
   latitude?: number | undefined;
   longitude?: number | undefined;
   subdomain?: string | undefined;
+  image?: string | undefined;
 }
 
 export interface Merchant {
@@ -85,6 +87,7 @@ export interface Merchant {
   longitude?: number | undefined;
   branches: Branch[];
   services: Service[];
+  image?: string | undefined;
 }
 
 export interface NullableMerchant {

@@ -36,6 +36,7 @@ message Merchant {
   optional string district = 16;
   optional string ward = 17;
   repeated Branch branches = 18;
+  optional string image = 19;
 }
 
 message Service {
@@ -86,4 +87,5 @@ message Branch {
   optional string ward = 17;
   optional double latitude = 18;
   optional double longitude = 19;
+  optional string image = 20;
 }

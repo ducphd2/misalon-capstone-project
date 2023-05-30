@@ -37,6 +37,7 @@ export interface Merchant {
   district?: string | undefined;
   ward?: string | undefined;
   branches: Branch[];
+  image?: string | undefined;
 }
 
 export interface Service {
@@ -93,6 +94,7 @@ export interface Branch {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  image?: string | undefined;
 }
 
 export const MERCHANT_COMMON_PACKAGE_NAME = "merchant_common";
