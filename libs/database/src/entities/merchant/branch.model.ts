@@ -62,9 +62,13 @@ export class BranchModel extends BaseModel<BranchModel> {
 
   @Column({
     type: DataType.TEXT,
-    allowNull: true,
   })
   search?: string;
+
+  @Column({
+    type: DataType.TEXT,
+  })
+  image?: string;
 
   @BelongsTo(() => MerchantModel)
   merchant?: MerchantModel;

@@ -17,6 +17,7 @@ export interface UpdateBranchData {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  image?: string | undefined;
 }
 
 export interface UpdateBranchInput {
@@ -37,6 +38,7 @@ export interface CreateBranchInput {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  image?: string | undefined;
 }
 
 export interface Branch {
@@ -63,6 +65,7 @@ export interface Branch {
   ward?: string | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  image?: string | undefined;
 }
 
 export interface BranchEdge {

@@ -49,6 +49,10 @@ export class CreateBranchInput {
   @IsString()
   @IsOptional()
   openTime?: string;
+
+  @IsString()
+  @IsOptional()
+  image?: string;
 }
 
 export class PartialUpdateBranch extends PartialType<CreateBranchInput>(CreateBranchInput) {}

@@ -20,6 +20,7 @@ message UpdateBranchData {
     string ward = 10;
     double latitude = 11;
     double longitude = 12;
+    string image = 13;
   }
 }
 
@@ -41,6 +42,7 @@ message CreateBranchInput {
   optional string ward = 10;
   optional double latitude = 11;
   optional double longitude = 12;
+  optional string image = 13;
 }
 
 message Branch {
@@ -66,6 +68,7 @@ message Branch {
   optional string ward = 17;
   optional double latitude = 18;
   optional double longitude = 19;
+  optional string image = 20;
 }
 
 message BranchEdge {
