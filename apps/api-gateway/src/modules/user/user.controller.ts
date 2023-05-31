@@ -212,10 +212,7 @@ export class UserController {
   async updateUser(@User() user: UserModel, @Body() input: UpdateUserDto) {
     const updatedUser = await this.userService.updateCustomer({
       id: user.id,
-      user: {
-        ...input,
-        role: EUserRole.USER,
-      },
+      user: input,
     });
 
     return {
