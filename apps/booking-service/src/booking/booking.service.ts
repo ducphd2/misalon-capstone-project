@@ -23,6 +23,7 @@ export class BookingService implements OnModuleInit {
         serviceIds: dto.serviceIds,
         bookingId: booking.id,
         userId: booking?.userId,
+        branchId: booking?.branchId,
       }),
       this.bullQueueProvider.addNotificationEvent(EBullEvent.NS_NEW_BOOKING, {
         ...booking,

@@ -3,7 +3,7 @@ import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } fr
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { Job } from 'bull';
 import { omit } from 'lodash';
-import { BookingServiceRepository } from '@libs/database';
+import { BookingRepository, BookingServiceRepository, BranchRepository } from '@libs/database';
 
 import { BookingService } from './booking.service';
 
@@ -14,6 +14,8 @@ export class BookingProcessor implements OnModuleInit {
   constructor(
     private readonly bookingService: BookingService,
     private readonly bookingServiceRepository: BookingServiceRepository,
+    private readonly branchRepository: BranchRepository,
+    private readonly bookingRepository: BookingRepository,
   ) {}
 
   onModuleInit() {
@@ -50,7 +52,18 @@ export class BookingProcessor implements OnModuleInit {
 
   @Process(EBullEvent.BS_INSERT_BOOKING_SERVICES_DATA)
   async handleInserBookingServices(job: Job<any>) {
-    const { serviceIds, bookingId } = job.data;
+    const { serviceIds, bookingId, branchId } = job.data;
+
+    const branch = await this.branchRepository.findById(branchId);
+
+    await this.bookingRepository.update(
+      { merchantId: branch.merchantId },
+      {
+        where: {
+          id: bookingId,
+        },
+      },
+    );
 
     await Promise.all(
       serviceIds.map((serviceId: number) => this.bookingServiceRepository.create({ bookingId, serviceId })),
