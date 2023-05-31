@@ -17,7 +17,7 @@ services:
       - RUN_AS_ROOT=true
     ports:
       - "5433:5432"
-    restart: on-failure
+    restart: always
     healthcheck:
       test: "PGPASSWORD=docker pg_isready -h 127.0.0.1 -U docker -d gis"
 
@@ -25,7 +25,7 @@ services:
     container_name: redis-do-an
     image: redis:alpine
     hostname: redis
-    restart: on-failure
+    restart: always
     ports:
       - "6380:6379"
     command: redis-server --save 20 1 --loglevel warning
