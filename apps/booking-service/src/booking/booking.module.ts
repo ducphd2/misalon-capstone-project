@@ -1,5 +1,12 @@
 import { EBullQueue } from '@libs/core';
-import { BookingModel, BookingRepository, BookingServiceModel, BookingServiceRepository } from '@libs/database';
+import {
+  BookingModel,
+  BookingRepository,
+  BookingServiceModel,
+  BookingServiceRepository,
+  BranchModel,
+  BranchRepository,
+} from '@libs/database';
 import { BullQueueModule, BullQueueProvider } from '@libs/modules';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
@@ -13,7 +20,7 @@ import { BookingService } from './booking.service';
 @Module({
   imports: [
     SecretsModule,
-    SequelizeModule.forFeature([BookingModel, BookingServiceModel]),
+    SequelizeModule.forFeature([BookingModel, BookingServiceModel, BranchModel]),
     BullQueueModule,
     BullModule.registerQueue({
       name: EBullQueue.USER_QUEUE,
@@ -29,6 +36,13 @@ import { BookingService } from './booking.service';
     }),
   ],
   controllers: [BookingController],
-  providers: [BookingService, BookingRepository, BookingServiceRepository, BookingProcessor, BullQueueProvider],
+  providers: [
+    BookingService,
+    BookingRepository,
+    BookingServiceRepository,
+    BookingProcessor,
+    BullQueueProvider,
+    BranchRepository,
+  ],
 })
 export class BookingModule {}
