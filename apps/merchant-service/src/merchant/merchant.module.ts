@@ -1,5 +1,10 @@
-import { MerchantModel } from '@libs/database/entities';
-import { MerchantRepository } from '@libs/database/repositories';
+import { BookingModel, BranchUserModel, MerchantModel, UserModel } from '@libs/database/entities';
+import {
+  BookingRepository,
+  BranchUserRepository,
+  MerchantRepository,
+  UserRepository,
+} from '@libs/database/repositories';
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
@@ -16,13 +21,13 @@ import { MerchantService } from './merchant.service';
 @Module({
   imports: [
     SecretsModule,
-    SequelizeModule.forFeature([MerchantModel]),
+    SequelizeModule.forFeature([MerchantModel, BookingModel, UserModel, BranchUserModel]),
     BranchModule,
     ServicesModule,
     FeedbackModule,
     ClientsModule.register([BookingClient, UserClient]),
   ],
   controllers: [MerchantController],
-  providers: [MerchantService, MerchantRepository],
+  providers: [MerchantService, MerchantRepository, BookingRepository, UserRepository, BranchUserRepository],
 })
 export class MerchantModule {}

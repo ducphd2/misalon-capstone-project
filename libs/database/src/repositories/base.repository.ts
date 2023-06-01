@@ -103,4 +103,9 @@ export class BaseRepository<T extends Model> {
 
     return result;
   }
+
+  async upsert(entity: any, opts?: CreateOptions): Promise<[T, boolean]> {
+    const response = await this.model.upsert(entity, opts);
+    return response;
+  }
 }

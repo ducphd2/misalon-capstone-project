@@ -1,3 +1,4 @@
+import { BookingRepository, BranchUserRepository } from '@libs/database';
 import { BookingProto, MerchantProto, ServiceProto, UserProto } from '@libs/grpc-types';
 import { BookingServiceClient } from '@libs/grpc-types/protos/booking';
 import {
@@ -8,7 +9,7 @@ import {
   NullableBranch,
   UpdateBranchInput,
 } from '@libs/grpc-types/protos/branch';
-import { Count, EUserRole, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
+import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateInput, Feedback, ItemPagination, NullableItem, UpdateInput } from '@libs/grpc-types/protos/feedback';
 import { UserServiceClient } from '@libs/grpc-types/protos/user';
 import { GrpcLogInterceptor } from '@libs/interceptors';
@@ -36,6 +37,8 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     private readonly branchService: BranchService,
     private readonly servicesService: ServicesService,
     private readonly feedbackService: FeedbackService,
+    private readonly bookingRepository: BookingRepository,
+    private readonly branchUserRepository: BranchUserRepository,
     @Inject(UserProto.DUCPH_USER_PACKAGE_NAME) private userClient: ClientGrpc,
     @Inject(BookingProto.BOOKING_PACKAGE_NAME) private bookingClient: ClientGrpc,
   ) {}
@@ -53,25 +56,19 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
       this.servicesService.count(request),
     ]);
 
-    const booking = await this.bookingService.count(request).toPromise();
-    const { count } = await this.userService
-      .count({
-        ...request,
-        where: JSON.stringify({
-          ...whereRequest,
-          role: {
-            _not: EUserRole.USER,
-          },
-        }),
-      })
-      .toPromise();
+    const booking = await this.bookingRepository.count({
+      where: whereRequest,
+    });
+
+    const customer = await this.branchUserRepository.count({
+      where: whereRequest,
+    });
 
     return {
       branch,
       service,
-      operator: count,
-      customer: booking.count,
-      booking: booking.count,
+      customer,
+      booking,
     };
   }
 
