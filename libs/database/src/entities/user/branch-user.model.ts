@@ -11,6 +11,9 @@ import { UserModel } from './user.model';
   underscored: true,
 })
 export class BranchUserModel extends BaseModel<BranchUserModel> {
+  @Column({ type: DataType.INTEGER })
+  merchantId?: number;
+
   @ForeignKey(() => BranchModel)
   @Column({ type: DataType.INTEGER })
   branchId?: number;
