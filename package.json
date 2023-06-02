@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start:dev": "concurrently \"yarn start:api-gateway:dev\" \"yarn start:user-service:dev\" \"yarn start:merchant-service:dev\" \"yarn start:booking-service:dev\" \"yarn start:notification-service:dev\" \"yarn start:payment-service:dev\"",
+    "start:dev": "concurrently \"yarn migrate:up-extension\" \"yarn start:api-gateway:dev\" \"yarn start:user-service:dev\" \"yarn start:merchant-service:dev\" \"yarn start:booking-service:dev\" \"yarn start:notification-service:dev\" \"yarn start:payment-service:dev\"",
     "start:api-gateway:dev": "nest start @app/api-gateway --watch --debug",
     "start:user-service:dev": "nest start @app/user-service --watch --debug",
     "start:merchant-service:dev": "nest start @app/merchant-service --watch --debug",
@@ -33,6 +33,7 @@
     "migrate:up:db": "yarn migrate:user-service:up && yarn migrate:merchant-service:up",
     "migrate:down:db": "yarn migrate:user-service:down && yarn migrate:merchant-service:down",
     "migrate:create": "npx sequelize-cli migration:generate --name",
+    "migrate:up-extension": "npx sequelize-cli db:migrate --to 20230530030304-CreatePostgisExtension.js",
     "migrate:up": "npx sequelize-cli db:migrate"
   },
   "dependencies": {
