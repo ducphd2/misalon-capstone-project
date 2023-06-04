@@ -39,6 +39,10 @@ export class AuthController {
       ErrorHelper.HttpBadRequestException(AUTH_MESSAGE.LOGIN.INVALID);
     }
 
+    if (data?.device) {
+      await this.usersService.upsertDevice({ ...data?.device, userId: user.id });
+    }
+
     if (user.role === EUserRole.USER) {
       return this.handleResponseAuthData(user);
     }
@@ -46,10 +50,6 @@ export class AuthController {
     const { merchant } = await this.merchantService.findOne({
       where: JSON.stringify({ userId: user.id }),
     });
-
-    if (data?.device) {
-      await this.usersService.upsertDevice({ ...data?.device, userId: user.id });
-    }
 
     const re = await this.handleResponseAuthData(user);
     return {

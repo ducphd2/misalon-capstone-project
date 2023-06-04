@@ -8,6 +8,8 @@ import { FeedbackModel, MerchantModel } from '../merchant';
 import { BookingModel } from '../booking';
 import { BaseModel } from '../base.model';
 
+import { DeviceModel } from './device.model';
+
 import { ELangNumber } from '@/api-gateway/dtos';
 
 @Table({
@@ -102,6 +104,9 @@ export class UserModel extends BaseModel<UserModel> {
 
   @HasMany(() => PaymentModel)
   payments?: PaymentModel[];
+
+  @HasMany(() => DeviceModel)
+  devices?: DeviceModel[];
 
   @HasOne(() => MerchantModel)
   merchant?: MerchantModel;
