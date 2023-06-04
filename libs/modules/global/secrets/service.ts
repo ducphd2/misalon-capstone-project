@@ -61,4 +61,8 @@ export class SecretsService extends ConfigService implements AbstractSecretsServ
   vnpReturnUrl = this.get<string>('VNP_RETURN_URL');
   vnpSecretKey = this.get<string>('VNP_HASH_SECRET');
   vnpUrl = this.get<string>('VNP_URL');
+
+  // Firebase
+  firebaseIcon =
+    this.get<string>('FIREBASE_ICON') || 'https://misalon.s3.ap-southeast-1.amazonaws.com/logo_U2e_icon.ico';
 }
