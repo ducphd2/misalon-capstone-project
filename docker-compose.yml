@@ -3,18 +3,17 @@ version: "3.9"
 services:
   db:
     container_name: postgres-do-an
-    image: kartoza/postgis:15-3.3
+    image: kartoza/postgis:14-3.2
     volumes:
       - postgis-data:/var/lib/postgresql
       - dbbackups:/backups
     environment:
       # If you need to create multiple database you can add coma separated databases eg gis,data
-      - POSTGRES_DB=doan
+      - POSTGRES_DB=gis,doan
       - POSTGRES_USER=admin
       - POSTGRES_PASS=admin
       # Add extensions you need to be enabled by default in the DB. Default are the five specified below
       - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
-      - RUN_AS_ROOT=true
     ports:
       - "5433:5432"
     restart: always
