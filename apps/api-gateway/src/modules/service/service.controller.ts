@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { UserModel } from '@libs/database';
 
 import { ServicesService } from './service.service';
 
-import { JwtAuthGuard } from '@/api-gateway/core';
-import { BaseQueryDto, CreateServiceInput, PartialUpdateService } from '@/api-gateway/dtos';
+import { JwtAuthGuard, User } from '@/api-gateway/core';
+import { CreateServiceInput, GetServiceDto, PartialUpdateService } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 
 @Controller('services')
@@ -36,8 +37,8 @@ export class ServiceController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query?: BaseQueryDto) {
-    const result = await this.merchantService.findAllServices(query);
+  async findAll(@Query() query?: GetServiceDto, @User() user?: UserModel) {
+    const result = await this.merchantService.findServicesByCustomer(query, user);
     return result;
   }
 

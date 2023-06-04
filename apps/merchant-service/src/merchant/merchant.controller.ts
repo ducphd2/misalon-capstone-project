@@ -152,9 +152,12 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
   }
 
   async services(request: QueryRequest) {
-    const service = await this.servicesService.findWithPaging(request);
-
-    return service;
+    try {
+      const service = await this.servicesService.findWithPaging(request);
+      return service;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async findServiceById(request: Id): Promise<ServiceProto.NullableService> {

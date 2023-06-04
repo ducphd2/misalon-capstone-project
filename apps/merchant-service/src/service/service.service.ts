@@ -1,16 +1,25 @@
 import { BranchModel, MerchantModel, ServiceModel } from '@libs/database/entities';
-import { ServiceRepository } from '@libs/database/repositories';
+import { MerchantRepository, ServiceRepository } from '@libs/database/repositories';
 import { CommonProto, ServiceProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
-import { isEmpty } from 'lodash';
-import { FindOptions } from 'sequelize';
+import * as _ from 'lodash';
+import { FindOptions, Sequelize } from 'sequelize';
 
 @Injectable()
 export class ServicesService {
-  constructor(private readonly serviceRepository: ServiceRepository) {}
+  constructor(
+    private readonly serviceRepository: ServiceRepository,
+    private readonly merchantRepository: MerchantRepository,
+  ) {}
 
   async create(dto: ServiceProto.CreateServiceInput): Promise<ServiceModel> {
-    const service = await this.serviceRepository.create(dto);
+    const merchant = await this.merchantRepository.findById(dto.merchantId);
+
+    const service = await this.serviceRepository.create({
+      ...dto,
+      latitude: merchant.latitude,
+      longitude: merchant.longitude,
+    });
 
     return service;
   }
@@ -31,12 +40,54 @@ export class ServicesService {
   }
 
   async findWithPaging(request: CommonProto.QueryRequest): Promise<any> {
-    const baseWhereQuery = !isEmpty(request.where) ? JSON.parse(request.where) : undefined;
+    const rawWhereQuery = !_.isEmpty(request.where) ? JSON.parse(request.where) : undefined;
+
+    if (rawWhereQuery?.userLat && rawWhereQuery?.userLng) {
+      const baseRawQuery = _.omit(rawWhereQuery, ['userLat', 'userLng']);
+      const attributes = Object.keys(ServiceModel.rawAttributes);
+
+      const result = await this.serviceRepository.findAndPaginate(
+        {
+          ...request,
+          where: baseRawQuery as unknown as any,
+        },
+        {
+          include: [
+            {
+              model: MerchantModel,
+              include: [BranchModel],
+            },
+          ],
+          attributes: [
+            ...attributes,
+            [
+              Sequelize.literal(
+                `6371 * acos(cos(radians(${rawWhereQuery.userLat})) * cos(radians("service"."latitude")) * cos(radians(${rawWhereQuery.userLng}) - radians("service"."longitude")) + sin(radians(${rawWhereQuery.userLat})) * sin(radians("service"."latitude")))`,
+              ),
+              'distance',
+            ],
+          ],
+          order: [[Sequelize.literal('distance'), 'ASC']],
+        },
+      );
+
+      const a = result.items.map((item) => {
+        return {
+          ...item.toJSON(),
+          distance: item?.toJSON().distance,
+        };
+      });
+
+      return {
+        items: a,
+        meta: result.meta,
+      };
+    }
 
     const result = await this.serviceRepository.findAndPaginate(
       {
         ...request,
-        where: baseWhereQuery,
+        where: rawWhereQuery,
       },
       {
         include: [

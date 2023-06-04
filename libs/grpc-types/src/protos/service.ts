@@ -79,6 +79,9 @@ export interface Service {
   image?: string | undefined;
   type?: EServiceType | undefined;
   merchant?: Merchant | undefined;
+  distance?: number | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface NullableService {
