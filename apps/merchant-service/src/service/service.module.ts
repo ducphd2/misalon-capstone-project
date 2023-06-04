@@ -1,4 +1,4 @@
-import { ServiceModel, ServiceRepository } from '@libs/database';
+import { MerchantModel, MerchantRepository, ServiceModel, ServiceRepository } from '@libs/database';
 import { SecretsModule } from '@libs/modules';
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -6,8 +6,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ServicesService } from '../service/service.service';
 
 @Module({
-  imports: [SecretsModule, SequelizeModule.forFeature([ServiceModel])],
-  providers: [ServicesService, ServiceRepository],
+  imports: [SecretsModule, SequelizeModule.forFeature([ServiceModel, MerchantModel])],
+  providers: [ServicesService, ServiceRepository, MerchantRepository],
   exports: [ServicesService],
 })
 export class ServicesModule {}

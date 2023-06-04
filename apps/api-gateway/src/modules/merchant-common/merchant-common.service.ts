@@ -1,3 +1,4 @@
+import { UserModel } from '@libs/database';
 import { BranchProto, FeedbackProto, MerchantProto, ServiceProto } from '@libs/grpc-types';
 import {
   BranchPagination,
@@ -132,6 +133,32 @@ export class MerchantCommonService implements OnModuleInit {
     if (merchantId) {
       merge(where, {
         merchantId,
+      });
+    }
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.findService({
+      ...query,
+      where: !isEmpty(where) ? JSON.stringify(where) : null,
+    });
+
+    return result;
+  }
+
+  async findServicesByCustomer(query?: BaseQueryDto, user?: UserModel) {
+    const where = {};
+
+    if (user) {
+      merge(where, {
+        userLat: user.latitude,
+        userLng: user.longitude,
       });
     }
 

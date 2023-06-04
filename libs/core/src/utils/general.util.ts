@@ -48,3 +48,14 @@ export function generateUniqueSku(type?: EServiceType): string {
 
   return `${prefix}${timestamp}${random}`.toUpperCase();
 }
+
+export function toSequelizeDistanceStr(latitude: number, longitude: number): string {
+  return `(
+    6371 * acos(
+        cos(radians(${latitude}))
+        * cos(radians(latitude))
+        * cos(radians(longitude) - radians(${longitude}))
+        + sin(radians(${latitude})) * sin(radians(latitude))
+    )
+)`;
+}

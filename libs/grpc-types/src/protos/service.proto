@@ -76,6 +76,9 @@ message Service {
   optional string image = 19;
   optional EServiceType type = 20;
   optional merchant_common.Merchant merchant = 23;
+  optional float distance = 24;
+  optional double latitude = 25;
+  optional double longitude = 26;
 }
 
 message NullableService {

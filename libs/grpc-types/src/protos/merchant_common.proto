@@ -62,6 +62,9 @@ message Service {
   optional string description = 18;
   optional string image = 19;
   optional EServiceType type = 20;
+  optional double latitude = 21;
+  optional double longitude = 22;
+  optional double distance = 23;
 }
 
 message Branch {

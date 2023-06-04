@@ -61,6 +61,18 @@ export class ServiceModel extends BaseModel<ServiceModel> {
   })
   search?: string;
 
+  @Column({
+    type: DataType.FLOAT,
+    defaultValue: 0,
+  })
+  latitude?: number;
+
+  @Column({
+    type: DataType.FLOAT,
+    defaultValue: 0,
+  })
+  longitude?: number;
+
   @BelongsTo(() => MerchantModel)
   merchant?: MerchantModel;
 
@@ -69,6 +81,8 @@ export class ServiceModel extends BaseModel<ServiceModel> {
 
   @BelongsToMany(() => BookingModel, () => BookingServiceModel)
   bookings?: BookingModel[];
+
+  distance: number;
 
   @BeforeCreate
   @BeforeUpdate

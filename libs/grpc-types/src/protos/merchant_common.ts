@@ -68,6 +68,9 @@ export interface Service {
   description?: string | undefined;
   image?: string | undefined;
   type?: EServiceType | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
+  distance?: number | undefined;
 }
 
 export interface Branch {
