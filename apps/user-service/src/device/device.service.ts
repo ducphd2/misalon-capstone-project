@@ -30,20 +30,21 @@ export class DeviceService {
   }
 
   async upsertDevice(dto: DeviceProto.CreateDeviceInput): Promise<DeviceModel> {
-    // let device = await this.deviceRepository.findOne({
-    //   userId: dto.userId,
-    //   deviceId: dto.deviceId,
-    //   os: dto.os,
-    // });
+    let device = await this.deviceRepository.findOne({
+      where: {
+        deviceId: dto.deviceId,
+        os: dto.os,
+        userId: dto.userId,
+      },
+    });
 
-    // if (isEmpty(device)) {
-    //   device = await this.create(dto);
-    // } else {
-    //   await this.deviceRepository.update(device.id, { token: dto.token });
-    //   device = await this.findById(device.id);
-    // }
+    if (isEmpty(device)) {
+      device = await this.create(dto);
+    } else {
+      const updateResult = await this.deviceRepository.update({ token: dto.token }, { where: { id: device.id } });
+      device = updateResult[0];
+    }
 
-    // return device;
-    return;
+    return device;
   }
 }
