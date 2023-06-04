@@ -53,6 +53,7 @@ export interface CreatePaymentInput {
   branchId?: number | undefined;
   totalPrice?: number | undefined;
   ip?: string | undefined;
+  vnpayUrl?: string | undefined;
 }
 
 export interface UpdatePaymentData {
@@ -84,7 +85,6 @@ export interface PaymentPagination {
 
 export interface CallbackQuery {
   query: string;
-  body: string;
 }
 
 export interface Payments {
