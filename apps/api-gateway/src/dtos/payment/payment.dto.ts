@@ -1,10 +1,6 @@
 import { EPaymentType } from '@libs/core';
 import { PartialType } from '@nestjs/mapped-types';
-import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive } from 'class-validator';
-
-import { CreateProductBookingInput } from '../product';
-import { CreateOperatorBookingInput } from '../operator';
+import { IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreatePaymentInput {
   @IsInt({ each: true })
@@ -33,13 +29,9 @@ export class CreatePaymentInput {
   @IsEnum(EPaymentType)
   type: EPaymentType;
 
+  @IsString()
   @IsOptional()
-  @Type(() => CreateProductBookingInput)
-  products: CreateProductBookingInput[];
-
-  @IsOptional()
-  @Type(() => CreateOperatorBookingInput)
-  operators: CreateOperatorBookingInput[];
+  vnpayUrl: string;
 }
 
 export class PartialUpdatePayment extends PartialType<CreatePaymentInput>(CreatePaymentInput) {}

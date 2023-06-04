@@ -3,7 +3,15 @@ import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } fr
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { Job } from 'bull';
 import { omit } from 'lodash';
-import { BookingRepository, BookingServiceRepository, BranchRepository, BranchUserRepository } from '@libs/database';
+import {
+  BookingRepository,
+  BookingServiceRepository,
+  BranchRepository,
+  BranchUserRepository,
+  PaymentRepository,
+} from '@libs/database';
+import { EPaymentStatus } from '@libs/grpc-types/protos/payment';
+import { EBookingStatus } from '@libs/grpc-types/protos/commons';
 
 import { BookingService } from './booking.service';
 
@@ -17,6 +25,7 @@ export class BookingProcessor implements OnModuleInit {
     private readonly branchRepository: BranchRepository,
     private readonly bookingRepository: BookingRepository,
     private readonly branchUserRepository: BranchUserRepository,
+    private readonly paymentRepository: PaymentRepository,
   ) {}
 
   onModuleInit() {
@@ -84,5 +93,64 @@ export class BookingProcessor implements OnModuleInit {
     await Promise.all(
       serviceIds.map((serviceId: number) => this.bookingServiceRepository.create({ bookingId, serviceId })),
     );
+  }
+
+  @Process(EBullEvent.UPDATE_VNPAY_BOOKINGS)
+  async handlePaymentResultEvent(job: Job<any>) {
+    const { status, code } = job.data;
+
+    const payment = await this.paymentRepository.findOne({
+      where: {
+        code,
+      },
+    });
+
+    await this.bookingRepository.update(
+      {
+        status,
+      },
+      {
+        where: {
+          paymentId: payment.id,
+        },
+      },
+    );
+  }
+
+  @Process(EBullEvent.WAIT_FOR_MAKE_PAYMENT_BOOKING)
+  async handleWaitingForPaymentBooking(job: Job<any>) {
+    const { paymentId, bookingIds } = job.data;
+
+    const payment = await this.paymentRepository.findOne({
+      where: {
+        id: paymentId,
+      },
+    });
+
+    if (payment.status !== EPaymentStatus.FINISHED) {
+      await this.paymentRepository.update(
+        {
+          status: EPaymentStatus.FAILED,
+        },
+        { where: { id: paymentId } },
+      );
+
+      await Promise.all(
+        bookingIds.map((bookingId: number) => {
+          this.bookingRepository.update(
+            {
+              status: EBookingStatus.BOOKING_PAYMENT_FAILED,
+            },
+            {
+              where: {
+                id: bookingId,
+              },
+            },
+          );
+        }),
+      );
+      return false;
+    }
+    return true;
   }
 }

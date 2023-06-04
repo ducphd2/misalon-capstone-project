@@ -63,6 +63,7 @@ message CreatePaymentInput {
   optional int32 branchId = 6;
   optional double totalPrice = 7;
   optional string ip = 8;
+  optional string vnpayUrl = 9;
 }
 
 message UpdatePaymentData {
@@ -98,7 +99,6 @@ message PaymentPagination {
 
 message CallbackQuery {
   string query = 1;
-  string body = 2;
 }
 
 message Payments {

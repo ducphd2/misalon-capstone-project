@@ -4,7 +4,7 @@ import { Body, Controller, Delete, Get, Ip, Logger, Param, Post, Query, UseGuard
 import { PaymentService } from './payment.service';
 
 import { JwtAuthGuard, User } from '@/api-gateway/core';
-import { CreatePaymentInput } from '@/api-gateway/dtos';
+import { CallbackPaymentInput, CreatePaymentInput } from '@/api-gateway/dtos';
 
 @Controller('payments')
 export class PaymentController {
@@ -21,9 +21,8 @@ export class PaymentController {
   }
 
   @Get('callback')
-  @UseGuards(JwtAuthGuard)
-  async callback(@Query() query: any, @Body() data: any) {
-    return await this.paymentService.callback(JSON.stringify(query), JSON.stringify(data));
+  async callback(@Query() query: CallbackPaymentInput) {
+    return await this.paymentService.callback(JSON.stringify(query));
   }
 
   @Delete(':id')
