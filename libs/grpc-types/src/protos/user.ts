@@ -42,6 +42,8 @@ export interface User {
   branch?: Branch | undefined;
   age?: number | undefined;
   merchant?: Merchant | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface CreateUserInput {
@@ -100,6 +102,8 @@ export interface UpdateUserData {
   branchId?: number | undefined;
   merchantId?: number | undefined;
   lang?: ELangNumber | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface AddOperatorInput {

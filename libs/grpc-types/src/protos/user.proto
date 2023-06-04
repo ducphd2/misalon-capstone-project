@@ -64,6 +64,8 @@ message User {
   optional merchant_common.Branch branch = 25;
   optional int32 age = 26;
   optional merchant_common.Merchant merchant = 27;
+  optional double latitude = 28;
+  optional double longitude = 29;
 }
 
 message CreateUserInput {
@@ -125,6 +127,8 @@ message UpdateUserData {
     int32 branchId = 17;
     int32 merchantId = 18;
     ELangNumber lang = 19;
+    double latitude = 20;
+    double longitude = 21;
   }
 }
 
