@@ -22,7 +22,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
 import { firstValueFrom } from 'rxjs';
 
-import { BaseQueryDto } from '@/api-gateway/dtos';
+import { BaseQueryDto, GetNearestServiceDto, GetServiceDto } from '@/api-gateway/dtos';
 
 @Injectable()
 export class MerchantCommonService implements OnModuleInit {
@@ -159,6 +159,32 @@ export class MerchantCommonService implements OnModuleInit {
       merge(where, {
         userLat: user.latitude,
         userLng: user.longitude,
+      });
+    }
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.findService({
+      ...query,
+      where: !isEmpty(where) ? JSON.stringify(where) : null,
+    });
+
+    return result;
+  }
+
+  async findNearestServices(query?: GetNearestServiceDto) {
+    const where = {};
+
+    if (query.latitude && query.longitude) {
+      merge(where, {
+        userLat: query.latitude,
+        userLng: query.longitude,
       });
     }
 

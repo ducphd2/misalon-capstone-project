@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { UserModel } from '@libs/database';
 
 import { ServicesService } from './service.service';
 
-import { JwtAuthGuard, User } from '@/api-gateway/core';
-import { CreateServiceInput, GetServiceDto, PartialUpdateService } from '@/api-gateway/dtos';
+import { JwtAuthGuard } from '@/api-gateway/core';
+import { CreateServiceInput, GetNearestServiceDto, GetServiceDto, PartialUpdateService } from '@/api-gateway/dtos';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 
 @Controller('services')
@@ -35,10 +34,17 @@ export class ServiceController {
     return result;
   }
 
+  @Get('coordinate')
+  @UseGuards(JwtAuthGuard)
+  async findAllByCoordinate(@Query() query?: GetNearestServiceDto) {
+    const result = await this.merchantService.findNearestServices(query);
+    return result;
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard)
-  async findAll(@Query() query?: GetServiceDto, @User() user?: UserModel) {
-    const result = await this.merchantService.findServicesByCustomer(query, user);
+  async findAll(@Query() query?: GetServiceDto) {
+    const result = await this.merchantService.findServicesByCustomer(query);
     return result;
   }
 
