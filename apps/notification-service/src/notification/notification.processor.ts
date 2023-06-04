@@ -110,6 +110,11 @@ export class NotificationProcessor implements OnModuleInit {
   @Process(EBullEvent.NS_NEW_BOOKING)
   async handleNewBooking(job: Job<any>) {
     const request = job.data;
+    // insert booking notification to admin/customer notification database
+
+    await this.bullQueueProvider.addGatewayEvent('user_booking', { userId: request.userId, booking: request.booking });
+
+    // send to gateway a message queue
     console.log('Must to implement handle new booking notification in email, push notification in react and mobile');
   }
 }
