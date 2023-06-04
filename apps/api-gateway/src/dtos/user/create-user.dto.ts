@@ -1,7 +1,17 @@
 import { CommonProto } from '@libs/grpc-types';
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsEmail, IsNotEmpty, MaxLength, MinLength, IsString, IsEnum, IsInt, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  MaxLength,
+  MinLength,
+  IsString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsNumber,
+} from 'class-validator';
 
 export class CreateUserDto {
   @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
@@ -78,6 +88,14 @@ export class CreateUserDto {
   @IsInt()
   @IsOptional()
   wardCode?: number;
+
+  @IsNumber()
+  @IsOptional()
+  latitude?: number;
+
+  @IsNumber()
+  @IsOptional()
+  longitude?: number;
 }
 
 export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'email'])) {}
