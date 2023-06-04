@@ -25,5 +25,5 @@ jobs:
           port: 22
           script: |
             cd misalon-capstone-project
-            /root/.nvm/versions/node/v16.20.0/bin/yarn start
+            export PATH="$PATH:/root/.nvm/versions/node/v16.20.0/bin/yarn:/root/.nvm/versions/node/v16.20.0/bin/pm2"
             yarn start
