@@ -111,9 +111,9 @@ export class BookingService implements OnModuleInit {
       ],
     });
     return {
-      ...omit(booking, ['branch']),
-      branch: booking.branch,
-      merchant: booking.branch.merchant,
+      ...omit(booking.toJSON(), ['branch']),
+      branch: booking.toJSON().branch,
+      merchant: booking.toJSON().branch.merchant,
     };
   }
 
