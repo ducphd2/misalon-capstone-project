@@ -16,11 +16,7 @@ export enum EUserGender {
 export enum EUserRole {
   USER = 0,
   ADMIN = 1,
-  SUPER_ADMIN = 2,
-  MASTER_WORKER = 3,
-  ASSISTANT_WORKER = 4,
-  MANAGER = 5,
-  RECEPTIONIST = 6,
+  EMPLOYEE = 2,
 }
 
 export enum ECustomerLevel {
