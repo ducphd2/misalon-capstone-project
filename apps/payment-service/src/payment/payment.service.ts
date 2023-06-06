@@ -1,37 +1,43 @@
 import { createHmac } from 'node:crypto';
 
 import { EBullEvent, EVnPayCommand } from '@libs/core';
-import { PaymentRepository } from '@libs/database';
-import { CommonProto, NotificationProto, PaymentProto } from '@libs/grpc-types';
+import { BookingRepository, PaymentRepository } from '@libs/database';
+import { CommonProto, PaymentProto } from '@libs/grpc-types';
 import { EBookingStatus } from '@libs/grpc-types/protos/commons';
 import { EPaymentStatus, EPaymentType } from '@libs/grpc-types/protos/payment';
 import { IVnPayParams } from '@libs/interfaces';
 import { BullQueueProvider } from '@libs/modules';
 import { SecretsService } from '@libs/modules/global/secrets/service';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { Injectable, Logger } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 import * as moment from 'moment';
 import * as qs from 'qs';
 
 @Injectable()
-export class PaymentService implements OnModuleInit {
-  private notificationService: NotificationProto.NotificationServiceClient;
+export class PaymentService {
+  private readonly logger = new Logger(this.constructor.name);
 
   constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly bullQueue: BullQueueProvider,
     private readonly configService: SecretsService,
-    @Inject(NotificationProto.NOTIFICATION_PACKAGE_NAME) private client: ClientGrpc,
+    private readonly bookingRepository: BookingRepository,
   ) {}
 
-  onModuleInit() {
-    this.notificationService = this.client.getService<NotificationProto.NotificationServiceClient>(
-      NotificationProto.NOTIFICATION_SERVICE_NAME,
-    );
-  }
-
   async create(dto: PaymentProto.CreatePaymentInput) {
+    // const existedPayment = await this.bookingRepository.find({
+    //   where: {
+    //     id: {
+    //       _in: dto.bookingIds,
+    //     },
+    //     userId: dto.userId,
+    //   },
+    // });
+
+    // if (existedPayment.length) {
+    //   ErrorHelper.BadRequestException('That booking has already paid');
+    // }
+
     if (dto.type === EPaymentType.CASH) {
       const payment = await this.paymentRepository.create(dto);
 
@@ -214,6 +220,8 @@ export class PaymentService implements OnModuleInit {
 
   async handleCallbackVnPay(query: IVnPayParams) {
     const isSuccess = this.checkPaymentStatus(query);
+
+    this.logger.log(`handleCallbackVnPay: check status: ${isSuccess}`);
 
     if (isSuccess) {
       const result = await this.paymentRepository.update(

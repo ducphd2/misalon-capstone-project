@@ -196,22 +196,9 @@ export class MerchantAddOperatorDto {
   @IsOptional()
   gender: CommonProto.EUserGender;
 
-  @IsOptional()
-  @IsEnum(CommonProto.ECustomerLevel)
-  level?: CommonProto.ECustomerLevel;
-
   @IsString()
   @IsNotEmpty()
   phoneNumber: string;
-
-  @IsOptional()
-  dobDay: number;
-
-  @IsOptional()
-  dobMonth: number;
-
-  @IsOptional()
-  dobYear: number;
 
   @IsOptional()
   occupation?: string;
@@ -221,13 +208,4 @@ export class MerchantAddOperatorDto {
 
   @IsOptional()
   address?: string;
-
-  @IsOptional()
-  cityCode?: number;
-
-  @IsOptional()
-  districtCode?: number;
-
-  @IsOptional()
-  wardCode?: number;
 }

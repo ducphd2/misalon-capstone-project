@@ -3,6 +3,7 @@ import { UserModel } from '@libs/database/entities';
 import { BullQueueProvider, MessageComponent } from '@libs/modules';
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { isEmpty } from 'lodash';
+import { EUserRole } from '@libs/grpc-types/protos/commons';
 
 import { Admin, JwtAuthGuard, Token, User } from '@/api-gateway/core';
 import {
@@ -52,6 +53,7 @@ export class MerchantMutationController {
       user: {
         ...userInput,
         merchantId: id,
+        role: EUserRole.USER,
       },
     });
 

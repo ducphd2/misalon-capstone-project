@@ -1,6 +1,5 @@
-import { ExceptionFilter, ArgumentsHost, Catch, Logger } from '@nestjs/common';
-import { GeneralServerErrorException } from 'exceptions/exceptions';
 import { GrpcMetadataErrorKey } from '@libs/grpc-types';
+import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -15,11 +14,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
         exception = JSON.parse(exception.metadata.get(GrpcMetadataErrorKey)[0]);
       } catch (e) {
         this.logger.error(`[GRPC UNHANDLED ERROR]: [${exception?.message}] :-> `, JSON.stringify(exception));
-        exception = new GeneralServerErrorException();
+        // exception = new GeneralServerErrorException();
       }
     } else if (!exception.isCustomError) {
       this.logger.error(`[UNHANDLED ERROR]: [${exception?.message}] :-> `, JSON.stringify(exception));
-      exception = new GeneralServerErrorException();
+      // exception = new GeneralServerErrorException();
     } else {
       this.logger.error(`[ERROR:${exception.errorCode}] ${exception.message.toUpperCase()}`);
     }
