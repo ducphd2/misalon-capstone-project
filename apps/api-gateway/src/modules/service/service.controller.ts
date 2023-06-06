@@ -35,27 +35,27 @@ export class ServiceController {
   }
 
   @Get('coordinate')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findAllByCoordinate(@Query() query?: GetNearestServiceDto) {
     const result = await this.merchantService.findNearestServices(query);
     return result;
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findAll(@Query() query?: GetServiceDto) {
     const result = await this.merchantService.findServicesByCustomer(query);
     return result;
   }
 
   @Get(':id/feedbacks')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findFeedback(@Param('id') id: number) {
     return await this.merchantService.findFeedback({ where: JSON.stringify({ serviceId: id }) });
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async findDetail(@Param('id') id: number) {
     const result = await this.servicesService.delete(id);
     return result;
