@@ -1,5 +1,6 @@
 import { UserModel } from '@libs/database';
 import { Body, Controller, Delete, Get, Ip, Logger, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { ErrorHelper } from '@libs/core';
 
 import { PaymentService } from './payment.service';
 
@@ -15,9 +16,13 @@ export class PaymentController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(@User() user: UserModel, @Body() input: CreatePaymentInput, @Ip() ip: string) {
-    const result = await this.paymentService.create(user, input, ip);
+    try {
+      const result = await this.paymentService.create(user, input, ip);
 
-    return result;
+      return result;
+    } catch (error) {
+      ErrorHelper.HttpBadRequestException(error.message);
+    }
   }
 
   @Get('callback')

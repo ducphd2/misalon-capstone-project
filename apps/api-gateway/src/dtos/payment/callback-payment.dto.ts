@@ -6,10 +6,6 @@ export class CallbackPaymentInput {
   @IsOptional()
   vnp_Version?: string;
 
-  // @IsNotEmpty()
-  // @IsEnum(EVnPayCommand)
-  // vnp_Command?: EVnPayCommand;
-
   @IsString()
   @IsOptional()
   vnp_TmnCode?: string;

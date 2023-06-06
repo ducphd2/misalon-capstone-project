@@ -1,10 +1,8 @@
 import { EBullQueue } from '@libs/core';
-import { PaymentModel, PaymentRepository } from '@libs/database';
-import { NotificationClient } from '@libs/grpc-types';
-import { BullQueueProvider, SecretsService, SecretsModule } from '@libs/modules';
+import { BookingModel, BookingRepository, PaymentModel, PaymentRepository } from '@libs/database';
+import { BullQueueProvider, SecretsModule, SecretsService } from '@libs/modules';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { ClientsModule } from '@nestjs/microservices';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { PaymentController } from './payment.controller';
@@ -13,8 +11,7 @@ import { PaymentService } from './payment.service';
 @Module({
   imports: [
     SecretsModule,
-    SequelizeModule.forFeature([PaymentModel]),
-    ClientsModule.register([NotificationClient]),
+    SequelizeModule.forFeature([PaymentModel, BookingModel]),
     BullModule.registerQueue({
       name: EBullQueue.NOTIFICATION_QUEUE,
     }),
@@ -29,6 +26,6 @@ import { PaymentService } from './payment.service';
     }),
   ],
   controllers: [PaymentController],
-  providers: [PaymentService, PaymentRepository, BullQueueProvider, SecretsService],
+  providers: [PaymentService, PaymentRepository, BullQueueProvider, SecretsService, BookingRepository],
 })
 export class PaymentModule {}

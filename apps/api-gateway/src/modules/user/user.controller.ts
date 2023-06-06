@@ -130,7 +130,7 @@ export class UserController {
       id: userId,
       user: {
         ...customerInput,
-        role: customerInput?.role ?? EUserRole.MASTER_WORKER,
+        role: customerInput?.role ?? EUserRole.USER,
       },
     });
 
