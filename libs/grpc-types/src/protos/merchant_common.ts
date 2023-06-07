@@ -38,6 +38,8 @@ export interface Merchant {
   ward?: string | undefined;
   branches: Branch[];
   image?: string | undefined;
+  latitude?: number | undefined;
+  longitude?: number | undefined;
 }
 
 export interface Service {

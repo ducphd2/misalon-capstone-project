@@ -37,6 +37,8 @@ message Merchant {
   optional string ward = 17;
   repeated Branch branches = 18;
   optional string image = 19;
+  optional double latitude = 20;
+  optional double longitude = 21;
 }
 
 message Service {
