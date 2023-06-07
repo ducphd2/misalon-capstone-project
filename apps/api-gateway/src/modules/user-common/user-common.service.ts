@@ -1,4 +1,4 @@
-import { DeviceProto } from '@libs/grpc-types';
+import { BookingProto, DeviceProto } from '@libs/grpc-types';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import {
@@ -10,6 +10,8 @@ import {
   USER_SERVICE_NAME,
   UpdateUserData,
   UserServiceClient,
+  UserStatisticsByRange,
+  UserStatisticsByRangeRequest,
 } from '@libs/grpc-types/protos/user';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -81,5 +83,13 @@ export class UserCommonService implements OnModuleInit {
 
   async updateCustomer(data: AdminUpdateCustomerInput): Promise<FindOneUser> {
     return await firstValueFrom(this.userService.updateCustomer(data));
+  }
+
+  async getUserStatisticsByRange(request: UserStatisticsByRangeRequest): Promise<UserStatisticsByRange> {
+    return await firstValueFrom(this.userService.getUserStatisticsByRange(request));
+  }
+
+  async getBookingStatisticByYear(query: QueryRequest): Promise<BookingProto.Bookings> {
+    return await firstValueFrom(this.userService.getBookingStatisticByYear(query));
   }
 }

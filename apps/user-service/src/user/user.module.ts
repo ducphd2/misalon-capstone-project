@@ -1,12 +1,12 @@
 import { EBullQueue } from '@libs/core';
-import { BranchUserModel, UserModel } from '@libs/database/entities';
-import { BranchUserRepository, UserRepository } from '@libs/database/repositories';
+import { BookingModel, BranchUserModel, UserModel } from '@libs/database/entities';
+import { BookingRepository, BranchUserRepository, UserRepository } from '@libs/database/repositories';
+import { MerchantClient } from '@libs/grpc-types';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
+import { ClientsModule } from '@nestjs/microservices';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SecretsModule } from 'libs/modules/global/secrets/module';
-import { MerchantClient } from '@libs/grpc-types';
-import { ClientsModule } from '@nestjs/microservices';
 
 import { DeviceModule } from '../device/device.module';
 
@@ -17,7 +17,7 @@ import { UserService } from './user.service';
 @Module({
   imports: [
     SecretsModule,
-    SequelizeModule.forFeature([UserModel, BranchUserModel]),
+    SequelizeModule.forFeature([UserModel, BranchUserModel, BookingModel]),
     DeviceModule,
     BullModule.registerQueue({
       name: EBullQueue.USER_QUEUE,
@@ -25,7 +25,7 @@ import { UserService } from './user.service';
     ClientsModule.register([MerchantClient]),
   ],
   controllers: [UserController],
-  providers: [UserService, UserRepository, UserProcessor, BranchUserRepository],
+  providers: [UserService, UserRepository, UserProcessor, BranchUserRepository, BookingRepository],
   exports: [UserService],
 })
 export class UserModule {}

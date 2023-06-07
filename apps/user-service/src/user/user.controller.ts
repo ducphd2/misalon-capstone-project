@@ -1,9 +1,10 @@
 import { DeviceModel } from '@libs/database/entities';
-import { CommonProto, UserProto } from '@libs/grpc-types';
+import { BookingProto, CommonProto, UserProto } from '@libs/grpc-types';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import { GrpcLogInterceptor } from '@libs/interceptors';
 import { Controller, UseFilters, UseInterceptors } from '@nestjs/common';
 import { GrpcAllExceptionsFilter } from 'filters/filters';
+import { Observable } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
 
@@ -15,6 +16,16 @@ import { UserService } from './user.service';
 @UserProto.UserServiceControllerMethods()
 export class UserController implements UserProto.UserServiceController {
   constructor(private readonly userService: UserService, private readonly deviceService: DeviceService) {}
+
+  async getBookingStatisticByYear(request: CommonProto.QueryRequest): Promise<BookingProto.Bookings> {
+    return await this.userService.getBookingStatisticByYear(request);
+  }
+
+  async getUserStatisticsByRange(
+    request: UserProto.UserStatisticsByRangeRequest,
+  ): Promise<UserProto.UserStatisticsByRange> {
+    return await this.userService.getUserStatisticsByRange(request);
+  }
 
   async updateCustomer(request: UserProto.AdminUpdateCustomerInput): Promise<UserProto.FindOneUser> {
     const updatedUser = await this.userService.update({ id: request.id, data: request.user });

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { Bookings } from "./booking";
 import { Count, EUserGender, EUserRole, EUserStatus, Id, PageMeta, QueryRequest } from "./commons";
 import { CreateDeviceInput, Device, Devices } from "./device";
 import { NullValue } from "./google/protobuf/struct";
@@ -120,6 +121,16 @@ export interface UserPagination {
   meta?: PageMeta | undefined;
 }
 
+export interface UserStatisticsByRangeRequest {
+  merchantId: number;
+}
+
+export interface UserStatisticsByRange {
+  range1?: number | undefined;
+  range2?: number | undefined;
+  range3?: number | undefined;
+}
+
 export const DUCPH_USER_PACKAGE_NAME = "ducph_user";
 
 export interface UserServiceClient {
@@ -154,6 +165,10 @@ export interface UserServiceClient {
   addCustomer(request: AddOperatorInput): Observable<FindOneUser>;
 
   updateCustomer(request: AdminUpdateCustomerInput): Observable<FindOneUser>;
+
+  getUserStatisticsByRange(request: UserStatisticsByRangeRequest): Observable<UserStatisticsByRange>;
+
+  getBookingStatisticByYear(request: QueryRequest): Observable<Bookings>;
 }
 
 export interface UserServiceController {
@@ -188,6 +203,12 @@ export interface UserServiceController {
   addCustomer(request: AddOperatorInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
   updateCustomer(request: AdminUpdateCustomerInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
+
+  getUserStatisticsByRange(
+    request: UserStatisticsByRangeRequest,
+  ): Promise<UserStatisticsByRange> | Observable<UserStatisticsByRange> | UserStatisticsByRange;
+
+  getBookingStatisticByYear(request: QueryRequest): Promise<Bookings> | Observable<Bookings> | Bookings;
 }
 
 export function UserServiceControllerMethods() {
@@ -207,6 +228,8 @@ export function UserServiceControllerMethods() {
       "countCustomer",
       "addCustomer",
       "updateCustomer",
+      "getUserStatisticsByRange",
+      "getBookingStatisticByYear",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
