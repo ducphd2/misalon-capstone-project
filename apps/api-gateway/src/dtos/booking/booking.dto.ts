@@ -1,5 +1,7 @@
 import { CommonProto } from '@libs/grpc-types';
+import { EUserGender } from '@libs/grpc-types/protos/commons';
 import { PartialType } from '@nestjs/mapped-types';
+import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateBookingInput {
@@ -15,7 +17,7 @@ export class CreateBookingInput {
 
   @IsOptional()
   @IsEnum(CommonProto.EBookingStatus)
-  status?: CommonProto.EBookingStatus = CommonProto.EBookingStatus.BOOKING_PENDING;
+  status?: CommonProto.EBookingStatus = CommonProto.EBookingStatus.BOOKING_APPROVE;
 
   @IsNotEmpty()
   @IsString()
@@ -38,8 +40,21 @@ export class CreateBookingInput {
   merchantId?: number;
 
   @IsOptional()
-  @IsInt()
-  duration?: number;
+  @IsString()
+  fullName?: string;
+
+  @Transform(({ value }) => parseInt(value))
+  @IsOptional()
+  @IsEnum(EUserGender, { message: 'male: 0, female: 1, other: 2' })
+  gender?: EUserGender;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
 }
 
 export class PartialUpdateBooking extends PartialType<CreateBookingInput>(CreateBookingInput) {}

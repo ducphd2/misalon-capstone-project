@@ -1,33 +1,57 @@
 import { EBullEvent } from '@libs/core';
-import { BookingRepository, BranchModel, MerchantModel, ServiceModel, UserModel } from '@libs/database';
+import {
+  BookingRepository,
+  BranchModel,
+  BranchRepository,
+  BranchUserRepository,
+  MerchantModel,
+  ServiceModel,
+  UserModel,
+  UserRepository,
+} from '@libs/database';
 import { BookingProto, CommonProto } from '@libs/grpc-types';
 import { BullQueueProvider } from '@libs/modules';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { isEmpty, omit } from 'lodash';
-import { model } from 'mongoose';
+import { isEmpty, omit, pick } from 'lodash';
 
 @Injectable()
 export class BookingService implements OnModuleInit {
   constructor(
     private readonly bookingRepository: BookingRepository,
     private readonly bullQueueProvider: BullQueueProvider,
+    private readonly userRepository: UserRepository,
+    private readonly branchUserRepository: BranchUserRepository,
+    private readonly branchRepository: BranchRepository,
   ) {}
 
   onModuleInit() {}
 
   async create(dto: BookingProto.CreateBookingInput) {
-    const booking = await this.bookingRepository.create(dto);
+    const userData = pick(dto, ['fullName', 'gender', 'phoneNumber', 'address']);
+
+    let user = null;
+    if (!isEmpty(userData) && !dto.userId) {
+      user = await this.userRepository.create(userData);
+      await this.branchUserRepository.create({
+        userId: user.id,
+        merchantId: dto.merchantId,
+        branchId: dto.branchId,
+      });
+    }
+
+    const booking = await this.bookingRepository.create({ ...dto, userId: dto?.userId ?? user?.id ?? null });
 
     await Promise.all([
       this.bullQueueProvider.addBookingEvent(EBullEvent.BS_INSERT_BOOKING_SERVICES_DATA, {
         serviceIds: dto.serviceIds,
         bookingId: booking.id,
-        userId: booking?.userId,
+        userId: booking?.userId ?? user?.id,
         branchId: booking?.branchId,
       }),
       this.bullQueueProvider.addNotificationEvent(EBullEvent.NS_NEW_BOOKING, {
         ...booking,
         ...dto,
+        userId: booking?.userId ?? user?.id,
       }),
     ]);
 

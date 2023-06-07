@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Count, EBookingStatus, Id, PageMeta, QueryRequest } from "./commons";
+import { Count, EBookingStatus, EUserGender, Id, PageMeta, QueryRequest } from "./commons";
 import { NullValue } from "./google/protobuf/struct";
 import { Branch, Merchant, Service } from "./merchant_common";
 import { User } from "./user_common";
@@ -55,6 +55,10 @@ export interface CreateBookingInput {
   note?: string | undefined;
   merchantId?: number | undefined;
   branchId?: number | undefined;
+  fullName?: string | undefined;
+  gender?: EUserGender | undefined;
+  phoneNumber?: string | undefined;
+  address?: string | undefined;
 }
 
 export interface UpdateBookingData {

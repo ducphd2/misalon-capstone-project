@@ -62,6 +62,10 @@ message CreateBookingInput {
   optional string note = 10;
   optional int32 merchantId = 11;
   optional int32 branchId = 12;
+  optional string fullName = 13;
+  optional commons.EUserGender gender = 14;
+  optional string phoneNumber = 15;
+  optional string address = 16;
 }
 
 message UpdateBookingData {
