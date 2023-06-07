@@ -1,4 +1,4 @@
-import { BookingProto, DeviceProto } from '@libs/grpc-types';
+import { BookingProto, DeviceProto, UserProto } from '@libs/grpc-types';
 import { Count, Id, QueryRequest } from '@libs/grpc-types/protos/commons';
 import { CreateDeviceInput, Devices } from '@libs/grpc-types/protos/device';
 import {
@@ -91,5 +91,9 @@ export class UserCommonService implements OnModuleInit {
 
   async getBookingStatisticByYear(query: QueryRequest): Promise<BookingProto.Bookings> {
     return await firstValueFrom(this.userService.getBookingStatisticByYear(query));
+  }
+
+  async findCustomers(query: QueryRequest): Promise<UserProto.UserPagination> {
+    return await firstValueFrom(this.userService.findCustomers(query));
   }
 }

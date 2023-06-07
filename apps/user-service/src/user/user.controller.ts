@@ -16,6 +16,9 @@ import { UserService } from './user.service';
 @UserProto.UserServiceControllerMethods()
 export class UserController implements UserProto.UserServiceController {
   constructor(private readonly userService: UserService, private readonly deviceService: DeviceService) {}
+  async findCustomers(request: CommonProto.QueryRequest): Promise<UserProto.UserPagination> {
+    return await this.userService.findCustomers(request);
+  }
 
   async getBookingStatisticByYear(request: CommonProto.QueryRequest): Promise<BookingProto.Bookings> {
     return await this.userService.getBookingStatisticByYear(request);

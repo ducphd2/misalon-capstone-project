@@ -33,6 +33,7 @@ service UserService {
   rpc countCustomer(commons.QueryRequest) returns (commons.Count) {}
 
   // customer
+  rpc findCustomers(commons.QueryRequest) returns (UserPagination) {}
   rpc addCustomer(AddOperatorInput) returns (FindOneUser) {}
   rpc updateCustomer(AdminUpdateCustomerInput) returns (FindOneUser) {}
 

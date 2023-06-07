@@ -4,7 +4,7 @@ import { BookingProto, CommonProto, UserProto } from '@libs/grpc-types';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { UserStatisticsByRange, UserStatisticsByRangeRequest } from '@libs/grpc-types/protos/user';
 import { Injectable } from '@nestjs/common';
-import { isEmpty } from 'lodash';
+import { isEmpty, pick } from 'lodash';
 
 import { DeviceService } from '../device/device.service';
 
@@ -131,5 +131,47 @@ export class UserService {
     });
 
     return { items: result as BookingProto.Booking[] };
+  }
+
+  async findCustomers(query: CommonProto.QueryRequest): Promise<any> {
+    const baseWhere = !isEmpty(query.where) ? JSON.parse(query.where) : undefined;
+
+    const searchQuery = pick(baseWhere, ['search']);
+    const where = !isEmpty(searchQuery)
+      ? {
+          ...searchQuery,
+          role: EUserRole.USER,
+        }
+      : { role: EUserRole.USER };
+
+    const result = await this.userRepository.findAndPaginate(
+      {
+        where: where as unknown as string,
+      },
+      {
+        include: [
+          // {
+          //   model: MerchantModel,
+          //   attributes: ['id', 'name'],
+          //   include: [
+          //     {
+          //       model: BranchModel,
+          //       attributes: ['id', 'name'],
+          //     },
+          //   ],
+          // },
+          {
+            model: BranchUserModel,
+            attributes: ['id', 'branchId', 'merchantId'],
+            where: {
+              merchantId: baseWhere.merchantId,
+            },
+          },
+        ],
+        attributes: ['id', 'fullName', 'email', 'address', 'age', 'gender', 'contact', 'phoneNumber'],
+      },
+    );
+
+    return result;
   }
 }

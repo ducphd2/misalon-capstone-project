@@ -152,16 +152,18 @@ export class PaginateUserDto extends BaseQueryDto {
   excludeMe: boolean;
 }
 
-export class GetMerchantUserDto extends BaseQueryDto {
-  @Transform(({ value }) => +value)
-  @IsEnum(EUserRole)
-  @IsOptional()
-  role: EUserRole;
-
+export class GetBranchUserDto extends BaseQueryDto {
   @Transform(({ value }) => +value)
   @IsNumber()
   @IsOptional()
   branchId: number;
+}
+
+export class GetMerchantUserDto extends GetBranchUserDto {
+  @Transform(({ value }) => +value)
+  @IsEnum(EUserRole)
+  @IsOptional()
+  role: EUserRole;
 }
 
 export class MerchantAddOperatorDto {
