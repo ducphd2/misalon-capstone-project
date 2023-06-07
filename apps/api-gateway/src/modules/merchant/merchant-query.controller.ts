@@ -97,9 +97,9 @@ export class MerchantQueryController {
       });
     }
 
-    if (query.type.toString()) {
+    if (query?.role?.toString()) {
       merge(baseWhere, {
-        role: query.type,
+        role: query.role,
       });
     }
 
