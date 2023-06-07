@@ -43,6 +43,10 @@ export class MerchantController implements MerchantProto.MerchantServiceControll
     @Inject(BookingProto.BOOKING_PACKAGE_NAME) private bookingClient: ClientGrpc,
   ) {}
 
+  async findAllMostInterested(request: QueryRequest): Promise<ServiceProto.ServicePagination> {
+    return await this.servicesService.findAllMostInterested(request);
+  }
+
   onModuleInit() {
     this.userService = this.userClient.getService<UserServiceClient>(UserProto.USER_SERVICE_NAME);
     this.bookingService = this.bookingClient.getService<BookingServiceClient>(BookingProto.BOOKING_SERVICE_NAME);

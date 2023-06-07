@@ -34,6 +34,13 @@ export class ServiceController {
     return result;
   }
 
+  @Get('most-interested')
+  // @UseGuards(JwtAuthGuard)
+  async findAllMostInterested(@Query() query?: GetServiceDto) {
+    const result = await this.merchantService.findAllMostInterested(query);
+    return result;
+  }
+
   @Get('coordinate')
   // @UseGuards(JwtAuthGuard)
   async findAllByCoordinate(@Query() query?: GetNearestServiceDto) {

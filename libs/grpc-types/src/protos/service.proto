@@ -79,6 +79,7 @@ message Service {
   optional float distance = 24;
   optional double latitude = 25;
   optional double longitude = 26;
+  optional int32 bookingCount = 27;
 }
 
 message NullableService {

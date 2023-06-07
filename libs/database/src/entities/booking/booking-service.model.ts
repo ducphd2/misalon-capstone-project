@@ -26,4 +26,6 @@ export class BookingServiceModel extends BaseModel<BookingServiceModel> {
 
   @BelongsTo(() => ServiceModel)
   service?: ServiceModel;
+
+  booking_count?: number;
 }

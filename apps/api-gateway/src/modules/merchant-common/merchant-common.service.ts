@@ -219,4 +219,23 @@ export class MerchantCommonService implements OnModuleInit {
   async overviewStatistic(query: QueryRequest): Promise<MerchantProto.OverviewStatistic> {
     return await firstValueFrom(this.merchantService.overviewStatistic(query));
   }
+
+  async findAllMostInterested(query?: GetServiceDto) {
+    const where = {};
+
+    if (!isEmpty(query?.q)) {
+      merge(where, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    const result = await this.merchantService.findAllMostInterested({
+      ...query,
+      where: !isEmpty(where) ? JSON.stringify(where) : null,
+    });
+
+    return result;
+  }
 }

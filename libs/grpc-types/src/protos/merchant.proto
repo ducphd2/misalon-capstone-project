@@ -34,6 +34,8 @@ service MerchantService {
   rpc createService(service.CreateServiceInput) returns (service.Service) {}
   rpc updateService(service.UpdateServiceInput) returns (service.Service) {}
   rpc deleteService(commons.Id) returns (commons.Count) {}
+  rpc findAllMostInterested(commons.QueryRequest)
+      returns (service.ServicePagination) {}
 
   // feedback
   rpc feedback(commons.QueryRequest) returns (feedback.NullableItem) {}
