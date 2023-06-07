@@ -156,7 +156,7 @@ export class GetMerchantUserDto extends BaseQueryDto {
   @Transform(({ value }) => +value)
   @IsEnum(EUserRole)
   @IsOptional()
-  type: EUserRole;
+  role: EUserRole;
 
   @Transform(({ value }) => +value)
   @IsNumber()
