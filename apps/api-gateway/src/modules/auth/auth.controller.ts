@@ -2,10 +2,15 @@ import { AUTH_MESSAGE, EBullEvent, ErrorHelper, PasswordUtils, USER_MESSAGE } fr
 import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { BullQueueProvider } from '@libs/modules';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, ParseIntPipe, Post } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 
-import { CustomerRegisterPayload, InputLoginRequest, RegisterPayload } from '../../dtos';
+import {
+  CustomerRegisterPayload,
+  InputLoginRequest,
+  RegisterPayload,
+  VerifyRegisterMerchantOtpPayload,
+} from '../../dtos';
 
 import { AuthService } from './auth.service';
 
@@ -102,7 +107,19 @@ export class AuthController {
       branchId: branch.id,
     });
 
-    return this.handleResponseAuthData(user);
+    const { message } = await this.authService.genOtpRegisterMerchant(user.id, user.email);
+    return {
+      message,
+      user,
+    };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('verify-otp')
+  async verifyOtpRegisterMerchant(@Body() { otp, userId, email }: VerifyRegisterMerchantOtpPayload) {
+    const result = await this.authService.verifyOtpRegisterMerchant(userId, email, +otp);
+
+    return result;
   }
 
   @Post('customer-register')

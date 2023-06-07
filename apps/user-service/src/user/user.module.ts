@@ -1,6 +1,6 @@
 import { EBullQueue } from '@libs/core';
-import { UserModel } from '@libs/database/entities';
-import { UserRepository } from '@libs/database/repositories';
+import { BranchUserModel, UserModel } from '@libs/database/entities';
+import { BranchUserRepository, UserRepository } from '@libs/database/repositories';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -17,7 +17,7 @@ import { UserService } from './user.service';
 @Module({
   imports: [
     SecretsModule,
-    SequelizeModule.forFeature([UserModel]),
+    SequelizeModule.forFeature([UserModel, BranchUserModel]),
     DeviceModule,
     BullModule.registerQueue({
       name: EBullQueue.USER_QUEUE,
@@ -25,7 +25,7 @@ import { UserService } from './user.service';
     ClientsModule.register([MerchantClient]),
   ],
   controllers: [UserController],
-  providers: [UserService, UserRepository, UserProcessor],
+  providers: [UserService, UserRepository, UserProcessor, BranchUserRepository],
   exports: [UserService],
 })
 export class UserModule {}

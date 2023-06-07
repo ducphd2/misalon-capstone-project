@@ -34,7 +34,8 @@
     "migrate:down:db": "yarn migrate:user-service:down && yarn migrate:merchant-service:down",
     "migrate:create": "npx sequelize-cli migration:generate --name",
     "migrate:up-extension": "npx sequelize-cli db:migrate --to 20230530030304-CreatePostgisExtension.js",
-    "migrate:up": "npx sequelize-cli db:migrate"
+    "migrate:up": "npx sequelize-cli db:migrate",
+    "migrate:seed": "npx sequelize-cli seed:generate --name"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.7.1",
@@ -96,6 +97,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",

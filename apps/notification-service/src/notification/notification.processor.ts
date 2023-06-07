@@ -82,16 +82,6 @@ export class NotificationProcessor implements OnModuleInit {
         subject: admin.lang ? titleEn : titleVi,
         lang: admin?.lang,
       }),
-      this.mailService.sendSuccessBookingUserEmail({
-        email: customer.email,
-        bookingDate: request.bookingDate,
-        startTime: request.startTime,
-        name: branch.name,
-        address: branch.address,
-        phone: branch.phone,
-        lang: customer.lang,
-        note: request?.note,
-      }),
     ]);
   }
 
@@ -116,5 +106,17 @@ export class NotificationProcessor implements OnModuleInit {
 
     // send to gateway a message queue
     console.log('Must to implement handle new booking notification in email, push notification in react and mobile');
+  }
+
+  @Process(EBullEvent.SEND_EMAIL_VERIFY_OTP)
+  async handleSendMailRegisterMerchantVerifyOtp(job: Job<any>) {
+    const { userId, email, generatedOtp } = job.data;
+
+    // TODO: Update user status as well as merchant, branch status when send verify OTP
+
+    await this.mailService.sendMerchantRegisterMerchantOtp({
+      email,
+      generatedOtp,
+    });
   }
 }
