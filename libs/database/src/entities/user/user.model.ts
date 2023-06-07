@@ -2,6 +2,7 @@ import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-
 import { hash } from 'argon2';
 import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Table } from 'sequelize-typescript';
 import { toUFT8NonSpecialCharacters } from '@libs/core';
+import { BranchUserModel } from '@libs/database/entities/user/branch-user.model';
 
 import { PaymentModel } from '../payment';
 import { FeedbackModel, MerchantModel } from '../merchant';
@@ -110,6 +111,9 @@ export class UserModel extends BaseModel<UserModel> {
 
   @HasOne(() => MerchantModel)
   merchant?: MerchantModel;
+
+  @HasMany(() => BranchUserModel)
+  branchUser?: BranchUserModel[];
 
   @BeforeCreate
   static async hashPassword(user: UserModel) {

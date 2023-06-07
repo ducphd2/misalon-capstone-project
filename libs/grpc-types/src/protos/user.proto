@@ -5,6 +5,7 @@ package ducph_user;
 import "commons.proto";
 import "device.proto";
 import "merchant_common.proto";
+import "booking.proto";
 
 import "google/protobuf/struct.proto";
 
@@ -34,6 +35,12 @@ service UserService {
   // customer
   rpc addCustomer(AddOperatorInput) returns (FindOneUser) {}
   rpc updateCustomer(AdminUpdateCustomerInput) returns (FindOneUser) {}
+
+  rpc getUserStatisticsByRange(UserStatisticsByRangeRequest)
+      returns (UserStatisticsByRange) {}
+
+  rpc getBookingStatisticByYear(commons.QueryRequest)
+      returns (booking.Bookings) {}
 }
 
 message User {
@@ -144,4 +151,14 @@ message AdminUpdateCustomerInput {
 message UserPagination {
   repeated User items = 1;
   optional commons.PageMeta meta = 2;
+}
+
+message UserStatisticsByRangeRequest {
+  int32 merchantId = 1;
+}
+
+message UserStatisticsByRange {
+  optional int32 range1 = 1;
+  optional int32 range2 = 2;
+  optional int32 range3 = 3;
 }

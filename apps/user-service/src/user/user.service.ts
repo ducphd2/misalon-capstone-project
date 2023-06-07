@@ -1,29 +1,20 @@
-import { BranchModel, MerchantModel, UserModel } from '@libs/database/entities';
-import { UserRepository } from '@libs/database/repositories';
-import { CommonProto, MerchantProto, UserProto } from '@libs/grpc-types';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { BranchModel, BranchUserModel, MerchantModel, UserModel } from '@libs/database/entities';
+import { BookingRepository, UserRepository } from '@libs/database/repositories';
+import { BookingProto, CommonProto, UserProto } from '@libs/grpc-types';
+import { EUserRole } from '@libs/grpc-types/protos/commons';
+import { UserStatisticsByRange, UserStatisticsByRangeRequest } from '@libs/grpc-types/protos/user';
+import { Injectable } from '@nestjs/common';
 import { isEmpty } from 'lodash';
-import { forkJoin, map, of, switchMap } from 'rxjs';
 
 import { DeviceService } from '../device/device.service';
 
 @Injectable()
-export class UserService implements OnModuleInit {
-  private merchantService: MerchantProto.MerchantServiceClient;
-
+export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly deviceService: DeviceService,
-
-    @Inject(MerchantProto.MERCHANT_PACKAGE_NAME) private merchantClient: ClientGrpc,
+    private readonly bookingRepository: BookingRepository,
   ) {}
-
-  onModuleInit() {
-    this.merchantService = this.merchantClient.getService<MerchantProto.MerchantServiceClient>(
-      MerchantProto.MERCHANT_SERVICE_NAME,
-    );
-  }
 
   async create(dto: UserProto.CreateUserRequest): Promise<UserModel> {
     const user = await this.userRepository.create(dto.user);
@@ -93,5 +84,52 @@ export class UserService implements OnModuleInit {
     );
 
     return result;
+  }
+
+  async getUserStatisticsByRange(request: UserStatisticsByRangeRequest): Promise<any> {
+    const result = await this.userRepository.find({
+      where: {
+        role: EUserRole.USER,
+      },
+      attributes: ['id', 'age'],
+      include: [
+        {
+          model: BranchUserModel,
+          attributes: ['merchantId'],
+          where: {
+            merchantId: request.merchantId,
+          },
+        },
+      ],
+    });
+
+    const userStatistics: UserStatisticsByRange = {
+      range1: 0,
+      range2: 0,
+      range3: 0,
+    };
+
+    result.forEach((user) => {
+      const age = user.age;
+
+      if (age >= 16 && age <= 25) {
+        userStatistics.range1 += 1;
+      } else if (age >= 26 && age <= 40) {
+        userStatistics.range2 += 1;
+      } else if (age >= 41 && age <= 100) {
+        userStatistics.range3 += 1;
+      }
+    });
+
+    return userStatistics;
+  }
+
+  async getBookingStatisticByYear(request: CommonProto.QueryRequest): Promise<BookingProto.Bookings> {
+    const result = await this.bookingRepository.find({
+      where: JSON.parse(request.where),
+      attributes: ['id', 'updatedAt'],
+    });
+
+    return { items: result as BookingProto.Booking[] };
   }
 }
