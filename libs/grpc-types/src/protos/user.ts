@@ -162,6 +162,8 @@ export interface UserServiceClient {
 
   /** customer */
 
+  findCustomers(request: QueryRequest): Observable<UserPagination>;
+
   addCustomer(request: AddOperatorInput): Observable<FindOneUser>;
 
   updateCustomer(request: AdminUpdateCustomerInput): Observable<FindOneUser>;
@@ -200,6 +202,8 @@ export interface UserServiceController {
 
   /** customer */
 
+  findCustomers(request: QueryRequest): Promise<UserPagination> | Observable<UserPagination> | UserPagination;
+
   addCustomer(request: AddOperatorInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
 
   updateCustomer(request: AdminUpdateCustomerInput): Promise<FindOneUser> | Observable<FindOneUser> | FindOneUser;
@@ -226,6 +230,7 @@ export function UserServiceControllerMethods() {
       "upsertDevice",
       "addOperator",
       "countCustomer",
+      "findCustomers",
       "addCustomer",
       "updateCustomer",
       "getUserStatisticsByRange",

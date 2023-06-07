@@ -6,7 +6,7 @@ import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { isEmpty, merge } from 'lodash';
 
 import { Admin, JwtAuthGuard, User } from '@/api-gateway/core';
-import { BaseQueryDto, GetMerchantUserDto } from '@/api-gateway/dtos';
+import { BaseQueryDto, GetBranchUserDto, GetMerchantUserDto } from '@/api-gateway/dtos';
 import { BookingCommonService } from '@/api-gateway/modules/booking-common/booking-common.service';
 import { MerchantCommonService } from '@/api-gateway/modules/merchant-common/merchant-common.service';
 import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
@@ -104,6 +104,45 @@ export class MerchantQueryController {
     }
 
     const result = await this.userService.find({
+      ...query,
+      where: JSON.stringify(baseWhere),
+    });
+    return result;
+  }
+
+  @Get(':id/customers')
+  @UseGuards(JwtAuthGuard)
+  @Admin()
+  async findCustomers(@User() admin: UserModel, @Param('id') id: number, @Query() query?: GetBranchUserDto) {
+    const { merchant } = await this.merchantService.findById({ id });
+
+    if (isEmpty(merchant)) {
+      ErrorHelper.HttpNotFoundException(MERCHANT_MESSAGE.READ.NOT_FOUND);
+    }
+
+    if (merchant.userId !== admin.id) {
+      ErrorHelper.HttpBadRequestException(COMMON_MESSAGE.INVALID);
+    }
+
+    const baseWhere = {
+      merchantId: id,
+    };
+
+    if (!isEmpty(query?.q)) {
+      merge(baseWhere, {
+        search: {
+          _iLike: `%${query?.q}%`,
+        },
+      });
+    }
+
+    if (query.branchId) {
+      merge(baseWhere, {
+        branchId: query.branchId,
+      });
+    }
+
+    const result = await this.userService.findCustomers({
       ...query,
       where: JSON.stringify(baseWhere),
     });
