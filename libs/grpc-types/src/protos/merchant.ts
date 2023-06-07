@@ -162,6 +162,8 @@ export interface MerchantServiceClient {
 
   deleteService(request: Id): Observable<Count>;
 
+  findAllMostInterested(request: QueryRequest): Observable<ServicePagination>;
+
   /** feedback */
 
   feedback(request: QueryRequest): Observable<NullableItem>;
@@ -226,6 +228,10 @@ export interface MerchantServiceController {
 
   deleteService(request: Id): Promise<Count> | Observable<Count> | Count;
 
+  findAllMostInterested(
+    request: QueryRequest,
+  ): Promise<ServicePagination> | Observable<ServicePagination> | ServicePagination;
+
   /** feedback */
 
   feedback(request: QueryRequest): Promise<NullableItem> | Observable<NullableItem> | NullableItem;
@@ -269,6 +275,7 @@ export function MerchantServiceControllerMethods() {
       "createService",
       "updateService",
       "deleteService",
+      "findAllMostInterested",
       "feedback",
       "feedbacks",
       "findFeedbackById",

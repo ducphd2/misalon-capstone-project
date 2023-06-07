@@ -82,6 +82,7 @@ export interface Service {
   distance?: number | undefined;
   latitude?: number | undefined;
   longitude?: number | undefined;
+  bookingCount?: number | undefined;
 }
 
 export interface NullableService {

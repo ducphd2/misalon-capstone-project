@@ -1,15 +1,16 @@
 import { BranchModel, MerchantModel, ServiceModel } from '@libs/database/entities';
-import { MerchantRepository, ServiceRepository } from '@libs/database/repositories';
+import { BookingServiceRepository, MerchantRepository, ServiceRepository } from '@libs/database/repositories';
 import { CommonProto, ServiceProto } from '@libs/grpc-types';
 import { Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
-import { FindOptions, Sequelize } from 'sequelize';
+import sequelize, { FindOptions, Sequelize } from 'sequelize';
 
 @Injectable()
 export class ServicesService {
   constructor(
     private readonly serviceRepository: ServiceRepository,
     private readonly merchantRepository: MerchantRepository,
+    private readonly bookingServiceRepository: BookingServiceRepository,
   ) {}
 
   async create(dto: ServiceProto.CreateServiceInput): Promise<ServiceModel> {
@@ -129,5 +130,40 @@ export class ServicesService {
     });
 
     return count;
+  }
+
+  async findAllMostInterested(request: CommonProto.QueryRequest): Promise<ServiceProto.ServicePagination> {
+    const result = await this.bookingServiceRepository.find({
+      attributes: [
+        ['service_id', 'serviceId'],
+        [sequelize.fn('COUNT', sequelize.col('service_id')), 'booking_count'],
+      ],
+      group: ['serviceId'],
+      order: [[sequelize.literal('booking_count'), 'DESC']],
+    });
+
+    const serviceData = result.map((item) => ({
+      serviceId: item.toJSON().serviceId,
+      bookingCount: +item.toJSON().booking_count,
+    }));
+
+    const services = await this.serviceRepository.find({
+      attributes: ['id', 'price', 'name', 'description', 'image', 'merchantId'],
+    });
+
+    const servicesWithCount = services.map((service) => {
+      const { id } = service;
+      const bookingData = serviceData.find((item) => item.serviceId === id);
+      const bookingCount = bookingData ? bookingData.bookingCount : 0;
+      return {
+        ...service.toJSON(),
+        bookingCount,
+      };
+    });
+
+    // Sort the services based on the booking count
+    const sortedServices = servicesWithCount.sort((a, b) => b.bookingCount - a.bookingCount);
+
+    return { items: sortedServices as ServiceProto.Service[] };
   }
 }
