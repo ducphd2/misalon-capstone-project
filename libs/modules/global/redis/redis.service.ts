@@ -5,6 +5,10 @@ import { Injectable } from '@nestjs/common';
 export class RedisService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
+  async set(key: string, data: any, expireTime = 60): Promise<'OK'> {
+    return this.redis.set(key, data, 'EX', expireTime);
+  }
+
   async get(key: string) {
     return this.redis.get(key);
   }

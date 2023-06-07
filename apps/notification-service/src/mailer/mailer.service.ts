@@ -103,4 +103,17 @@ export class MailService {
       },
     });
   }
+
+  async sendMerchantRegisterMerchantOtp(data: any) {
+    const { email, generatedOtp } = data;
+    await this.sendEmailViaSMTP({
+      to: email,
+      subject: 'Xác thực tài khoản cửa hàng',
+      template: 'verify-otp-register-merchant',
+      context: {
+        email,
+        generatedOtp,
+      },
+    });
+  }
 }

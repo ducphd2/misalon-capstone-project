@@ -6,7 +6,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { PassportModule } from '@nestjs/passport';
 import { EBullQueue, UtilsModule } from '@libs/core';
 import { BullModule } from '@nestjs/bull';
-import { BullQueueModule, BullQueueProvider } from '@libs/modules';
+import { BullQueueModule, BullQueueProvider, IoRedisModule, RedisService } from '@libs/modules';
 
 import { JwtRefreshStrategy, JwtStrategy } from '../../core/strategies';
 
@@ -37,6 +37,7 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
     BullModule.registerQueue({
       name: EBullQueue.BOOKING_QUEUE,
     }),
+    IoRedisModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -68,6 +69,7 @@ import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.
       },
     },
     BullQueueProvider,
+    RedisService,
   ],
   exports: [],
 })

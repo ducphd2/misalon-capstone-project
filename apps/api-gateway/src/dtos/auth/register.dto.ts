@@ -1,7 +1,17 @@
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '@libs/grpc-types/protos/commons';
 import { PartialType } from '@nestjs/mapped-types';
 import { Transform, TransformFnParams, Type } from 'class-transformer';
-import { IsDefined, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsDefined,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 import { CreateMerchantInputDto } from '@/api-gateway/dtos/merchant';
 import { DeviceInputDto } from '@/api-gateway/dtos/user';
@@ -191,3 +201,20 @@ export class CustomerRegisterPayload {
 }
 
 export class UpdatePartialUser extends PartialType<CreateUserInputDto>(CreateUserInputDto) {}
+
+export class VerifyRegisterMerchantOtpPayload {
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
+
+  @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @MaxLength(6)
+  @MinLength(6)
+  @IsString()
+  @IsNotEmpty()
+  otp: string;
+}

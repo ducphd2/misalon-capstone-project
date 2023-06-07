@@ -2,7 +2,15 @@ import { LIMIT, PAGE } from '@libs/core';
 import { CommonProto } from '@libs/grpc-types';
 import { IPaginationRes } from '@libs/interfaces';
 import { isEmpty } from 'lodash';
-import { CountOptions, CreateOptions, FindAndCountOptions, FindOptions, UpdateOptions, WhereOptions } from 'sequelize';
+import {
+  BulkCreateOptions,
+  CountOptions,
+  CreateOptions,
+  FindAndCountOptions,
+  FindOptions,
+  UpdateOptions,
+  WhereOptions,
+} from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 
 export class BaseRepository<T extends Model> {
@@ -106,6 +114,11 @@ export class BaseRepository<T extends Model> {
 
   async upsert(entity: any, opts?: CreateOptions): Promise<[T, boolean]> {
     const response = await this.model.upsert(entity, opts);
+    return response;
+  }
+
+  async bulkInsert(entities: any, opts?: BulkCreateOptions): Promise<T[]> {
+    const response = await this.model.bulkCreate(entities, opts);
     return response;
   }
 }
