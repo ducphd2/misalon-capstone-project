@@ -9,7 +9,7 @@ import {
   UserModel,
 } from '@libs/database';
 import { BookingClient, MerchantClient, UserClient } from '@libs/grpc-types';
-import { BullQueueProvider, LangModule, MessageComponent, SecretsModule } from '@libs/modules';
+import { BullQueueProvider, LangModule, MessageComponent, SecretsModule, SecretsService } from '@libs/modules';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
@@ -55,6 +55,7 @@ import { FirebaseService } from '@/notification-service/firebase/firebase.servic
     FirebaseService,
     DeviceRepository,
     MerchantRepository,
+    SecretsService,
   ],
 })
 export class NotificationModule {}

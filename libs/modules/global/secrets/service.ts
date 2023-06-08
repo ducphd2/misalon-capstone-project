@@ -65,4 +65,6 @@ export class SecretsService extends ConfigService implements AbstractSecretsServ
   // Firebase
   firebaseIcon =
     this.get<string>('FIREBASE_ICON') || 'https://misalon.s3.ap-southeast-1.amazonaws.com/logo_U2e_icon.ico';
+
+  aesKey = this.get<string>('AES_KEY') || 'secret-aes';
 }

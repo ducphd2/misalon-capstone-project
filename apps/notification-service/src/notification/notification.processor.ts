@@ -1,9 +1,9 @@
 import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { Inject, Logger, OnModuleInit } from '@nestjs/common';
-import { EBullEvent, EBullQueue } from '@libs/core';
+import { EBullEvent, EBullQueue, decryptData } from '@libs/core';
 import { BookingProto, MerchantProto, UserProto } from '@libs/grpc-types';
-import { MessageComponent, BullQueueProvider } from '@libs/modules';
+import { MessageComponent, BullQueueProvider, SecretsService } from '@libs/modules';
 import { ClientGrpc } from '@nestjs/microservices';
 import { DeviceRepository, MerchantRepository, UserModel } from '@libs/database';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
@@ -36,6 +36,7 @@ export class NotificationProcessor implements OnModuleInit {
     private readonly firebaseService: FirebaseService,
     private readonly deviceRepository: DeviceRepository,
     private readonly merchantRepository: MerchantRepository,
+    private readonly configService: SecretsService,
   ) {}
 
   onModuleInit() {
@@ -184,8 +185,6 @@ export class NotificationProcessor implements OnModuleInit {
     } catch (error) {
       console.log(error);
     }
-    // send to gateway a message queue
-    console.log('Must to implement handle new booking notification in email, push notification in react and mobile');
   }
 
   @Process(EBullEvent.SEND_EMAIL_VERIFY_OTP)
@@ -198,5 +197,43 @@ export class NotificationProcessor implements OnModuleInit {
       email,
       generatedOtp,
     });
+  }
+
+  @Process(EBullEvent.SEND_MESSAGE)
+  async handlePushNotificationSendMessage(job: Job<any>) {
+    const { receiverId, senderId, message } = job.data;
+
+    const userDevices = await this.deviceRepository.find({
+      where: {
+        userId: receiverId,
+      },
+      attributes: ['token'],
+    });
+
+    const tokens = userDevices.reduce((acc, device) => {
+      if (device.token) acc.push(device.token);
+      return acc;
+    }, [] as string[]);
+
+    const decryptMessage = decryptData(message.content, this.configService.aesKey);
+
+    const userPayloadBookingNotification = {
+      data: {
+        title: 'Bạn có tin nhắn mới',
+        body: `${message.senderName}: ${decryptMessage}`,
+      },
+      notification: {
+        title: 'Bạn có tin nhắn mới',
+        body: `${message.senderName}: ${decryptMessage}`,
+      },
+    };
+
+    try {
+      if (tokens.length) {
+        this.firebaseService.sendToDevices(tokens, userPayloadBookingNotification);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

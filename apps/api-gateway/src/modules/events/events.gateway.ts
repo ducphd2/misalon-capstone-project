@@ -1,4 +1,4 @@
-import { SecretsService } from '@libs/modules';
+import { BullQueueProvider, SecretsService } from '@libs/modules';
 import { Injectable } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -10,6 +10,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { EBullEvent } from '@libs/core';
 
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
 import { MessagesService } from '../messages/message.service';
@@ -33,6 +34,7 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     private readonly firebaseService: FirebaseService,
     private readonly userService: UserCommonService,
     private readonly secretsService: SecretsService,
+    private readonly bullQueue: BullQueueProvider,
   ) {}
 
   @WebSocketServer()
@@ -44,23 +46,11 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     const createdMessage = await this.messagesService.create(messageData);
     this.server.to([senderId, receiverId]).emit(EEventMessage.NEW_MESSAGE, createdMessage);
 
-    const devices = await this.findDevices(Number(senderId), Number(receiverId));
-
-    const payloadNoti = {
-      data: {
-        type: createdMessage.type.toString(),
-      },
-      notification: {
-        title: 'Bạn có tin nhắn mới',
-        body: createdMessage.content.toString(),
-        icon: this.secretsService.firebaseIcon,
-      },
-    };
-
-    const tokens = devices.map((device) => device.token);
-    if (tokens.length) {
-      await this.firebaseService.sendToDevices(tokens, payloadNoti);
-    }
+    await this.bullQueue.addNotificationEvent(EBullEvent.SEND_MESSAGE, {
+      senderId: +senderId,
+      receiverId: +receiverId,
+      message: createdMessage,
+    });
   }
 
   @SubscribeMessage(EEventMessage.RECENT_MESSAGES)
@@ -105,17 +95,5 @@ export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   handleDisconnect(socket: Socket) {
     console.log(`Client disconnected: ${socket.id}`);
-  }
-
-  async findDevices(...userIds: number[]) {
-    const { items } = await this.userService.findDevices({
-      where: JSON.stringify({
-        userId: {
-          _in: userIds,
-        },
-      }),
-    });
-
-    return items;
   }
 }
