@@ -2,13 +2,16 @@ import { AUTH_MESSAGE, EBullEvent, ErrorHelper, PasswordUtils, USER_MESSAGE } fr
 import { BranchProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { EUserRole } from '@libs/grpc-types/protos/commons';
 import { BullQueueProvider } from '@libs/modules';
-import { Body, Controller, HttpCode, HttpStatus, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { isEmpty } from 'lodash';
 
 import {
   CustomerRegisterPayload,
+  ForgotPasswordMerchantRequest,
+  ForgotPasswordMerchantVerify,
   InputLoginRequest,
   RegisterPayload,
+  ResetPasswordMerchantRequest,
   VerifyRegisterMerchantOtpPayload,
 } from '../../dtos';
 
@@ -141,6 +144,32 @@ export class AuthController {
     });
 
     return this.handleResponseAuthData(user);
+  }
+
+  @Post('reset-password-request')
+  async requestForgotPasswordMerchant(@Body() { email, baseUrl }: ForgotPasswordMerchantRequest) {
+    const { user } = await this.usersService.findOne({
+      where: JSON.stringify({ email }),
+    });
+
+    if (!user) {
+      ErrorHelper.HttpNotFoundException('Không tìm thấy tài khoản, vui lòng thử lại sau');
+    }
+
+    if (user.role === EUserRole.USER) {
+      ErrorHelper.HttpForbiddenException('Bạn không có quyền');
+    }
+
+    await this.authService.requestForgotPasswordMerchant(email, baseUrl);
+
+    return {
+      message: 'Gửi yêu cầu khôi phục mật khẩu thành công',
+    };
+  }
+
+  @Post('reset-password-merchant')
+  async resetPasswordMerchant(@Body() { token, newPassword }: ResetPasswordMerchantRequest) {
+    return await this.authService.resetPasswordMerchant(token, newPassword);
   }
 
   private async handleResponseAuthData(

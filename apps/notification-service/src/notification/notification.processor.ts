@@ -236,4 +236,15 @@ export class NotificationProcessor implements OnModuleInit {
       console.log(error);
     }
   }
+
+  @Process(EBullEvent.MERCHANT_FORGOT_PASSWORD_REQUEST)
+  async handleForgotPasswordMerchantRequest(job: Job<any>) {
+    const { email, baseUrl, token } = job.data;
+    const url = `${baseUrl}/reset-password?token=${token}`;
+
+    await this.mailService.sendForgotPasswordMerchantRequestEmail({
+      email,
+      url,
+    });
+  }
 }

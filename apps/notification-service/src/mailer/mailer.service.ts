@@ -116,4 +116,17 @@ export class MailService {
       },
     });
   }
+
+  async sendForgotPasswordMerchantRequestEmail(data: any) {
+    const { email, url } = data;
+    await this.sendEmailViaSMTP({
+      to: email,
+      subject: 'Yêu cầu khôi phục mật khẩu',
+      template: 'forgot-password-merchant-request',
+      context: {
+        email,
+        url,
+      },
+    });
+  }
 }
