@@ -1,35 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import * as firebase from 'firebase-admin';
-import {
-  BatchResponse,
-  MessagingDevicesResponse,
-  MessagingOptions,
-  MessagingPayload,
-  MulticastMessage,
-} from 'firebase-admin/lib/messaging';
+import { BatchResponse, MessagingOptions, MessagingPayload, MulticastMessage } from 'firebase-admin/lib/messaging';
 
 //@ts-ignore
-import * as firebaseCre from './config.json';
-
-const serviceAccount = {
-  projectId: firebaseCre.project_id,
-  privateKey: firebaseCre.private_key,
-  clientEmail: firebaseCre.client_email,
-};
-
-const fireBaseApp = firebase.initializeApp({
-  credential: firebase.credential.cert(serviceAccount),
-});
+import * as firebaseCredentials from './config.json';
 
 @Injectable()
 export class FirebaseService {
-  constructor() {}
+  constructor() {
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        credential: firebase.credential.cert({
+          projectId: firebaseCredentials.project_id,
+          privateKey: firebaseCredentials.private_key,
+          clientEmail: firebaseCredentials.client_email,
+        }),
+      });
+    }
+  }
 
-  async sendToDevices(
-    registrationTokens: string[],
-    payload: MessagingPayload,
-    options?: MessagingOptions,
-  ): Promise<MessagingDevicesResponse> {
+  async sendToDevices(registrationTokens: string[], payload: MessagingPayload, options?: MessagingOptions) {
     return firebase.messaging().sendToDevice(registrationTokens, payload, options);
   }
 

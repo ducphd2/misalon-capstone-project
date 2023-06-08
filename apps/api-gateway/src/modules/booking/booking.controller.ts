@@ -39,7 +39,10 @@ export class BookingController {
       ErrorHelper.HttpNotFoundException('Dịch vụ không hợp lệ');
     }
 
-    const result = await this.bookingService.create(user, bookingInput);
+    const result = await this.bookingService.create(user, {
+      ...bookingInput,
+      merchantId: bookingInput.merchantId ?? items[0]?.merchantId ?? null,
+    });
 
     return result;
   }

@@ -1,5 +1,13 @@
 import { EBullQueue } from '@libs/core';
-import { NotificationModel, NotificationRepository } from '@libs/database';
+import {
+  DeviceModel,
+  DeviceRepository,
+  MerchantModel,
+  MerchantRepository,
+  NotificationModel,
+  NotificationRepository,
+  UserModel,
+} from '@libs/database';
 import { BookingClient, MerchantClient, UserClient } from '@libs/grpc-types';
 import { BullQueueProvider, LangModule, MessageComponent, SecretsModule } from '@libs/modules';
 import { BullModule } from '@nestjs/bull';
@@ -13,10 +21,13 @@ import { NotificationController } from './notification.controller';
 import { NotificationProcessor } from './notification.processor';
 import { NotificationService } from './notification.service';
 
+import { FirebaseModule } from '@/notification-service/firebase/firebase.module';
+import { FirebaseService } from '@/notification-service/firebase/firebase.service';
+
 @Module({
   imports: [
     SecretsModule,
-    SequelizeModule.forFeature([NotificationModel]),
+    SequelizeModule.forFeature([NotificationModel, UserModel, DeviceModel, MerchantModel]),
     LangModule,
     MailModule,
     ClientsModule.register([UserClient, BookingClient, MerchantClient]),
@@ -32,8 +43,18 @@ import { NotificationService } from './notification.service';
     BullModule.registerQueue({
       name: EBullQueue.USER_QUEUE,
     }),
+    FirebaseModule,
   ],
   controllers: [NotificationController],
-  providers: [NotificationService, NotificationRepository, MessageComponent, NotificationProcessor, BullQueueProvider],
+  providers: [
+    NotificationService,
+    NotificationRepository,
+    MessageComponent,
+    NotificationProcessor,
+    BullQueueProvider,
+    FirebaseService,
+    DeviceRepository,
+    MerchantRepository,
+  ],
 })
 export class NotificationModule {}

@@ -5,10 +5,18 @@ import { EBullEvent, EBullQueue } from '@libs/core';
 import { BookingProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { MessageComponent, BullQueueProvider } from '@libs/modules';
 import { ClientGrpc } from '@nestjs/microservices';
+import { DeviceRepository, MerchantRepository, UserModel } from '@libs/database';
+import { EUserRole } from '@libs/grpc-types/protos/commons';
 
 import { MailService } from '../mailer/mailer.service';
 
 import { ELangType } from '@/api-gateway/dtos';
+import { FirebaseService } from '@/notification-service/firebase/firebase.service';
+
+interface TokenRegs {
+  userTokens?: string[];
+  adminTokens?: string[];
+}
 
 @Processor(EBullQueue.NOTIFICATION_QUEUE)
 export class NotificationProcessor implements OnModuleInit {
@@ -25,6 +33,9 @@ export class NotificationProcessor implements OnModuleInit {
     @Inject(UserProto.DUCPH_USER_PACKAGE_NAME) private userClient: ClientGrpc,
     @Inject(MerchantProto.MERCHANT_PACKAGE_NAME) private merchantClient: ClientGrpc,
     @Inject(BookingProto.BOOKING_PACKAGE_NAME) private bookingClient: ClientGrpc,
+    private readonly firebaseService: FirebaseService,
+    private readonly deviceRepository: DeviceRepository,
+    private readonly merchantRepository: MerchantRepository,
   ) {}
 
   onModuleInit() {
@@ -104,6 +115,75 @@ export class NotificationProcessor implements OnModuleInit {
 
     await this.bullQueueProvider.addGatewayEvent('user_booking', { userId: request.userId, booking: request.booking });
 
+    const merchant = await this.merchantRepository.findById(request.merchantId);
+
+    const userDevices = await this.deviceRepository.find({
+      where: {
+        userId: {
+          _or: [
+            {
+              _eq: request.userId,
+            },
+            {
+              _eq: merchant.userId,
+            },
+          ],
+        },
+      },
+      attributes: ['token'],
+      include: [
+        {
+          model: UserModel,
+          attributes: ['role'],
+        },
+      ],
+    });
+
+    const tokens = userDevices.reduce(
+      (acc, curr) => {
+        if (curr.toJSON()?.user.role === EUserRole.USER && curr.token) {
+          acc.userTokens.push(curr.token);
+        } else if (curr.toJSON()?.user.role === EUserRole.ADMIN && curr.token) {
+          acc.adminTokens.push(curr.token);
+        }
+        return acc;
+      },
+      { userTokens: [], adminTokens: [] } as TokenRegs,
+    );
+
+    const userPayloadBookingNotification = {
+      data: {
+        title: 'Đặt lịch hẹn thành công',
+        body: `Bạn vừa đặt lịch hẹn chăm sóc sức khỏe tại ${merchant.name} thành công`,
+      },
+      notification: {
+        title: 'Đặt lịch hẹn thành công',
+        body: `Bạn vừa đặt lịch hẹn chăm sóc sức khỏe tại ${merchant.name} thành công`,
+      },
+    };
+
+    const adminPayloadBookingNotification = {
+      data: {
+        title: 'Khách hàng đặt lịch hẹn',
+        body: 'Cửa hàng vừa mới có lịch hẹn mới. Vui lòng xem chi tiết tại đây',
+      },
+      notification: {
+        title: 'Khách hàng đặt lịch hẹn',
+        body: 'Cửa hàng vừa mới có lịch hẹn mới. Vui lòng xem chi tiết tại đây',
+      },
+    };
+    try {
+      await Promise.all([
+        tokens.userTokens.length
+          ? this.firebaseService.sendToDevices(tokens.userTokens, userPayloadBookingNotification)
+          : null,
+        tokens.adminTokens.length
+          ? this.firebaseService.sendToDevices(tokens.adminTokens, adminPayloadBookingNotification)
+          : null,
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
     // send to gateway a message queue
     console.log('Must to implement handle new booking notification in email, push notification in react and mobile');
   }
