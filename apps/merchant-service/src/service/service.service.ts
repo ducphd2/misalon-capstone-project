@@ -148,7 +148,19 @@ export class ServicesService {
     }));
 
     const services = await this.serviceRepository.find({
-      attributes: ['id', 'price', 'name', 'description', 'image', 'merchantId'],
+      attributes: ['id', 'price', 'name', 'image', 'merchantId'],
+      include: [
+        {
+          model: MerchantModel,
+          attributes: ['id', 'phone', 'latitude', 'longitude', 'address', 'phone'],
+          include: [
+            {
+              model: BranchModel,
+              attributes: ['id', 'phone', 'latitude', 'longitude', 'address', 'phone'],
+            },
+          ],
+        },
+      ],
     });
 
     const servicesWithCount = services.map((service) => {
