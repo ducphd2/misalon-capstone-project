@@ -3,6 +3,9 @@ import { UserProto } from '@libs/grpc-types';
 import { BullQueueProvider, RedisService } from '@libs/modules';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { hash } from 'argon2';
+
+import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +18,7 @@ export class AuthService {
 
     private readonly redisService: RedisService,
     private readonly bullQueue: BullQueueProvider,
+    private readonly userService: UserCommonService,
   ) {}
 
   async generateAccessToken(user: UserProto.User): Promise<string> {
@@ -84,5 +88,44 @@ export class AuthService {
     return {
       message: 'Xác thực OTP thành công',
     };
+  }
+
+  async requestForgotPasswordMerchant(email: string, baseUrl: string) {
+    const token = this.accessTokenService.sign({ email }, { expiresIn: '5m' });
+
+    await this.redisService.set(this.setMerchantResetPasswordKey(token), token, 5 * 60);
+    await this.bullQueue.addNotificationEvent(EBullEvent.MERCHANT_FORGOT_PASSWORD_REQUEST, {
+      email,
+      baseUrl,
+      token,
+    });
+  }
+
+  async resetPasswordMerchant(token: string, newPassword: string) {
+    const existedToken = await this.redisService.get(this.setMerchantResetPasswordKey(token));
+
+    if (!existedToken || existedToken !== token) {
+      ErrorHelper.HttpBadRequestException('Mã xác nhận không đúng hoặc không tồn tại, vui lòng thử lại');
+    }
+
+    const decoded = this.accessTokenService.decode(token);
+
+    const { user } = await this.userService.findOne({
+      where: JSON.stringify({ email: decoded['email'] }),
+    });
+
+    await this.userService.update(user.id, {
+      password: await hash(newPassword),
+    });
+
+    await this.redisService.del(this.setMerchantResetPasswordKey(token));
+
+    return {
+      message: 'Khôi phục mật khẩu thành công',
+    };
+  }
+
+  private setMerchantResetPasswordKey(token: string) {
+    return `admin-request-forgot-password-${token}`;
   }
 }

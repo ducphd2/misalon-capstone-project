@@ -218,3 +218,28 @@ export class VerifyRegisterMerchantOtpPayload {
   @IsNotEmpty()
   otp: string;
 }
+
+export class ForgotPasswordMerchantRequest {
+  @Transform(({ value }: TransformFnParams) => value?.trim().toLowerCase())
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  baseUrl: string;
+}
+
+export class ForgotPasswordMerchantVerify {
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+}
+
+export class ResetPasswordMerchantRequest extends ForgotPasswordMerchantVerify {
+  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @IsString()
+  @IsNotEmpty()
+  newPassword: string;
+}
