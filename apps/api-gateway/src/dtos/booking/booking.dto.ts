@@ -17,7 +17,7 @@ export class CreateBookingInput {
 
   @IsOptional()
   @IsEnum(CommonProto.EBookingStatus)
-  status?: CommonProto.EBookingStatus = CommonProto.EBookingStatus.BOOKING_APPROVE;
+  status?: CommonProto.EBookingStatus = CommonProto.EBookingStatus.BOOKING_PENDING;
 
   @IsNotEmpty()
   @IsString()
