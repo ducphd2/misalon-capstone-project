@@ -1,4 +1,5 @@
-import { BullQueueProvider, SecretsService } from '@libs/modules';
+import { EBullEvent } from '@libs/core';
+import { BullQueueProvider } from '@libs/modules';
 import { Injectable } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -10,32 +11,18 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { EBullEvent } from '@libs/core';
 
 import { CreateMessageDto } from '../messages/dto/create-message.dto';
 import { MessagesService } from '../messages/message.service';
 
 import { EEventMessage } from '@/api-gateway/dtos';
-import { UserCommonService } from '@/api-gateway/modules/user-common/user-common.service';
-import { FirebaseService } from '@/notification-service/firebase/firebase.service';
 
 @Injectable()
 @WebSocketGateway({
   cors: true,
 })
-// @WebSocketGateway({
-//   cors: {
-//     origin: '*',
-//   },
-// })
 export class EventsGateway implements OnGatewayDisconnect, OnGatewayConnection {
-  constructor(
-    private readonly messagesService: MessagesService,
-    private readonly firebaseService: FirebaseService,
-    private readonly userService: UserCommonService,
-    private readonly secretsService: SecretsService,
-    private readonly bullQueue: BullQueueProvider,
-  ) {}
+  constructor(private readonly messagesService: MessagesService, private readonly bullQueue: BullQueueProvider) {}
 
   @WebSocketServer()
   server: Server;
