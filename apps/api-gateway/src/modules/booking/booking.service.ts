@@ -9,6 +9,7 @@ import { MerchantCommonService } from '../merchant-common/merchant-common.servic
 import { BookingCommonService } from '../booking-common/booking-common.service';
 
 import { CreateBookingInput, PartialUpdateBooking } from '@/api-gateway/dtos';
+import { AdminGateway } from '@/api-gateway/modules/events/admin.gateway';
 
 @Injectable()
 export class BookingService {
@@ -18,6 +19,7 @@ export class BookingService {
     private readonly bookingService: BookingCommonService,
     private readonly i18n: MessageComponent,
     private readonly merchantService: MerchantCommonService,
+    private readonly adminGateway: AdminGateway,
   ) {}
 
   async create(user: UserModel, data: CreateBookingInput, lang?: string) {
@@ -28,6 +30,14 @@ export class BookingService {
     }
 
     const booking = await this.bookingService.create(data);
+
+    const { merchant } = await this.merchantService.findById({ id: booking.merchantId });
+
+    await this.adminGateway.handleEmitCreateBooking({
+      bookingId: booking.id,
+      branchId: booking.branchId,
+      userId: merchant.userId,
+    });
 
     return {
       message: this.i18n.lang('lang.BOOKING.CREATE.SUCCESS', { lang }),

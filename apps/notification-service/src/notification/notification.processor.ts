@@ -6,12 +6,13 @@ import { BookingProto, MerchantProto, UserProto } from '@libs/grpc-types';
 import { MessageComponent, BullQueueProvider, SecretsService } from '@libs/modules';
 import { ClientGrpc } from '@nestjs/microservices';
 import { DeviceRepository, MerchantRepository, UserModel } from '@libs/database';
-import { EUserRole } from '@libs/grpc-types/protos/commons';
+import { EBookingStatus, EUserRole } from '@libs/grpc-types/protos/commons';
 
 import { MailService } from '../mailer/mailer.service';
 
 import { ELangType } from '@/api-gateway/dtos';
 import { FirebaseService } from '@/notification-service/firebase/firebase.service';
+import { MESSAGE_TYPE } from '@/api-gateway/modules/messages/dto/create-message.dto';
 
 interface TokenRegs {
   userTokens?: string[];
@@ -217,16 +218,27 @@ export class NotificationProcessor implements OnModuleInit {
 
     const decryptMessage = decryptData(message.content, this.configService.aesKey);
 
-    const userPayloadBookingNotification = {
-      data: {
-        title: 'Bạn có tin nhắn mới',
-        body: `${message.senderName}: ${decryptMessage}`,
-      },
-      notification: {
-        title: 'Bạn có tin nhắn mới',
-        body: `${message.senderName}: ${decryptMessage}`,
-      },
-    };
+    const userPayloadBookingNotification = MESSAGE_TYPE.TEXT
+      ? {
+          data: {
+            title: 'Bạn có tin nhắn mới',
+            body: `${message.senderName}: ${decryptMessage}`,
+          },
+          notification: {
+            title: 'Bạn có tin nhắn mới',
+            body: `${message.senderName}: ${decryptMessage}`,
+          },
+        }
+      : {
+          data: {
+            title: 'Bạn có tin nhắn mới',
+            body: `${message.senderName}: Hình ảnh`,
+          },
+          notification: {
+            title: 'Bạn có tin nhắn mới',
+            body: `${message.senderName}: Hình ảnh`,
+          },
+        };
 
     try {
       if (tokens.length) {
@@ -246,5 +258,60 @@ export class NotificationProcessor implements OnModuleInit {
       email,
       url,
     });
+  }
+
+  @Process(EBullEvent.ADMIN_RESPONSE_BOOKING)
+  async handleApprovedBookingCustomer(job: Job<any>) {
+    const { userId, status, merchantId } = job.data;
+
+    const userDevices = await this.deviceRepository.find({
+      where: {
+        userId,
+      },
+      attributes: ['token'],
+    });
+
+    const merchant = await this.merchantRepository.findById(merchantId);
+
+    const tokens = userDevices.reduce((acc, curr) => {
+      if (curr.token) {
+        acc.push(curr.token);
+      }
+      return acc;
+    }, [] as string[]);
+
+    const approvedUserBookingNoti = {
+      data: {
+        title: 'Thông báo thay đổi lịch hẹn CSSK của bạn',
+        body: `${merchant.name} vừa duyệt lịch hẹn của bạn. Vui lòng sắp xếp thời gian đến đúng giờ bạn nhé.`,
+      },
+      notification: {
+        title: 'Thông báo thay đổi lịch hẹn CSSK của bạn',
+        body: `${merchant.name} vừa duyệt lịch hẹn của bạn. Vui lòng sắp xếp thời gian đến đúng giờ bạn nhé.`,
+      },
+    };
+
+    const rejectedUserBookingNoti = {
+      data: {
+        title: 'Thông báo thay đổi lịch hẹn CSSK của bạn',
+        body: `${merchant.name} vừa từ chối lịch hẹn của bạn. Để xem chi tiết vui lòng click vào đây.`,
+      },
+      notification: {
+        title: 'Thông báo thay đổi lịch hẹn CSSK của bạn',
+        body: `${merchant.name} vừa từ chối lịch hẹn của bạn. Để xem chi tiết vui lòng click vào đây.`,
+      },
+    };
+
+    try {
+      if (tokens.length) {
+        if (status === EBookingStatus.BOOKING_APPROVE) {
+          await this.firebaseService.sendToDevices(tokens, approvedUserBookingNoti);
+        } else if (status === EBookingStatus.BOOKING_REJECT) {
+          await this.firebaseService.sendToDevices(tokens, rejectedUserBookingNoti);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

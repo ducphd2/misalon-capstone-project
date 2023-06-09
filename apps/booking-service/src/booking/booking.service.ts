@@ -11,6 +11,7 @@ import {
   UserRepository,
 } from '@libs/database';
 import { BookingProto, CommonProto } from '@libs/grpc-types';
+import { EBookingStatus } from '@libs/grpc-types/protos/commons';
 import { BullQueueProvider } from '@libs/modules';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { isEmpty, omit, pick } from 'lodash';
@@ -174,6 +175,27 @@ export class BookingService implements OnModuleInit {
         id: request.id,
       },
     });
+
+    if (
+      request.data.status === EBookingStatus.BOOKING_APPROVE ||
+      request.data.status === EBookingStatus.BOOKING_REJECT
+    ) {
+      await Promise.all([
+        this.bullQueueProvider.addNotificationEvent(EBullEvent.ADMIN_RESPONSE_BOOKING, {
+          userId: result[0]?.userId,
+          status: request.data.status,
+          merchantId: result[0]?.merchantId,
+          branchId: result[0]?.branchId,
+        }),
+        this.bullQueueProvider.addGatewayEvent(EBullEvent.ADMIN_RESPONSE_BOOKING, {
+          userId: result[0]?.userId,
+          status: request.data.status,
+          merchantId: result[0]?.merchantId,
+          branchId: result[0]?.branchId,
+        }),
+      ]);
+    }
+
     return result[0];
   }
 

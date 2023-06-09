@@ -58,3 +58,9 @@ export class CreateBookingInput {
 }
 
 export class PartialUpdateBooking extends PartialType<CreateBookingInput>(CreateBookingInput) {}
+
+export class EmitEventAdminGateway {
+  userId?: number;
+  bookingId: number;
+  branchId: number;
+}

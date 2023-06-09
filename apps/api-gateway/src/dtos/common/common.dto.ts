@@ -4,6 +4,7 @@ export enum EEventMessage {
   CONVERSATION_MESSAGES = 'conversation_messages',
   JOIN_ROOM = 'join_room',
   NEW_MESSAGE = 'new_message',
+  NEW_BOOKING_ADMIN = 'NEW_BOOKING_ADMIN',
 }
 
 export enum ELangType {

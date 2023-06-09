@@ -1,20 +1,18 @@
-import { Module } from '@nestjs/common';
-import { BullQueueProvider, SecretsModule, SecretsService } from '@libs/modules';
-import { BullModule } from '@nestjs/bull';
 import { EBullQueue } from '@libs/core';
+import { BullQueueProvider, SecretsModule } from '@libs/modules';
+import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
 
 import { MessagesModule } from '../messages/messages.module';
 
 import { EventsGateway } from './events.gateway';
 
 import { UserCommonModule } from '@/api-gateway/modules/user-common/user-common.module';
-import { FirebaseModule } from '@/notification-service/firebase/firebase.module';
-import { FirebaseService } from '@/notification-service/firebase/firebase.service';
+import { AdminGateway } from '@/api-gateway/modules/events/admin.gateway';
 
 @Module({
   imports: [
     MessagesModule,
-    FirebaseModule,
     UserCommonModule,
     SecretsModule,
     BullModule.registerQueue({
@@ -30,6 +28,7 @@ import { FirebaseService } from '@/notification-service/firebase/firebase.servic
       name: EBullQueue.USER_QUEUE,
     }),
   ],
-  providers: [EventsGateway, FirebaseService, SecretsService, BullQueueProvider],
+  providers: [EventsGateway, AdminGateway, BullQueueProvider],
+  exports: [EventsGateway, AdminGateway],
 })
 export class EventsModule {}
