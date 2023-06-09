@@ -1,6 +1,7 @@
 import { EBullEvent } from '@libs/core';
 import {
   BookingRepository,
+  BookingServiceRepository,
   BranchModel,
   BranchRepository,
   BranchUserRepository,
@@ -22,6 +23,7 @@ export class BookingService implements OnModuleInit {
     private readonly userRepository: UserRepository,
     private readonly branchUserRepository: BranchUserRepository,
     private readonly branchRepository: BranchRepository,
+    private readonly bookingServiceRepository: BookingServiceRepository,
   ) {}
 
   onModuleInit() {}
@@ -41,6 +43,11 @@ export class BookingService implements OnModuleInit {
 
     const booking = await this.bookingRepository.create({ ...dto, userId: dto?.userId ?? user?.id ?? null });
 
+    await Promise.all(
+      dto.serviceIds.map((serviceId: number) =>
+        this.bookingServiceRepository.create({ bookingId: booking.id, serviceId }),
+      ),
+    );
     await Promise.all([
       this.bullQueueProvider.addBookingEvent(EBullEvent.BS_INSERT_BOOKING_SERVICES_DATA, {
         serviceIds: dto.serviceIds,

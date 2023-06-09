@@ -1,8 +1,4 @@
 import { EBullEvent, EBullQueue } from '@libs/core';
-import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
-import { Logger, OnModuleInit } from '@nestjs/common';
-import { Job } from 'bull';
-import { omit } from 'lodash';
 import {
   BookingRepository,
   BookingServiceRepository,
@@ -10,8 +6,12 @@ import {
   BranchUserRepository,
   PaymentRepository,
 } from '@libs/database';
-import { EPaymentStatus } from '@libs/grpc-types/protos/payment';
 import { EBookingStatus } from '@libs/grpc-types/protos/commons';
+import { EPaymentStatus } from '@libs/grpc-types/protos/payment';
+import { OnQueueActive, OnQueueCompleted, OnQueueFailed, Process, Processor } from '@nestjs/bull';
+import { Logger, OnModuleInit } from '@nestjs/common';
+import { Job } from 'bull';
+import { omit } from 'lodash';
 
 import { BookingService } from './booking.service';
 
@@ -89,10 +89,6 @@ export class BookingProcessor implements OnModuleInit {
         merchantId: branch.merchantId,
       });
     }
-
-    await Promise.all(
-      serviceIds.map((serviceId: number) => this.bookingServiceRepository.create({ bookingId, serviceId })),
-    );
   }
 
   @Process(EBullEvent.UPDATE_VNPAY_BOOKINGS)
